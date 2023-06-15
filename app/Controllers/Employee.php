@@ -21,8 +21,8 @@ class Employee extends BaseController
             return view('logoutAdmin');
 
         $data = array();
-        $data['menu_ative'] = 'dashboard/employee';
-        $data['page'] = 'admin/dashboard/employee';
+        $data['menu_ative'] = 'employee';
+        $data['page'] = 'employee/index';
 
         return view('admin/layout/header', $data);
         
