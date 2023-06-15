@@ -2,10 +2,10 @@
     <div class="navbar-brand-box">
         <a href="" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="<?php echo base_url("assets/images/logo-sm.png");?>" alt="axley herrera portafolio" height="22">
+                <img src="<?php echo base_url("assets/images/logo-sm.png");?>" alt="tpv" height="22">
             </span>
             <span class="logo-lg">
-                <img src="<?php echo base_url("assets/images/logo-dark.png");?>" alt="axley herrera portafolio" height="22">
+                <img src="<?php echo base_url("assets/images/logo.png");?>" alt="tpv" height="22">
             </span>
         </a>
     </div>
@@ -21,9 +21,18 @@
                 <!-- DASHBOARD -->
                 <li class="<?php if($menu_ative == "dashboard"){echo "mm-active";}?>">
                     <a href="<?php echo base_url('Dashboard'); ?>">
-                        <i class="icon nav-icon <?php if($menu_ative == "home"){echo "active";}?>" data-feather="home"></i> 
+                        <i class="icon nav-icon <?php if($menu_ative == "dashboard"){echo "active";}?>" data-feather="dashboard"></i> 
                         <span class="menu-item">
                             Tablero
+                        </span>
+                    </a>
+                </li>
+                <!-- PRODUCT -->
+                <li class="<?php if($menu_ative == "product"){echo "mm-active";}?>">
+                    <a href="<?php echo base_url('Product'); ?>">
+                        <i class="icon nav-icon <?php if($menu_ative == "home"){echo "active";}?>" data-feather="product"></i> 
+                        <span class="menu-item">
+                            Productos
                         </span>
                     </a>
                 </li>

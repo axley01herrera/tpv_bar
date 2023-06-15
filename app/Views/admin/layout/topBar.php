@@ -5,10 +5,10 @@
             <div class="navbar-brand-box">
                 <a href="" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="<?php echo base_url("assets/images/logo-sm.png");?>" alt="axley herrera portafolio" height="22">
+                        <img src="<?php echo base_url("assets/images/logo-sm.png");?>" alt="tpv" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="<?php echo base_url("assets/images/logo-dark.png");?>" alt="axley herrera portafolio" height="22">
+                        <img src="<?php echo base_url("assets/images/logo.png");?>" alt="tpv" height="22">
                     </span>
                 </a>
             </div>
@@ -25,7 +25,7 @@
                     <div class="p-3 bg-primary border-bottom">
                         <h6 class="mb-0 text-white">Administrador</h6>
                     </div>
-                    <a class="dropdown-item" href="auth-signout-basic.html"><i class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Logout</span></a>
+                    <a class="dropdown-item" href="<?php echo base_url('Admin')?>"><i class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Salir</span></a>
                 </div>
             </div>
         </div>

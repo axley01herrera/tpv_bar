@@ -24,7 +24,7 @@ class Admin extends BaseController
         $data = array();
         $data['msg'] = $this->request->getPostGet('msg');
 
-        return view('admin/index', $data);
+        return view('admin/login', $data);
     }
 
     public function login()

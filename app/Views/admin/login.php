@@ -63,7 +63,7 @@
         let msg = '<?php echo $msg; ?>';
 
         if(msg != '')
-            showToast('error', 'Sessión Expliarda');
+            showToast('error', 'Sessión Expiarda');
 
         $('#btn-submit').on('click', function() {
 
