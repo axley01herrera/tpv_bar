@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>E-Comerce</title>
+    <title>TPV</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="E-Comerce" name="description" />
+    <meta content="TPV" name="description" />
     <meta content="Axley Herrera" name="author" />
 
     <link rel="shortcut icon" href="<?php echo base_url('assets/images/app-icon.ico'); ?>">
@@ -36,7 +36,7 @@
                                 <h5 class="font-size-16 mt-3">Bienvenido</h5>
                             </div>
                             <div class="form-floating form-floating-custom mb-3">
-                                <input type="password" class="form-control required focus" id="input-password" placeholder="Contraseña">
+                                <input type="password" id="input-password" class="form-control required focus"  placeholder="Contraseña">
                                 <label for="input-password">Contraseña</label>
                                 <div class="form-floating-icon">
                                     <i class="uil uil-padlock"></i>
@@ -57,11 +57,17 @@
 <?php echo view('global/form_validation'); ?>
 
 <script>
+
     $(document).ready(function() {
+
+        let msg = '<?php echo $msg; ?>';
+
+        if(msg != '')
+            showToast('error', 'Sessión Expliarda');
 
         $('#btn-submit').on('click', function() {
 
-            let resultCheckRequiredValues = checkRequiredValues('required'); console.log(resultCheckRequiredValues);
+            let resultCheckRequiredValues = checkRequiredValues('required');
 
             if(resultCheckRequiredValues == 0) {
 
@@ -74,8 +80,16 @@
                     },
                     dataType: "json",
     
-                    success: function(response) {
+                    success: function(jsonResponse) {
+
+                        if(jsonResponse.error == 0) 
+                            window.location.href = '<?php echo base_url('Dashboard'); ?>';
                         
+
+                        if(jsonResponse.error == 1) {
+                            showToast('error', jsonResponse.msg);
+                            $('#input-password').addClass('is-invalid');
+                        }
                     },
     
                     error: function(error) {
