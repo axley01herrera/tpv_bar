@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 15-06-2023 a las 21:09:57
+-- Tiempo de generación: 15-06-2023 a las 21:11:45
 -- Versión del servidor: 5.7.36
 -- Versión de PHP: 7.4.26
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `tpv`
 --
+CREATE DATABASE IF NOT EXISTS `tpv` DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+USE `tpv`;
 
 -- --------------------------------------------------------
 
