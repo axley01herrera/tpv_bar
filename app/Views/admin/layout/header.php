@@ -17,7 +17,8 @@
         <link type="text/css" rel="stylesheet" id="app-style" href="<?php echo base_url('assets/css/app.min.css');?>" />
         <link type="text/css" rel="stylesheet" id="app-style" href="<?php echo base_url('assets/libs/jquery-ui/jquery-ui.css');?>" />
         <link type="text/css" rel="stylesheet" id="app-style" href="<?php echo base_url('assets/libs/select2/css/select2.css');?>" />
-
+        <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
+        
         <!-- JS -->
         <script src="<?php echo base_url('assets/libs/jquery/jquery.min.js');?>"></script>
         <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js');?>"></script>
@@ -30,6 +31,8 @@
         <script src="<?php echo base_url('assets/libs/select2/js/select2.min.js');?>"></script>
         <script src="<?php echo base_url('assets/libs/imask/jquery.inputmask.bundle.min.js');?>"></script>
         <script src="<?php echo base_url('assets/libs/moment/moment.js');?>"></script>
+        <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/js/customApp.js'); ?>"></script>
 
     </head>
 
@@ -39,6 +42,7 @@
                 echo view('admin/layout/topbar');
                 echo view('admin/layout/leftSideBar');
             ?>
+            <div id="main-modal"></div>
             <div class="main-content">
                 <div class="page-content">
                     <div class="container">

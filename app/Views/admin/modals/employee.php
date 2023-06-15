@@ -27,7 +27,7 @@
 
                 </div>
             </div>
-            <?php echo view('modals/footer'); ?>
+            <?php echo view('admin/modals/modalFooter'); ?>
         </div>
     </div>
 </div>

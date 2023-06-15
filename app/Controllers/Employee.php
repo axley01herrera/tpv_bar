@@ -10,7 +10,6 @@ class Employee extends BaseController
 
     function  __construct()
     {
-
         $this->objSession = session();
     }
     
@@ -32,7 +31,7 @@ class Employee extends BaseController
     {
        # VERIFY SESSION
        if(empty($this->objSession->get('user')['hash']))
-       return view('logoutAdmin');
+        return view('logoutAdmin');
 
         $data = array();
         $data['action'] = $this->request->getPost('action');
@@ -46,7 +45,7 @@ class Employee extends BaseController
             $data['user_data'] = $result;
         }
 
-        return view('modals/employee', $data);
+        return view('admin/modals/employee', $data);
     }
 
     public function processingEmployee()

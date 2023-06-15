@@ -1,24 +1,24 @@
-<div class="row mt-5">
-    <div class="col-12 ">
-        <h1 class="text-primary">
-            Listado de Empleados
-        </h1>
-    </div>
-    <div class="col-12 mt-5">
-        <button id="btn-create" class="btn btn-sm btn-success">Crear Empleado</button>
+<link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-primary">Empleados</h1>
     </div>
 </div>
 <div class="card mt-3">
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            <div class="col-12">
+                <button id="btn-create" class="btn btn-primary">Crear Empleado</button>
+            </div>
+        </div>
+        <div class="table-responsive mt-5">
             <table id="dataTable" class="table" style="width: 100%;">
                 <thead>
                     <tr>
                         <th><strong>Nombre</strong></th>
                         <th><strong>Apellidos</strong></th>
-                        <th><strong>Email</strong></th>
-                        <th class="text-center"><strong>Role</strong></th>
-                        <th class="text"><strong>Desactivar / Activar</strong></th>
+                        <th><strong>Usuario</strong></th>
+                        <th class="text"><strong>Estado</strong></th>
                         <th class=""></th>
                         <th class="text-end"></th>
                     </tr>
@@ -27,6 +27,10 @@
         </div>
     </div>
 </div>
+
+<script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/js/datatable/dataTables.bootstrap5.min.js'); ?>"></script>
+
 <script>
     $('#btn-create').on('click', function() { // CREATE EMPLOYEE
 
@@ -45,22 +49,7 @@
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
+            showToast('error', 'Ha ocurrido un error');
 
         });
 
@@ -118,90 +107,90 @@
 
     dataTable.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE USER
 
-                let status = $(this).attr('data-status');
-                let newStatus = '';
+        let status = $(this).attr('data-status');
+        let newStatus = '';
 
-                if (status == 0)
-                    newStatus = 1;
-                else if (status == 1)
-                    newStatus = 0;
+        if (status == 0)
+            newStatus = 1;
+        else if (status == 1)
+            newStatus = 0;
 
-                $.ajax({
+        $.ajax({
 
-                    type: "post",
-                    url: "<?php echo base_url('Employee/changeUserStatus'); ?>",
-                    data: {
-                        'userID': userID,
-                        'status': newStatus
-                    },
-                    dataType: "json",
+            type: "post",
+            url: "<?php echo base_url('Employee/changeUserStatus'); ?>",
+            data: {
+                'userID': userID,
+                'status': newStatus
+            },
+            dataType: "json",
 
-                }).done(function(jsonResponse) {
-            
-                    if (jsonResponse.error == 0) // SUCCESS
-                    {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                        });
+        }).done(function(jsonResponse) {
 
-                        Toast.fire({
-                            icon: 'success',
-                            title: jsonResponse.msg
-                        });
-
-                        dataTable.draw();
-                    } else // ERROR
-                    {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                        })
-
-                        Toast.fire({
-                            icon: 'error',
-                            title: jsonResponse.msg
-                        });
+            if (jsonResponse.error == 0) // SUCCESS
+            {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
+                });
 
-                    if (jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Authentication'); ?>'
+                Toast.fire({
+                    icon: 'success',
+                    title: jsonResponse.msg
+                });
 
-                }).fail(function(error) {
-
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Ha ocurrido un error'
-                    });
-
+                dataTable.draw();
+            } else // ERROR
+            {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
                 })
+
+                Toast.fire({
+                    icon: 'error',
+                    title: jsonResponse.msg
+                });
+            }
+
+            if (jsonResponse.error == 2) // SESSION EXPIRED
+                window.location.href = '<?php echo base_url('Authentication'); ?>'
+
+        }).fail(function(error) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error'
             });
+
+        })
+    });
 
     dataTable.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE
 
@@ -272,65 +261,20 @@
 
         let userID = $(this).attr('data-id');
 
-            $.ajax({
-    
-                type: "post",
-                url: "<?php echo base_url('Employee/deleteEmployee'); ?>",
-                data: {
-                    'userID': userID,
-                    'action': 'delete',
-                },
-                dataType: "json",
-    
-            }).done(function(jsonResponse) {
-    
-                if (jsonResponse.error == 0) // SUCCESS
-                {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    });
-    
-                    Toast.fire({
-                        icon: 'success',
-                        title: jsonResponse.msg
-                    });
-    
-                    dataTable.draw();
-    
-                } else // ERROR
-                {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    });
-    
-                    Toast.fire({
-                        icon: 'error',
-                        title: jsonResponse.msg
-                    });
-    
-                }
-    
-                if (jsonResponse.error == 2) // SESSION EXPIRED
-                    window.location.href = "<?php echo base_url('Authentication'); ?>";
-    
-            }).fail(function(error) {
-    
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Employee/deleteEmployee'); ?>",
+            data: {
+                'userID': userID,
+                'action': 'delete',
+            },
+            dataType: "json",
+
+        }).done(function(jsonResponse) {
+
+            if (jsonResponse.error == 0) // SUCCESS
+            {
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -342,34 +286,58 @@
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 });
-    
+
+                Toast.fire({
+                    icon: 'success',
+                    title: jsonResponse.msg
+                });
+
+                dataTable.draw();
+
+            } else // ERROR
+            {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
                 Toast.fire({
                     icon: 'error',
-                    title: 'Ha ocurrido un error'
+                    title: jsonResponse.msg
                 });
-    
-            });
-        });
 
-    function showAlertForbidenChangeStatus(msg) {
-
-        event.preventDefault();
-
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
-        })
 
-        Toast.fire({
-            icon: 'error',
-            title: msg
+            if (jsonResponse.error == 2) // SESSION EXPIRED
+                window.location.href = "<?php echo base_url('Authentication'); ?>";
+
+        }).fail(function(error) {
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'error',
+                title: 'Ha ocurrido un error'
+            });
+
         });
-    }
+    });
+
 </script>
