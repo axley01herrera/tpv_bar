@@ -2,10 +2,8 @@
 
 namespace App\Controllers;
 
-class Products extends BaseController{
-
-    public $objRequestService;
-    
+class Product extends BaseController
+{
     public function index()
     {
         

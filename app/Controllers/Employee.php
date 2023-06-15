@@ -2,10 +2,8 @@
 
 namespace App\Controllers;
 
-class Employee extends BaseController{
-
-    public $objRequestService;
-    
+class Employee extends BaseController
+{
     public function index()
     {
         

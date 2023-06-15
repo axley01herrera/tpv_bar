@@ -11,6 +11,7 @@ class Admin extends BaseController
 
     public function login()
     {
-        $password = $this->request->getPost('password');
+        $password =  $this->request->getPost('password');
+        var_dump(password_hash($password, PASSWORD_DEFAULT));
     }
 }

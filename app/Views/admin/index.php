@@ -36,7 +36,7 @@
                                 <h5 class="font-size-16 mt-3">Bienvenido</h5>
                             </div>
                             <div class="form-floating form-floating-custom mb-3">
-                                <input type="password" class="form-control" id="input-password" placeholder="Contraseña">
+                                <input type="password" class="form-control required focus" id="input-password" placeholder="Contraseña">
                                 <label for="input-password">Contraseña</label>
                                 <div class="form-floating-icon">
                                     <i class="uil uil-padlock"></i>
@@ -54,28 +54,39 @@
 
 </html>
 
+<?php echo view('global/form_validation'); ?>
+
 <script>
     $(document).ready(function() {
 
         $('#btn-submit').on('click', function() {
 
-            $.ajax({
+            let resultCheckRequiredValues = checkRequiredValues('required'); console.log(resultCheckRequiredValues);
 
-                type: "post",
-                url: "<?php echo base_url('Admin/login') ?>",
-                data: {
-                    'password': $('#input-password').val()
-                },
-                dataType: "json",
+            if(resultCheckRequiredValues == 0) {
 
-                success: function(response) {
+                $.ajax({
+    
+                    type: "post",
+                    url: "<?php echo base_url('Admin/login') ?>",
+                    data: {
+                        'password': $('#input-password').val()
+                    },
+                    dataType: "json",
+    
+                    success: function(response) {
+                        
+                    },
+    
+                    error: function(error) {
+                        showToast('error', 'Ha ocurrido un error');
+                    }
+                });
 
-                },
+            } else {
+                showToast('error', 'Debe escribir su contraseña');
+            }
 
-                error: function(error) {
-                    showToast('error', 'Ha ocurrido un error')
-                }
-            });
         });
 
     });
