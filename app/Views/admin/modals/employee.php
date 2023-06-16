@@ -20,7 +20,7 @@
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 ">
-                        <label for="txt-user">User</label>
+                        <label for="txt-user">Nombre De Usuario</label>
                         <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$user_data[0]->user; ?>" />
                         <p id="msg-txt-user" class="text-danger text-end"></p>
                     </div>

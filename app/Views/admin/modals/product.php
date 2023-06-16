@@ -15,20 +15,20 @@
                         <p id="msg-txt-name" class="text-danger text-end"></p>
                     </div>
                     <div class="col-6">
-                        <label for="txt-cost">Precio</label>
-                        <input id="txt-cost" type="text" class="form-control modal-required focus modal-email" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" value="<?php echo @$user_data[0]->cost; ?>">
-                        <p id="msg-txt-cost" class="text-danger text-end"></p>
+                        <label for="txt-price">Precio</label>
+                        <input id="txt-price" type="text" class="form-control modal-required focus" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" value="<?php echo @$user_data[0]->price; ?>">
+                        <p id="msg-txt-price" class="text-danger text-end"></p>
                     </div>
                     <div class="col-6">
                         <label for="sel-cat">Categoría</label>
-                        <select id="sel-cat" class="form-control" style="width: 100%;">
+                        <select id="sel-cat" class="form-control " style="width: 100%;">
                             <option value=""></option>
                         </select>
                         <p id="msg-sel-cat" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12">
-                        <label for="txt-cost">Descripción</label>
-                        <textarea id="txt-description" class="form-control" rows="3"></textarea>
+                        <label for="txt-description">Descripción</label>
+                        <input id="txt-description" class="form-control modal-required" rows="3" value="<?php echo @$user_data[0]->description; ?>"></input>
                     </div>
                 </div>
             </div>
@@ -36,3 +36,108 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#btn-modal-submit').on('click', function() { // SUBMIT
+
+        let action = "<?php echo $action; ?>";
+
+        let resultCheckRequiredValues = checkRequiredValues('modal-required');
+
+        if (resultCheckRequiredValues == 0) {
+
+            if (action == 'create')
+                ajaxCreate();
+            else if (action == 'update')
+                ajxUpdate();
+
+        }
+    });
+
+    function ajaxCreate() {
+
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Product/createProduct'); ?>",
+            data: {
+                'name': $('#txt-name').val(),
+                'cat': $('#sel-cat').val(),
+                'price': $('#txt-price').val(),
+                'description': $('#txt-description').val(),
+            },
+            dataType: "json",
+
+        }).done(function(jsonResponse) {
+
+            if (jsonResponse.error == 0) // SUCCESS
+            {
+                showToast('success', 'Proceso exitoso');
+
+                closeModal();
+
+                dataTable.draw();
+
+            } else // ERROR
+            {
+                showToast('error', 'Ya existe un producto con ese nombre.');
+        
+            }
+
+            if (jsonResponse.error == 2) // SESSION EXPIRED
+                window.location.href = "<?php echo base_url('Admin'); ?>";
+
+
+            if (jsonResponse.error == 3)
+                $("#txt-name").addClass('is-invalid');
+
+        }).fail(function(error) {
+
+            showToast('error', 'Ha ocurrido un error');
+
+        });
+
+    }
+
+    function ajxUpdate() {
+
+        $.ajax({
+
+            type: "post",
+            url: "<?php echo base_url('Product/updateProduct'); ?>",
+            data: {
+                'userID': '<?php echo @$user_data[0]->id; ?>',
+                'name': $('#txt-name').val(),
+                'cat': $('#sel-cat').val(),
+                'price': $('#txt-price').val(),
+                'description': $('#txt-description').val()                
+            },
+            dataType: "json",
+
+        }).done(function(jsonResponse) {
+
+            if (jsonResponse.error == 0) // SUCCESS
+            {
+                showToast('success', 'Proceso exitoso');
+
+                dataTable.draw();
+
+                closeModal();
+
+            } else // ERROR
+            {
+                showToast('error', 'Ya existe un producto con ese nombre.');
+                $("#txt-name").addClass('is-invalid');
+
+            }
+
+            if (jsonResponse.error == 2) // SESSION EXPIRED
+                window.location.href = "<?php echo base_url('Admin'); ?>";
+                
+
+        }).fail(function(error) {
+
+            showToast('error', 'Ha ocurrido un error');
+        })
+    }
+</script>

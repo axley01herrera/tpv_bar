@@ -88,6 +88,7 @@
                         
 
                         if(jsonResponse.error == 1) {
+                            showToast('error', 'Contraseña Incorrecta');
                             $('#input-password').addClass('is-invalid');
                         }
                     },
