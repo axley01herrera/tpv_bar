@@ -94,12 +94,12 @@ class Employee extends BaseController
             }
 
             $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Empleado"></span></button>';
-            $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-delete-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Eliminar Empleado"></span></button>';
+            $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-delete" title="Eliminar Empleado"></span></button>';
 
             $col = array();
             $col['name'] = '<a href="' . base_url('Employee/employee') . '/' . $result[$i]->id . '">' . $result[$i]->name . '</a>';
             $col['lastName'] = $result[$i]->lastName;
-            $col['email'] = $result[$i]->email;
+            $col['user'] = $result[$i]->user;
             $col['status'] = $status;
             $col['switch'] = $switch;
             $col['action'] = $clave . $btn_edit . $btn_delete;
@@ -134,7 +134,7 @@ class Employee extends BaseController
 
         $data['employee'] = $employee;
 
-        return view('main/index', $data);
+        return view('layout/header', $data);
     }
 
     public function changeUserStatus()
@@ -189,7 +189,7 @@ class Employee extends BaseController
         else
             $data['title'] = 'Actualizando Contraseña de ' . $userData[0]->name . ' ' . $userData[0]->lastName;
 
-        return view('modals/setClave', $data);
+        return view('admin/modals/setClave', $data);
     }
 
     public function setClave()
@@ -212,6 +212,77 @@ class Employee extends BaseController
         } else {
             $response['error'] = 1;
             $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
+    }
+
+    public function createEmployee()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if(empty($this->objSession->get('user')['hash']))
+        return view('logoutAdmin');    
+
+        $data = array();
+        $data['name'] = trim($this->request->getPost('name'));
+        $data['lastName'] = trim($this->request->getPost('lastName'));
+        $data['user'] = trim($this->request->getPost('user'));
+
+        $objModel = new EmployeeModel;
+        $resultCheckUserExist = $objModel->checkUserExist($data['user']);
+
+        if (empty($resultCheckUserExist)) {
+            $result = $objModel->createUser($data);
+
+            if ($result['error'] == 0) {
+                $response['error'] = 0;
+                $response['msg'] = 'Empleado creado';
+            } else {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+        } else {
+            $response['error'] = 3;
+            $response['msg'] = 'Ya existe un empleado con el usuario introducido';
+        }
+
+        return json_encode($response);
+    }
+
+    public function updateEmployee()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if(empty($this->objSession->get('user')['hash']))
+        return view('logoutAdmin');   
+
+        $user = $this->request->getPost('user');
+        $id = $this->request->getPost('userID');
+
+        $objModel = new EmployeeModel;
+        $result_checkUserExist = $objModel->checkUserExist($user, $id);
+
+        if (empty($result_checkUserExist)) {
+            $data = array();
+            $data['user'] = $user;
+            $data['name'] = $this->request->getPost('name');
+            $data['lastName'] = $this->request->getPost('lastName');
+
+            $result_update = $objModel->updateUser($data, $id);
+
+            if ($result_update['error'] == 0) {
+                $response['error'] = 0;
+                $response['msg'] = 'Empleado Actualizado';
+            } else {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'Ya existe un empleado con el usuario introducido';
         }
 
         return json_encode($response);

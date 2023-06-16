@@ -20,9 +20,9 @@
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 ">
-                        <label for="txt-email">Email</label>
-                        <input id="txt-email" type="text" class="form-control modal-required focus modal-email" value="<?php echo @$user_data[0]->email; ?>" />
-                        <p id="msg-txt-email" class="text-danger text-end"></p>
+                        <label for="txt-user">User</label>
+                        <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$user_data[0]->user; ?>" />
+                        <p id="msg-txt-user" class="text-danger text-end"></p>
                     </div>
 
                 </div>
@@ -38,9 +38,8 @@
         let action = "<?php echo $action; ?>";
 
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
-        let resultCheckEmailFormat = checkEmailFormat('modal-email');
 
-        if (resultCheckRequiredValues == 0 && resultCheckEmailFormat == 0) {
+        if (resultCheckRequiredValues == 0) {
 
             if (action == 'create')
                 ajaxCreate();
@@ -55,12 +54,11 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Main/createEmployee'); ?>",
+            url: "<?php echo base_url('Employee/createEmployee'); ?>",
             data: {
                 'name': $('#txt-name').val(),
                 'lastName': $('#txt-lastName').val(),
-                'email': $('#txt-email').val(),
-                'role': $('#sel-role').val(),
+                'user': $('#txt-user').val(),
             },
             dataType: "json",
 
@@ -68,22 +66,7 @@
 
             if (jsonResponse.error == 0) // SUCCESS
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'success',
-                    title: jsonResponse.msg
-                });
+                showToast('success', 'Proceso exitoso');
 
                 dataTable.draw();
 
@@ -91,50 +74,20 @@
 
             } else // ERROR
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'error',
-                    title: jsonResponse.msg
-                });
+                showToast('error', 'Ya existe ese usuario.');
 
             }
 
             if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Authentication'); ?>";
+                window.location.href = "<?php echo base_url('Admin'); ?>";
 
 
             if (jsonResponse.error == 3)
-                $("#txt-email").addClass('is-invalid');
+                $("#txt-user").addClass('is-invalid');
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
+            showToast('error', 'Ha ocurrido un error');
 
         });
 
@@ -145,11 +98,11 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Main/updateEmployee'); ?>",
+            url: "<?php echo base_url('Employee/updateEmployee'); ?>",
             data: {
                 'name': $('#txt-name').val(),
                 'lastName': $('#txt-lastName').val(),
-                'email': $('#txt-email').val(),
+                'user': $('#txt-user').val(),
                 'userID': '<?php echo @$user_data[0]->id; ?>',
             },
             dataType: "json",
@@ -158,22 +111,7 @@
 
             if (jsonResponse.error == 0) // SUCCESS
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'success',
-                    title: jsonResponse.msg
-                });
+                showToast('success', 'Proceso exitoso');
 
                 dataTable.draw();
 
@@ -181,50 +119,18 @@
 
             } else // ERROR
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'error',
-                    title: jsonResponse.msg
-                });
+                showToast('error', 'Ya existe ese usuario.');
+                $("#txt-user").addClass('is-invalid');
 
             }
 
             if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Authentication'); ?>";
-
-
-            if (jsonResponse.error == 3)
-                $("#txt-email").addClass('is-invalid');
+                window.location.href = "<?php echo base_url('Admin'); ?>";
+                
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
+            showToast('error', 'Ha ocurrido un error');
         })
     }
 </script>

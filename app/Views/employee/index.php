@@ -84,15 +84,15 @@
                 data: 'lastName'
             },
             {
-                data: 'email'
+                data: 'user'
             },
             {
-                data: 'switch',
+                data: 'status',
                 orderable: false,
                 searchable: false
             },
             {
-                data: 'status',
+                data: 'switch',
                 orderable: false,
                 searchable: false
             },
@@ -109,6 +109,8 @@
 
         let status = $(this).attr('data-status');
         let newStatus = '';
+
+        let userID = $(this).attr('data-id');
 
         if (status == 0)
             newStatus = 1;
@@ -129,67 +131,21 @@
 
             if (jsonResponse.error == 0) // SUCCESS
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'success',
-                    title: jsonResponse.msg
-                });
+                showToast('success', 'Proceso exitoso');
 
                 dataTable.draw();
             } else // ERROR
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-
-                Toast.fire({
-                    icon: 'error',
-                    title: jsonResponse.msg
-                });
+                showToast('error', 'Ha ocurrido un error');
             }
 
             if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = '<?php echo base_url('Authentication'); ?>'
+                window.location.href = '<?php echo base_url('Admin'); ?>'
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
-
-        })
+            showToast('error', 'Ha ocurrido un error');
+        });
     });
 
     dataTable.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE
@@ -206,28 +162,13 @@
             },
             dataType: "html",
 
-        }).done(function(htmlRespnse) {
+        }).done(function(htmlResponse) {
 
-            $('#main-modal').html(htmlRespnse);
+            $('#main-modal').html(htmlResponse);
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
+            showToast('error', 'Ha ocurrido un error');
 
         });
     });
@@ -252,6 +193,8 @@
 
         }).fail(function(error) {
 
+            showToast('error', 'Ha ocurrido un error');
+
         });
     });
 
@@ -275,67 +218,22 @@
 
             if (jsonResponse.error == 0) // SUCCESS
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'success',
-                    title: jsonResponse.msg
-                });
+                showToast('success', 'Proceso exitoso');
 
                 dataTable.draw();
 
             } else // ERROR
             {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: 'error',
-                    title: jsonResponse.msg
-                });
+                showToast('error', 'Ha ocurrido un error');
 
             }
 
             if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Authentication'); ?>";
+                window.location.href = "<?php echo base_url('Admin'); ?>";
 
         }).fail(function(error) {
 
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Ha ocurrido un error'
-            });
+            showToast('error', 'Ha ocurrido un error');
 
         });
     });

@@ -30,35 +30,6 @@
         return response;
     }
 
-    function checkEmailFormat(className) {
-        
-        let inputValue = '';
-        let response = 0;
-        let regex =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-        let resulTest = "";
-        let inputID = "";
-
-        $("." + className).each(function() {
-
-            inputValue = $(this).val();
-
-            if(inputValue != "") {
-
-                resulTest = regex.test(inputValue);
-
-                if(resulTest == false) {
-
-                    $(this).addClass('is-invalid');
-                    inputID = $(this).attr("id");
-                    $('#msg-' + inputID).html("Email no válido");
-                    response = 1;
-                }
-            }
-        });
-
-        return response;
-    }
-
     $('.focus').on('focus change', function () {
        
         $(this).removeClass('is-invalid');

@@ -32,7 +32,7 @@ class EmployeeModel extends Model
         if (!empty($params['search'])) {
             $query->like('name', $params['search']);
             $query->orLike('lastName', $params['search']);
-            $query->orLike('email', $params['search']);
+            $query->orLike('user', $params['search']);
         }
 
         $query->offset($params['start']);
@@ -62,9 +62,9 @@ class EmployeeModel extends Model
 
         if ($column == 2) {
             if ($dir == 'asc')
-                $sort = 'email ASC';
+                $sort = 'user ASC';
             else
-                $sort = 'email DESC';
+                $sort = 'user DESC';
         }
 
         if ($column == 3) {
@@ -75,6 +75,22 @@ class EmployeeModel extends Model
         }
 
         return $sort;
+    }
+
+    public function createUser($data)
+    {
+        $return = array();
+
+        $query = $this->db->table('employee')
+            ->insert($data);
+
+        if ($query->resultID == true) {
+            $return['error'] = 0;
+            $return['id'] = $query->connID->insert_id;
+        } else
+            $return['error'] = 1;
+
+        return $return;
     }
 
     public function updateUser($data, $id)
@@ -103,6 +119,29 @@ class EmployeeModel extends Model
             ->delete();
 
         return $query->resultID;
+    }
+
+    public function checkUserExist($user, $id = '')
+    {
+        $query = $this->db->table('employee')
+            ->where('user', $user);
+
+        if (!empty($id)) {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
+
+        return $query->get()->getResult();
+    }
+
+    public function getTotalUser()
+    {
+        $query = $this->db->table('employee')
+            ->selectCount('id')
+            ->get()->getResult();
+
+        return $query[0]->id;
     }
 
 }

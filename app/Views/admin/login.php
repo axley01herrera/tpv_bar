@@ -50,6 +50,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
@@ -63,7 +64,7 @@
         let msg = '<?php echo $msg; ?>';
 
         if(msg != '')
-            showToast('error', 'Sessión Expiarda');
+            showToast('error', 'Sessión Expirada');
 
         $('#btn-submit').on('click', function() {
 
@@ -87,14 +88,10 @@
                         
 
                         if(jsonResponse.error == 1) {
-                            showToast('error', jsonResponse.msg);
                             $('#input-password').addClass('is-invalid');
                         }
                     },
     
-                    error: function(error) {
-                        showToast('error', 'Ha ocurrido un error');
-                    }
                 });
 
             } else {
@@ -102,6 +99,5 @@
             }
 
         });
-
     });
 </script>
