@@ -15,7 +15,7 @@ class Admin extends BaseController
         # DESTROY SESSION
         $sessionArray = array();
         $sessionArray['hash'] = '';
-            
+
         $this->objSession->set('user', $sessionArray);
     }
 
@@ -37,8 +37,7 @@ class Admin extends BaseController
 
         $password =  $this->request->getPost('password');
 
-        if($objAdminModel->verifyCredentials($password) == true)
-        {
+        if ($objAdminModel->verifyCredentials($password) == true) {
             $response['error'] = 0;
             $response['msg'] = 'Autenticado';
 
@@ -47,9 +46,7 @@ class Admin extends BaseController
             $sessionArray['hash'] = md5($password);
 
             $this->objSession->set('user', $sessionArray);
-        } 
-        else
-        {
+        } else {
             $response['error'] = 1;
             $response['msg'] = 'Rectifique su contraseña';
         }

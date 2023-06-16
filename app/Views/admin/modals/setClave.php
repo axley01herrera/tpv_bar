@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- TITLE -->
-                <h5 class="modal-title" id="staticBackdropLabel"><?php echo $title;?></h5>
+                <h5 class="modal-title" id="staticBackdropLabel"><?php echo $title; ?></h5>
                 <!-- CLOSE -->
                 <button type="button" class="btn-close closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -21,111 +21,46 @@
                     </div>
                 </div>
             </div>
-            <?php echo view('admin/modals/modalFooter');?>
+            <?php echo view('admin/modals/modalFooter'); ?>
         </div>
     </div>
 </div>
 
 <script>
-
-    $('#btn-modal-submit').on('click', function () {
-
+    $('#btn-modal-submit').on('click', function() {
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
-
-        if(resultCheckRequiredValues == 0)
-        {
+        if (resultCheckRequiredValues == 0) {
             let clave = $('#txt-clave').val();
             let clave2 = $('#txt-clave2').val();
-
-            if(clave == clave2)
-            {
+            if (clave == clave2) {
+                $('btn-modal-submit').attr('disabled', true);
                 $.ajax({
-
                     type: "post",
-                    url: "<?php echo base_url('Employee/setClave');?>",
+                    url: "<?php echo base_url('Employee/setClave'); ?>",
                     data: {
-                        'clave' : clave,
-                        'userID' : '<?php echo $userID;?>'
+                        'clave': clave,
+                        'userID': '<?php echo $userID; ?>'
                     },
                     dataType: "json",
-                    
-                }).done(function(jsonResponse) { 
-
-                    if(jsonResponse.error == 0) // SUCCESS
+                }).done(function(jsonResponse) {
+                    if (jsonResponse.error == 0) // SUCCESS
                     {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                        });
-
-                        Toast.fire({
-                            icon: 'success',
-                            title: jsonResponse.msg
-                        });
-
+                        showToast('success', jsonResponse.msg);
                         dataTable.draw();
-
                         closeModal();
+                    } else // ERROR
+                        showToast('error', jsonResponse.msg);
 
-                    }
-                    else // ERROR
-                    {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                        });
-
-                        Toast.fire({
-                            icon: 'error',
-                            title: jsonResponse.msg
-                        });
-
-                    }
-
-                    if(jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = "<?php echo base_url('Authentication');?>";
+                    if (jsonResponse.error == 2) // SESSION EXPIRED
+                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
 
                 }).fail(function(error) {
-
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    });
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Ha ocurrido un error'
-                    });
-
+                    showToast('error', 'Ha ocurrido un error');
                 });
-            }
-            else
-            {
+            } else {
                 $('#txt-clave2').addClass('is-invalid');
                 $('#msg-txt-clave2').html('Las claves no coinciden');
             }
         }
-        
     });
 </script>

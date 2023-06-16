@@ -9,18 +9,18 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12 mt-2">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="txt-name">Nombre</label>
                         <input id="txt-name" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->name; ?>" />
                         <p id="msg-txt-name" class="text-danger text-end"></p>
                     </div>
-                    <div class="col-12 ">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="txt-lastName">Apellido</label>
                         <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->lastName; ?>" />
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
-                    <div class="col-12 ">
-                        <label for="txt-user">Nombre De Usuario</label>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <label for="txt-user">Usuario</label>
                         <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$user_data[0]->user; ?>" />
                         <p id="msg-txt-user" class="text-danger text-end"></p>
                     </div>
@@ -34,103 +34,44 @@
 
 <script>
     $('#btn-modal-submit').on('click', function() { // SUBMIT
-
         let action = "<?php echo $action; ?>";
-
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
-
         if (resultCheckRequiredValues == 0) {
-
+            $('btn-modal-submit').attr('disabled', true);
+            let url = '';
             if (action == 'create')
-                ajaxCreate();
+                url = '<?php echo base_url('Employee/createEmployee'); ?>'
             else if (action == 'update')
-                ajxUpdate();
+                url = '<?php echo base_url('Employee/updateEmployee'); ?>'
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {
+                    'name': $('#txt-name').val(),
+                    'lastName': $('#txt-lastName').val(),
+                    'user': $('#txt-user').val(),
+                    'userID': '<?php echo @$user_data[0]->id; ?>',
+                },
+                dataType: "json",
+                success: function(jsonResponse) {
+                    if (jsonResponse.error == 0) // SUCCESS
+                    {
+                        showToast('success', jsonResponse.msg);
+                        dataTable.draw();
+                        closeModal();
+                    } else // ERROR
+                        showToast('error', jsonResponse.msg);
 
+                    if (jsonResponse.error == 2) // SESSION EXPIRED
+                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
+
+                    if (jsonResponse.error == 3) // ERRROR USER EXIST
+                        $("#txt-user").addClass('is-invalid');
+                },
+                error: function(error) {
+                    showToast('error', 'Ha ocurrido un error');
+                }
+            });
         }
     });
-
-    function ajaxCreate() {
-
-        $.ajax({
-
-            type: "post",
-            url: "<?php echo base_url('Employee/createEmployee'); ?>",
-            data: {
-                'name': $('#txt-name').val(),
-                'lastName': $('#txt-lastName').val(),
-                'user': $('#txt-user').val(),
-            },
-            dataType: "json",
-
-        }).done(function(jsonResponse) {
-
-            if (jsonResponse.error == 0) // SUCCESS
-            {
-                showToast('success', 'Proceso exitoso');
-
-                dataTable.draw();
-
-                closeModal();
-
-            } else // ERROR
-            {
-                showToast('error', 'Ya existe ese usuario.');
-
-            }
-
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Admin'); ?>";
-
-
-            if (jsonResponse.error == 3)
-                $("#txt-user").addClass('is-invalid');
-
-        }).fail(function(error) {
-
-            showToast('error', 'Ha ocurrido un error');
-
-        });
-
-    }
-
-    function ajxUpdate() {
-
-        $.ajax({
-
-            type: "post",
-            url: "<?php echo base_url('Employee/updateEmployee'); ?>",
-            data: {
-                'name': $('#txt-name').val(),
-                'lastName': $('#txt-lastName').val(),
-                'user': $('#txt-user').val(),
-                'userID': '<?php echo @$user_data[0]->id; ?>',
-            },
-            dataType: "json",
-
-        }).done(function(jsonResponse) {
-
-            if (jsonResponse.error == 0) // SUCCESS
-            {
-                showToast('success', 'Proceso exitoso');
-
-                dataTable.draw();
-
-                closeModal();
-
-            } else // ERROR
-            {
-                showToast('error', 'Ya existe ese usuario.');
-                $("#txt-user").addClass('is-invalid');
-
-            }
-
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Admin'); ?>";
-                
-
-        }).fail(function(error) {
-
-            showToast('error', 'Ha ocurrido un error');
-        })
-    }
 </script>
