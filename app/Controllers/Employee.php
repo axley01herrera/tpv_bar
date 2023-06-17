@@ -12,11 +12,11 @@ class Employee extends BaseController
     {
         $this->objSession = session();
     }
-    
+
     public function index()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
+        if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
 
         $data = array();
@@ -24,14 +24,13 @@ class Employee extends BaseController
         $data['page'] = 'employee/index';
 
         return view('admin/layout/header', $data);
-        
-    }
+    } // OK
 
     public function showModalEmployee()
     {
-       # VERIFY SESSION
-       if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
 
         $data = array();
         $data['action'] = $this->request->getPost('action');
@@ -46,7 +45,7 @@ class Employee extends BaseController
         }
 
         return view('admin/modals/employee', $data);
-    }
+    } // OK
 
     public function processingEmployee()
     {
@@ -67,20 +66,19 @@ class Employee extends BaseController
         $result = $objModel->getUserProcessingData($params);
         $totalRows = sizeof($result);
 
-        
-
         for ($i = 0; $i < $totalRows; $i++) {
+
             $status = '';
             $switch = '';
 
             if ($result[$i]->status == 1) {
                 $status = '<span class="badge bg-success">Activo</span>';
-                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar" >
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
                                             </div>';
             } else {
                 $status = '<span class="badge bg-danger">Inactivo</span>';
-                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar">
                                                 <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
                                             </div>';
             }
@@ -94,15 +92,14 @@ class Employee extends BaseController
             }
 
             $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Empleado"></span></button>';
-            $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-delete" title="Eliminar Empleado"></span></button>';
 
             $col = array();
-            $col['name'] = '<a href="' . base_url('Employee/employee') . '/' . $result[$i]->id . '">' . $result[$i]->name . '</a>';
+            $col['name'] = $result[$i]->name;
             $col['lastName'] = $result[$i]->lastName;
             $col['user'] = $result[$i]->user;
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $clave . $btn_edit . $btn_delete;
+            $col['action'] = $clave . $btn_edit;
 
             $row[$i] =  $col;
         }
@@ -116,33 +113,15 @@ class Employee extends BaseController
         $data['recordsFiltered'] = intval($totalRecords);
         $data['data'] = $row;
 
-        
-
         return json_encode($data);
-    }
-
-    public function employee()
-    {
-        # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-            return view('logoutAdmin');
-
-        $userID = (int) $this->request->uri->getSegment(3);
-
-        $objModel = new EmployeeModel;
-        $employee = $objModel->getUserData($userID);
-
-        $data['employee'] = $employee;
-
-        return view('layout/header', $data);
-    }
+    } // OK
 
     public function changeUserStatus()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
+        if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
 
         $data = array();
@@ -162,19 +141,19 @@ class Employee extends BaseController
             $response['error'] = 0;
             $response['msg'] = $msg;
         } else {
+
             $response['error'] = 1;
             $response['msg'] = 'Ha ocurrido un error en el proceso';
         }
 
         return json_encode($response);
-    }
+    } // OK
 
     public function showModalSetClave()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
+        if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
-
 
         $data = array();
         $data['userID'] = $this->request->getPost('userID');
@@ -183,47 +162,48 @@ class Employee extends BaseController
         $objModel = new EmployeeModel;
         $userData = $objModel->getUserData($data['userID']);
 
-
         if ($data['action'] == 'set_clave')
             $data['title'] = 'Creando Contraseña para ' . $userData[0]->name . ' ' . $userData[0]->lastName;
         else
             $data['title'] = 'Actualizando Contraseña de ' . $userData[0]->name . ' ' . $userData[0]->lastName;
 
         return view('admin/modals/setClave', $data);
-    }
+    } // OK
 
     public function setClave()
     {
         $response = array();
 
-         # VERIFY SESSION
-         if(empty($this->objSession->get('user')['hash']))
-         return view('logoutAdmin');        
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
 
         $data = array();
-        $data['clave'] = md5($this->request->getPost('clave'));
+        $data['clave'] = password_hash($this->request->getPost('clave'), PASSWORD_DEFAULT); // ENCRYPT PASSWORD
 
         $objModel = new EmployeeModel;
         $result = $objModel->updateUser($data, $this->request->getPost('userID'));
 
         if ($result['error'] == 0) {
+
             $response['error'] = 0;
             $response['msg'] = 'Proceso realizado con éxito';
         } else {
+
             $response['error'] = 1;
             $response['msg'] = 'Ha ocurrido un error en el proceso';
         }
 
         return json_encode($response);
-    }
+    } // OK
 
     public function createEmployee()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');    
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
 
         $data = array();
         $data['name'] = trim($this->request->getPost('name'));
@@ -234,30 +214,34 @@ class Employee extends BaseController
         $resultCheckUserExist = $objModel->checkUserExist($data['user']);
 
         if (empty($resultCheckUserExist)) {
+
             $result = $objModel->createUser($data);
 
             if ($result['error'] == 0) {
+
                 $response['error'] = 0;
-                $response['msg'] = 'Empleado creado';
+                $response['msg'] = 'Empleado Creado';
             } else {
+
                 $response['error'] = 1;
-                $response['msg'] = 'Ha ocurrido un error en el proceso';
+                $response['msg'] = 'Ha ocurrido un error';
             }
         } else {
+
             $response['error'] = 3;
             $response['msg'] = 'Ya existe un empleado con el usuario introducido';
         }
 
         return json_encode($response);
-    }
+    } // OK
 
     public function updateEmployee()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');   
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
 
         $user = $this->request->getPost('user');
         $id = $this->request->getPost('userID');
@@ -266,6 +250,7 @@ class Employee extends BaseController
         $result_checkUserExist = $objModel->checkUserExist($user, $id);
 
         if (empty($result_checkUserExist)) {
+
             $data = array();
             $data['user'] = $user;
             $data['name'] = $this->request->getPost('name');
@@ -274,39 +259,20 @@ class Employee extends BaseController
             $result_update = $objModel->updateUser($data, $id);
 
             if ($result_update['error'] == 0) {
+
                 $response['error'] = 0;
                 $response['msg'] = 'Empleado Actualizado';
             } else {
+
                 $response['error'] = 1;
                 $response['msg'] = 'Ha ocurrido un error en el proceso';
             }
         } else {
-            $response['error'] = 1;
+
+            $response['error'] = 3;
             $response['msg'] = 'Ya existe un empleado con el usuario introducido';
         }
 
         return json_encode($response);
-    }
-
-    public function deleteEmployee()
-    {
-        # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');  
-
-        $id = $this->request->getPost('userID');
-
-        $objModel = new EmployeeModel;
-        $result = $objModel->deleteUser($id);
-
-        if ($result == true) {
-            $response['error'] = 0;
-            $response['msg'] = 'Empleado Eliminado';
-        } else {
-            $response['error'] = 1;
-            $response['msg'] = 'Ha ocurrido un error en el proceso';
-        }
-
-        return json_encode($response);
-    }
+    } // OK
 }
