@@ -58,7 +58,7 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Product/showModalCat') ?>",
+            url: "<?php echo base_url('Category/showModalCat') ?>",
             data: {
                 action: 'create',
             },
@@ -178,6 +178,7 @@
             url: "<?php echo base_url('Product/showModalProduct'); ?>",
             data: {
                 'userID': $(this).attr('data-id'),
+                'catID': $(this).attr('cat-id'),
                 'action': 'update',
             },
             dataType: "html",

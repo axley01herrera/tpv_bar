@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\CategoryModel;
 use App\Models\ProductModel;
+
 
 class Product extends BaseController
 {
@@ -170,9 +172,10 @@ class Product extends BaseController
 
         $objModel = new ProductModel;
         $result = $objModel->getProductProcessingData($params);
+
+
         $totalRows = sizeof($result);
 
-        
 
         for ($i = 0; $i < $totalRows; $i++) {
             $status = '';
@@ -191,7 +194,7 @@ class Product extends BaseController
             }
 
 
-            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-product" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Producto"></span></button>';
+            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-product" data-id="' . $result[$i]->id . '" cat-id=""><span class="mdi mdi-account-edit-outline" title="Editar Producto"></span></button>';
             $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-product" data-id="' . $result[$i]->id . '"><span class="mdi mdi-delete" title="Eliminar Producto"></span></button>';
 
             $col = array();
@@ -208,6 +211,7 @@ class Product extends BaseController
 
         if ($totalRows > 0)
             $totalRecords = $objModel->getTotalProduct();
+
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
@@ -243,9 +247,19 @@ class Product extends BaseController
 
         if ($data['action'] == 'create') {
             $data['title'] = 'Nuevo Producto';
+
+            $categoryModel = new CategoryModel();       
+            $resultCat = $categoryModel->getAllCategories();
+            $data['categories'] = $resultCat;
+
         } elseif ($data['action'] == 'update') {
             $objModel = new ProductModel;
             $result = $objModel->getProductData($this->request->getPost('userID'));
+
+            $categoryModel = new CategoryModel();       
+            $resultCat = $categoryModel->getAllCategories();
+            $data['categories'] = $resultCat;
+
             $data['title'] = 'Actualizando ' . $result[0]->name;
             $data['user_data'] = $result;
         }
@@ -253,53 +267,5 @@ class Product extends BaseController
         return view('admin/modals/product', $data);
     }
 
-    public function showModalCat()
-    {
-        # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-            return view('logoutAdmin');
-
-        $data = array();
-        $data['action'] = $this->request->getPost('action');
-
-        if($data['action'] == 'create') // CREATE
-        {
-            $data['title'] = 'Nueva Categoría de Producto';
-            return view('admin/modals/cat', $data);
-        }
-    }
-
-    public function createCat()
-    {
-        $response = array();
-
-        # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        {
-            $response['error'] = 2;
-            $response['msg'] = 'Sesión Expirada';
-
-            return json_encode($response);
-        }
-
-        $objProductModel = new ProductModel;
-
-        $data = array();
-        $data['name'] = trim(preg_replace("/[^A-Za-z0-9 ]/", "", $this->request->getPost('cat')));
-
-        $result = $objProductModel->objCreate('category', $data);
-
-        if($result['error'] == 0)
-        {
-            $response['error'] = 0;
-            $response['msg'] = 'Categoría Creada';
-        }
-        else
-        {
-            $response['error'] = 1;
-            $response['msg'] = 'Ha ocurrido un error';
-        }
-
-        return json_encode($response);
-    }
+    
 }

@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-12 mt-2">
                         <label for="txt-cat">Categoría</label>
-                        <input id="txt-cat" type="text" class="form-control modal-required focus" value="<?php echo @$cat[0]->name; ?>" />
+                        <input id="txt-cat" type="text" class="form-control modal-required focus" value="<?php echo @$cat[0]->nameCat; ?>" />
                         <p id="msg-txt-cat" class="text-danger text-end"></p>
                     </div>
                 </div>
@@ -32,16 +32,17 @@
             let action = '<?php echo $action; ?>';
 
             if(action == 'create')
-                url = '<?php echo base_url('Product/createCat'); ?>';
+                url = '<?php echo base_url('Category/createCat'); ?>';
             else if(action == 'update')
-                url = '<?php echo base_url('Product/updateCat'); ?>';
+                url = '<?php echo base_url('Category/updateCat'); ?>';
 
             $.ajax({
 
                 type: "post",
                 url: url,
                 data: {
-                    'cat': $('#txt-cat').val()
+                    'catID': '<?php echo @$user_data[0]->id; ?>',
+                    'nameCat': $('#txt-cat').val()
                 },
                 dataType: "json",
 

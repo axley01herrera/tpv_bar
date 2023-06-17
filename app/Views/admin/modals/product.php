@@ -21,8 +21,10 @@
                     </div>
                     <div class="col-6">
                         <label for="sel-cat">Categoría</label>
-                        <select id="sel-cat" class="form-control " style="width: 100%;">
-                            <option value=""></option>
+                        <select id="sel-cat" class="form-control modal-required focus" style="width: 100%;">
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= $category->id ?>"><?= $category->nameCat ?></option>
+                        <?php endforeach; ?>
                         </select>
                         <p id="msg-sel-cat" class="text-danger text-end"></p>
                     </div>

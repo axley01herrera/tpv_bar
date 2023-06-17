@@ -61,10 +61,7 @@
 
     $(document).ready(function() {
 
-        let msg = '<?php echo $msg; ?>';
-
-        if(msg != '')
-            showToast('error', 'Sessión Expirada');
+       
 
         $('#btn-submit').on('click', function() {
 
