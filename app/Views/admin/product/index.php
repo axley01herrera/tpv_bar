@@ -157,12 +157,12 @@
         ],
     });
 
-    dataTable.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE USER
+    dataTable.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE
 
         let status = $(this).attr('data-status');
         let newStatus = '';
 
-        let userID = $(this).attr('data-id');
+        let id = $(this).attr('data-id');
 
         if (status == 0)
             newStatus = 1;
@@ -174,7 +174,7 @@
             type: "post",
             url: "<?php echo base_url('Product/changeProductStatus'); ?>",
             data: {
-                'userID': userID,
+                'productID': id,
                 'status': newStatus
             },
             dataType: "json",

@@ -339,8 +339,8 @@ class Product extends BaseController
         $data = array();
         $data['status'] = $this->request->getPost('status');
 
-        $objModel = new ProductModel;
-        $result = $objModel->updateProduct($data, $this->request->getPost('userID'));
+        $objProductModel = new ProductModel;
+        $result = $objProductModel->updateProduct($data, $this->request->getPost('id'));
 
         if ($result['error'] == 0) {
             $msg = '';
