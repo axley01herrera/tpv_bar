@@ -11,26 +11,29 @@
                 <div class="row">
                     <div class="col-12 mt-2">
                         <label for="txt-name">Nombre del Producto</label>
-                        <input id="txt-name" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->name; ?>">
+                        <input id="txt-name" type="text" class="form-control modal-required focus" value="<?php echo @$product[0]->name; ?>">
                         <p id="msg-txt-name" class="text-danger text-end"></p>
                     </div>
                     <div class="col-6">
                         <label for="txt-price">Precio</label>
-                        <input id="txt-price" type="text" class="form-control modal-required focus" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" value="<?php echo @$user_data[0]->price; ?>">
+                        <input id="txt-price" type="text" class="form-control modal-required focus" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" value="<?php echo @$product[0]->price; ?>">
                         <p id="msg-txt-price" class="text-danger text-end"></p>
                     </div>
                     <div class="col-6">
                         <label for="sel-cat">Categoría</label>
                         <select id="sel-cat" class="form-control modal-required focus" style="width: 100%;">
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category->id ?>"><?= $category->nameCat ?></option>
-                        <?php endforeach; ?>
+                            <option value=""></option>
+                            <?php for ($i = 0; $i < $countCategories; $i++) { ?>
+                                <option <?php if (!empty($product[0]->fk_category)) {
+                                            if ($product[0]->fk_category == $categories[$i]->id) echo 'selected';
+                                        } ?> value="<?php echo $categories[$i]->id ?>"><?php echo $categories[$i]->name ?></option>
+                            <?php }; ?>
                         </select>
                         <p id="msg-sel-cat" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12">
-                        <label for="txt-description">Descripción</label>
-                        <input id="txt-description" class="form-control modal-required" rows="3" value="<?php echo @$user_data[0]->description; ?>"></input>
+                        <label for="txt-description">Descripción (Opcional)</label>
+                        <textarea id="txt-description" class="form-control" rows="3"><?php echo @$product[0]->description; ?></textarea>
                     </div>
                 </div>
             </div>
@@ -42,104 +45,71 @@
 <script>
     $('#btn-modal-submit').on('click', function() { // SUBMIT
 
-        let action = "<?php echo $action; ?>";
-
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
 
         if (resultCheckRequiredValues == 0) {
 
+            $('#btn-modal-submit').attr('disabled', true);
+            let action = '<?php echo $action; ?>';
+            let url = '';
+
             if (action == 'create')
-                ajaxCreate();
+                url = '<?php echo base_url('Product/createProduct'); ?>';
             else if (action == 'update')
-                ajxUpdate();
+                url = '<?php echo base_url('Product/updateProduct'); ?>';
+
+            $.ajax({
+
+                type: "post",
+                url: url,
+                data: {
+                    'productName': $('#txt-name').val(),
+                    'productPrice': $('#txt-price').val(),
+                    'categoryID': $('#sel-cat').val(),
+                    'productDescription': $('#txt-description').val(),
+                    'productID': '<?php echo @$product[0]->id; ?>'
+                },
+                dataType: "json",
+                success: function(jsonResponse) {
+                    if (jsonResponse.error == 0) // SUCCESS
+                    {
+                        showToast('success', jsonResponse.msg);
+                        dataTable.draw();
+                        closeModal();
+                    } else // ERROR
+                        showToast('error', jsonResponse.msg);
+
+                    if (jsonResponse.error == 2) // SESSION EXPIRED
+                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
+
+                    if (jsonResponse.error == 3) // ERRROR USER EXIST
+                        $("#txt-user").addClass('is-invalid');
+                },
+                error: function(error) {
+                    showToast('error', 'Ha ocurrido un error');
+                }
+            });
 
         }
     });
 
-    function ajaxCreate() {
+    $('#sel-cat').select2({ // SEL CAT
+        placeholder: {
+            id: '',
+            text: ''
+        },
+        dropdownParent: $("#modal")
+    }).on('select2:open', function() {
 
-        $.ajax({
+        let selectContainer = $(this).next('.select2-container');
 
-            type: "post",
-            url: "<?php echo base_url('Product/createProduct'); ?>",
-            data: {
-                'name': $('#txt-name').val(),
-                'cat': $('#sel-cat').val(),
-                'price': $('#txt-price').val(),
-                'description': $('#txt-description').val(),
-            },
-            dataType: "json",
+        if (selectContainer.length != 0) {
+            selectContainer.css('border', '#e2e5e8');
+            selectContainer.css('border-radius', '.25rem');
+        }
 
-        }).done(function(jsonResponse) {
+        let inputID = $(this).attr("id");
+        $('#msg-' + inputID).html("");
 
-            if (jsonResponse.error == 0) // SUCCESS
-            {
-                showToast('success', 'Proceso exitoso');
-
-                closeModal();
-
-                dataTable.draw();
-
-            } else // ERROR
-            {
-                showToast('error', 'Ya existe un producto con ese nombre.');
-        
-            }
-
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Admin'); ?>";
-
-
-            if (jsonResponse.error == 3)
-                $("#txt-name").addClass('is-invalid');
-
-        }).fail(function(error) {
-
-            showToast('error', 'Ha ocurrido un error');
-
-        });
-
-    }
-
-    function ajxUpdate() {
-
-        $.ajax({
-
-            type: "post",
-            url: "<?php echo base_url('Product/updateProduct'); ?>",
-            data: {
-                'userID': '<?php echo @$user_data[0]->id; ?>',
-                'name': $('#txt-name').val(),
-                'cat': $('#sel-cat').val(),
-                'price': $('#txt-price').val(),
-                'description': $('#txt-description').val()                
-            },
-            dataType: "json",
-
-        }).done(function(jsonResponse) {
-
-            if (jsonResponse.error == 0) // SUCCESS
-            {
-                showToast('success', 'Proceso exitoso');
-
-                dataTable.draw();
-
-                closeModal();
-
-            } else // ERROR
-            {
-                showToast('error', 'Ya existe un producto con ese nombre.');
-                $("#txt-name").addClass('is-invalid');
-
-            }
-
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = "<?php echo base_url('Admin'); ?>";
-                
-
-        }).fail(function(error) {
-
-            showToast('error', 'Ha ocurrido un error');
-        })
-    }
+    });
 </script>

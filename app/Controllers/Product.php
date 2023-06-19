@@ -14,11 +14,11 @@ class Product extends BaseController
     {
         $this->objSession = session();
     }
-    
+
     public function index()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
+        if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
 
         $data = array();
@@ -26,67 +26,196 @@ class Product extends BaseController
         $data['page'] = 'admin/product/index';
 
         return view('admin/layout/header', $data);
-    }
+    } // OK
+
+    public function processingProduct()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $objProductModel = new ProductModel;
+        $result = $objProductModel->getProductProcessingData($params);
+
+        $totalRows = sizeof($result);
+
+        for ($i = 0; $i < $totalRows; $i++) {
+            $switch = '';
+            $status = '';
+            if ($result[$i]->statusID == 1) {
+                $status = '<span class="badge bg-success">' . $result[$i]->productStatus . '</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar" >
+                                                <input data-id="' . $result[$i]->productID . '" data-status="' . $result[$i]->statusID . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
+                                            </div>';
+            } else {
+                $status = '<span class="badge bg-danger">' . $result[$i]->productStatus . '</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar" >
+                                                <input data-id="' . $result[$i]->productID . '" data-status="' . $result[$i]->statusID . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
+                                            </div>';
+            }
+
+            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-product" data-id="' . $result[$i]->productID . '" cat-id=""><span class="mdi mdi-square-edit-outline" title="Editar Producto"></span></button>';
+
+            $col = array();
+            $col['productName'] = $result[$i]->productName;
+            $col['category'] = $result[$i]->categoryName;
+            $col['price'] = '€ ' . number_format($result[$i]->productPrice, 2, ".", ',');
+            $col['description'] = $result[$i]->productDescription;
+            $col['status'] = $status;
+            $col['switch'] = $switch;
+            $col['action'] = $btn_edit;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0)
+            $totalRecords = $objProductModel->getTotalProduct();
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    } // OK
+
+    public function catDataTable()
+    {
+        $objProductModel = new ProductModel;
+        $result = $objProductModel->getCategories();
+
+        $totalRows = sizeof($result);
+
+        $row = array();
+        $totalRecords = 0;
+
+        for ($i = 0; $i < $totalRows; $i++) {
+
+            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-cat" data-id="' . $result[$i]->id . '"><span class="mdi mdi-square-edit-outline" title="Editar Producto"></span></button>';
+
+
+            $col = array();
+            $col['category'] = $result[$i]->name;
+            $col['action'] = $btn_edit;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0)
+            $totalRecords = $totalRows;
+
+        $data = array();
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    } // OK
+
+    public function showModalProduct()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
+
+        $objCategoryModel = new CategoryModel();
+
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
+        $data['categories'] = $objCategoryModel->getCategories();
+        $data['countCategories'] = sizeof($data['categories']);
+
+        if ($data['action'] == 'create')
+            $data['title'] = 'Nuevo Producto';
+        elseif ($data['action'] == 'update') {
+            $objProductModel = new ProductModel;
+            $data['product'] = $objProductModel->getProductData($this->request->getPost('productID'));
+            $data['title'] = 'Actualizando ' . $data['product'][0]->name;
+        }
+
+        return view('admin/modals/product', $data);
+    } // OK
 
     public function createProduct()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');    
+        if (empty($this->objSession->get('user')['hash'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sesión Espirada';
+
+            return json_encode($response);
+        }
+
+        $objProductModel = new ProductModel;
 
         $data = array();
-        $data['name'] = trim($this->request->getPost('name'));
-        $data['cat'] = trim($this->request->getPost('cat'));
-        $data['price'] = trim($this->request->getPost('price'));
-        $data['description'] = trim($this->request->getPost('description'));
+        $data['name'] = trim($this->request->getPost('productName'));
+        $data['price'] = trim($this->request->getPost('productPrice'));
+        $data['description'] = trim($this->request->getPost('productDescription'));
+        $data['fk_category'] = $this->request->getPost('categoryID');
 
-        $objModel = new ProductModel;
-        $resultCheckUserExist = $objModel->checkProductExist($data['name']);
+        $resultCheckProductExist = $objProductModel->checkProductExist($data['name']);
 
-        if (empty($resultCheckUserExist)) {
-            $result = $objModel->objCreate('product', $data);
+        if (empty($resultCheckProductExist)) {
+
+            $result = $objProductModel->objCreate('product', $data);
 
             if ($result['error'] == 0) {
                 $response['error'] = 0;
-                $response['msg'] = 'Producto creado';
+                $response['msg'] = 'Producto Creado';
             } else {
                 $response['error'] = 1;
                 $response['msg'] = 'Ha ocurrido un error en el proceso';
             }
         } else {
             $response['error'] = 3;
-            $response['msg'] = 'Ya existe un producto con el mismo nombre';
+            $response['msg'] = 'Ya existe el producto';
         }
 
         return json_encode($response);
-    }
+    } // OK
 
     public function updateProduct()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');   
+        if (empty($this->objSession->get('user')['hash'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sesión Espirada';
 
-        $name = $this->request->getPost('name');
-        $id = $this->request->getPost('userID');
+            return json_encode($response);
+        }
 
-        $objModel = new ProductModel;
-        $result_checkProductExist = $objModel->checkProductExist($name, $id);
+        $objProductModel = new ProductModel;
 
-        if (empty($result_checkProductExist)) {
+        $name = trim($this->request->getPost('productName'));
+        $id = $this->request->getPost('productID');
+
+        $resultCheckProductExist = $objProductModel->checkProductExist($name, $id);
+
+        if (empty($resultCheckProductExist)) {
             $data = array();
             $data['name'] = $name;
-            $data['cat'] = $this->request->getPost('cat');
-            $data['price'] = $this->request->getPost('price');
-            $data['description'] = $this->request->getPost('description');
+            $data['price'] = trim($this->request->getPost('productPrice'));
+            $data['description'] = trim($this->request->getPost('productDescription'));
+            $data['fk_category'] = $this->request->getPost('categoryID');
 
-            $result_update = $objModel->updateProduct($data, $id);
+            $result = $objProductModel->objUpdate('product', $data, $id);
 
-            if ($result_update['error'] == 0) {
+            if ($result['error'] == 0) {
                 $response['error'] = 0;
                 $response['msg'] = 'Producto Actualizado';
             } else {
@@ -95,40 +224,116 @@ class Product extends BaseController
             }
         } else {
             $response['error'] = 1;
-            $response['msg'] = 'Ya existe un producto con el mismo nombre';
+            $response['msg'] = 'Ya existe el producto';
         }
 
         return json_encode($response);
-    }
+    } // OK
 
-    public function deleteProduct()
+    public function showModalCat()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-        return view('logoutAdmin');  
+        if (empty($this->objSession->get('user')['hash']))
+            return view('logoutAdmin');
 
-        $id = $this->request->getPost('userID');
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
 
-        $objModel = new ProductModel;
-        $result = $objModel->deleteProduct($id);
+        if ($data['action'] == 'create') // CREATE
+            $data['title'] = 'Nueva Categoría de Producto';
+        elseif ($data['action'] == 'update') {
+            $objProductModel = new ProductModel;
+            $data['category'] = $objProductModel->getCatData($this->request->getPost('categoryID'));
+            $data['title'] = 'Editando Categoría ' . $data['category'][0]->name;
+        }
 
-        if ($result == true) {
-            $response['error'] = 0;
-            $response['msg'] = 'Producto Eliminado';
+        return view('admin/modals/cat', $data);
+    } // OK
+
+    public function createCat()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')['hash'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response);
+        }
+
+        $objProductModel = new ProductModel;
+        $categoryName = trim($this->request->getPost('categoryName'));
+        $resultCheckCatExist = $objProductModel->checkCattExist($categoryName);
+
+        if (empty($resultCheckCatExist)) {
+
+            $data = array();
+            $data['name'] = $categoryName;
+
+            $result = $objProductModel->objCreate('category', $data);
+
+            if ($result['error'] == 0) {
+                $response['error'] = 0;
+                $response['msg'] = 'Categoría Creada';
+            } else {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
         } else {
+
             $response['error'] = 1;
-            $response['msg'] = 'Ha ocurrido un error en el proceso';
+            $response['msg'] = 'Ya existe la categoría';
         }
 
         return json_encode($response);
-    }
+    } // OK
+
+    public function updateCat()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')['hash'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response);
+        }
+
+        $objProductModel = new ProductModel;
+        $categoryID = trim($this->request->getPost('categoryID'));
+        $categoryName = trim($this->request->getPost('categoryName'));
+        $resultCheckCatExist = $objProductModel->checkCattExist($categoryName, $categoryID);
+
+        if (empty($resultCheckCatExist)) {
+
+            $data = array();
+            $data['name'] = $categoryName;
+
+            $result = $objProductModel->objUpdate('category', $data, $categoryID);
+
+            if ($result['error'] == 0) {
+                $response['error'] = 0;
+                $response['msg'] = 'Categoría Actualizada';
+            } else {
+                $response['error'] = 1;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
+        } else {
+            $response['error'] = 1;
+            $response['msg'] = 'Ya existe la categoría';
+        }
+
+        return json_encode($response);
+    } // OK
 
     public function changeProductStatus()
     {
         $response = array();
 
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
+        if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
 
         $data = array();
@@ -154,118 +359,4 @@ class Product extends BaseController
 
         return json_encode($response);
     }
-
-    public function processingProduct()
-    {
-        $dataTableRequest = $_REQUEST;
-
-        $params = array();
-        $params['draw'] = $dataTableRequest['draw'];
-        $params['start'] = $dataTableRequest['start'];
-        $params['length'] = $dataTableRequest['length'];
-        $params['search'] = $dataTableRequest['search']['value'];
-        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
-        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
-
-        $row = array();
-        $totalRecords = 0;
-
-        $objModel = new ProductModel;
-        $result = $objModel->getProductProcessingData($params);
-
-
-        $totalRows = sizeof($result);
-
-
-        for ($i = 0; $i < $totalRows; $i++) {
-            $status = '';
-            $switch = '';
-
-            if ($result[$i]->status == 1) {
-                $status = '<span class="badge bg-success">En Venta</span>';
-                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
-                                                <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
-                                            </div>';
-            } else {
-                $status = '<span class="badge bg-danger">Agotado</span>';
-                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2">
-                                                <input data-id="' . $result[$i]->id . '" data-status="' . $result[$i]->status . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
-                                            </div>';
-            }
-
-
-            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-product" data-id="' . $result[$i]->id . '" cat-id=""><span class="mdi mdi-account-edit-outline" title="Editar Producto"></span></button>';
-            $btn_delete = '<button class="ms-1 me-1 btn btn-sm btn-danger btn-delete-product" data-id="' . $result[$i]->id . '"><span class="mdi mdi-delete" title="Eliminar Producto"></span></button>';
-
-            $col = array();
-            $col['name'] = '<a href="' . base_url('Product/product') . '/' . $result[$i]->id . '">' . $result[$i]->name . '</a>';
-            $col['cat'] = $result[$i]->cat;
-            $col['price'] = $result[$i]->price;
-            $col['description'] = $result[$i]->description;
-            $col['status'] = $status;
-            $col['switch'] = $switch;
-            $col['action'] = $btn_edit . $btn_delete;
-
-            $row[$i] =  $col;
-        }
-
-        if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalProduct();
-
-
-        $data = array();
-        $data['draw'] = $dataTableRequest['draw'];
-        $data['recordsTotal'] = intval($totalRecords);
-        $data['recordsFiltered'] = intval($totalRecords);
-        $data['data'] = $row;
-
-        
-
-        return json_encode($data);
-    }
-
-    public function product()
-    {
-        # VERIFY SESSION
-        if(empty($this->objSession->get('user')['hash']))
-            return view('logoutAdmin');
-
-        $userID = (int) $this->request->uri->getSegment(3);
-
-        $objModel = new ProductModel;
-        $product = $objModel->getProductData($userID);
-
-        $data['product'] = $product;
-
-        return view('layout/header', $data);
-    }
-
-    public function showModalProduct()
-    {
-        $data = array();
-        $data['action'] = $this->request->getPost('action');
-
-        if ($data['action'] == 'create') {
-            $data['title'] = 'Nuevo Producto';
-
-            $categoryModel = new CategoryModel();       
-            $resultCat = $categoryModel->getAllCategories();
-            $data['categories'] = $resultCat;
-
-        } elseif ($data['action'] == 'update') {
-            $objModel = new ProductModel;
-            $result = $objModel->getProductData($this->request->getPost('userID'));
-
-            $categoryModel = new CategoryModel();       
-            $resultCat = $categoryModel->getAllCategories();
-            $data['categories'] = $resultCat;
-
-            $data['title'] = 'Actualizando ' . $result[0]->name;
-            $data['user_data'] = $result;
-        }
-
-        return view('admin/modals/product', $data);
-    }
-
-    
 }

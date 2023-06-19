@@ -40,13 +40,13 @@ class ProductModel extends Model
 
     public function getProductProcessingData($params)
     {
-        $query = $this->db->table('product');
+        $query = $this->db->table('product_view');
 
         if (!empty($params['search'])) {
-            $query->like('name', $params['search']);
-            $query->orLike('cat', $params['search']);
-            $query->orLike('price', $params['search']);
-            $query->orLike('description', $params['search']);
+            $query->like('productName', $params['search']);
+            $query->orLike('categoryName', $params['search']);
+            $query->orLike('productPrice', $params['search']);
+            $query->orLike('productStatus', $params['search']);
         }
 
         $query->offset($params['start']);
@@ -62,40 +62,40 @@ class ProductModel extends Model
 
         if ($column == 0) {
             if ($dir == 'asc')
-                $sort = 'name ASC';
+                $sort = 'productName ASC';
             else
-                $sort = 'name DESC';
+                $sort = 'productName DESC';
         }
 
         if ($column == 1) {
             if ($dir == 'asc')
-                $sort = 'cat ASC';
+                $sort = 'categoryName ASC';
             else
-                $sort = 'cat DESC';
+                $sort = 'categoryName DESC';
         }
 
         if ($column == 2) {
             if ($dir == 'asc')
-                $sort = 'price ASC';
+                $sort = 'productPrice ASC';
             else
-                $sort = 'price DESC';
+                $sort = 'productPrice DESC';
         }
 
         if ($column == 3) {
             if ($dir == 'asc')
-                $sort = 'description ASC';
+                $sort = 'productStatus ASC';
             else
-                $sort = 'description DESC';
+                $sort = 'productStatus DESC';
         }
 
         return $sort;
     }
 
-    public function updateProduct($data, $id)
+    public function objUpdate($table, $data, $id)
     {
         $return = array();
 
-        $query = $this->db->table('product')
+        $query = $this->db->table($table)
             ->where('id', $id)
             ->update($data);
 
@@ -108,15 +108,6 @@ class ProductModel extends Model
         }
 
         return $return;
-    }
-
-    public function deleteProduct($id)
-    {
-        $query = $this->db->table('product')
-            ->where('id', $id)
-            ->delete();
-
-        return $query->resultID;
     }
 
     public function checkProductExist($name, $id = '')
@@ -135,12 +126,39 @@ class ProductModel extends Model
 
     public function getTotalProduct()
     {
-        $query = $this->db->table('product')
-            ->selectCount('id')
+        $query = $this->db->table('product_view')
+            ->selectCount('productID')
             ->get()->getResult();
 
-        return $query[0]->id;
+        return $query[0]->productID;
     }
 
+    public function getCategories()
+    {
+        $query = $this->db->table('category');
+        return $query->get()->getResult();
+    }
+
+    public function checkCattExist($name, $id = '')
+    {
+        $query = $this->db->table('category')
+            ->where('name', $name);
+
+        if (!empty($id)) {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
+
+        return $query->get()->getResult();
+    }
+
+    public function getCatData($id)
+    {
+        $query = $this->db->table('category')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
 
 }

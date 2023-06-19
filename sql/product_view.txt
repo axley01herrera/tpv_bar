@@ -1,0 +1,17 @@
+CREATE VIEW `product_view` AS 
+SELECT
+    `product`.`id` AS `productID`,
+    `product`.`name` AS `productName`,
+    `product`.`price` AS `productPrice`,
+    `product`.`description` AS `productDescription`,
+    `product`.`status` AS `statusID`,
+    CASE
+        WHEN `product`.`status` = 0 THEN 'Inactivo'
+        WHEN `product`.`status` = 1 THEN 'Activo'
+    END AS `productStatus`,
+    `product`.`fk_category` AS `categoryID`,
+    `category`.`name` AS `categoryName`
+FROM
+    `product`
+JOIN 
+    `category` ON `category`.`id` = `product`.`fk_category`;

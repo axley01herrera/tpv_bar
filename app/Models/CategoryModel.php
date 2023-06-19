@@ -49,12 +49,10 @@ class CategoryModel extends Model
         return $return;
     }
 
-    public function getAllCategories()
+    public function getCategories()
     {
-        $db = db_connect();
-        $builder = $db->table('category');
-        $query = $builder->get();
-        return $query->getResult();
+        $query = $this->db->table('category');
+        return $query->get()->getResult();
     }
 
     public function checkCatExist($nameCat, $id = '')

@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-12 mt-2">
                         <label for="txt-cat">Categoría</label>
-                        <input id="txt-cat" type="text" class="form-control modal-required focus" value="<?php echo @$cat[0]->nameCat; ?>" />
+                        <input id="txt-cat" type="text" class="form-control modal-required focus" value="<?php echo @$category[0]->name; ?>" />
                         <p id="msg-txt-cat" class="text-danger text-end"></p>
                     </div>
                 </div>
@@ -26,34 +26,38 @@
 
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
 
-        if(resultCheckRequiredValues == 0){
+        if(resultCheckRequiredValues == 0) {
+
+            $('#btn-modal-submit').removeAttr('disabled');
 
             let url = '';
             let action = '<?php echo $action; ?>';
 
             if(action == 'create')
-                url = '<?php echo base_url('Category/createCat'); ?>';
+                url = '<?php echo base_url('Product/createCat'); ?>';
             else if(action == 'update')
-                url = '<?php echo base_url('Category/updateCat'); ?>';
+                url = '<?php echo base_url('Product/updateCat'); ?>';
 
             $.ajax({
 
                 type: "post",
                 url: url,
                 data: {
-                    'catID': '<?php echo @$user_data[0]->id; ?>',
-                    'nameCat': $('#txt-cat').val()
+                    'categoryName': $('#txt-cat').val(),
+                    'categoryID': '<?php echo @$category[0]->id; ?>'
                 },
                 dataType: "json",
 
                 success: function (jsonResponse) {
 
                     if(jsonResponse.error == 0) { // SUCCESS
-                        showToast('success', jsonResponse.msg);
                         closeModal();
+                        window.location.reload();
+                        showToast('success', jsonResponse.msg);
                     } else if (jsonResponse.error == 1) { // ERROR
                         showToast('error', jsonResponse.msg);
-
+                        $('#txt-cat').addClass('is-invalid');
+                        $('#msg-txt-cat').html(jsonResponse.msg);
                     } else if (jsonResponse.error == 2) // SESSION EXPIRED
                         window.location.href = '<?php echo base_url('Admin');?>?msg="sessionExpired"';
                 },
