@@ -333,14 +333,20 @@ class Product extends BaseController
         $response = array();
 
         # VERIFY SESSION
-        if (empty($this->objSession->get('user')['hash']))
-            return view('logoutAdmin');
+        if (empty($this->objSession->get('user')['hash'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response);
+        }
+
+        $objProductModel = new ProductModel;
+        $productID = $this->request->getPost('productID');
 
         $data = array();
         $data['status'] = $this->request->getPost('status');
 
-        $objProductModel = new ProductModel;
-        $result = $objProductModel->updateProduct($data, $this->request->getPost('id'));
+        $result = $objProductModel->objUpdate('product', $data, $productID);
 
         if ($result['error'] == 0) {
             $msg = '';

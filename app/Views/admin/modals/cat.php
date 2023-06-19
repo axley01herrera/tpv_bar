@@ -58,6 +58,7 @@
                         showToast('error', jsonResponse.msg);
                         $('#txt-cat').addClass('is-invalid');
                         $('#msg-txt-cat').html(jsonResponse.msg);
+                        $('#btn-modal-submit').removeAttr('disabled');
                     } else if (jsonResponse.error == 2) // SESSION EXPIRED
                         window.location.href = '<?php echo base_url('Admin');?>?msg="sessionExpired"';
                 },
