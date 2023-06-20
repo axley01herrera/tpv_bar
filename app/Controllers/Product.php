@@ -364,5 +364,5 @@ class Product extends BaseController
         }
 
         return json_encode($response);
-    }
+    } // OK
 }
