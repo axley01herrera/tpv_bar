@@ -2,9 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\CategoryModel;
 use App\Models\ProductModel;
-
 
 class Product extends BaseController
 {
@@ -133,17 +131,16 @@ class Product extends BaseController
         if (empty($this->objSession->get('user')['hash']))
             return view('logoutAdmin');
 
-        $objCategoryModel = new CategoryModel();
+        $objProductModel = new ProductModel();
 
         $data = array();
         $data['action'] = $this->request->getPost('action');
-        $data['categories'] = $objCategoryModel->getCategories();
+        $data['categories'] = $objProductModel->getCategories();
         $data['countCategories'] = sizeof($data['categories']);
 
         if ($data['action'] == 'create')
             $data['title'] = 'Nuevo Producto';
         elseif ($data['action'] == 'update') {
-            $objProductModel = new ProductModel;
             $data['product'] = $objProductModel->getProductData($this->request->getPost('productID'));
             $data['title'] = 'Actualizando ' . $data['product'][0]->name;
         }

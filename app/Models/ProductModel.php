@@ -135,7 +135,17 @@ class ProductModel extends Model
 
     public function getCategories()
     {
-        $query = $this->db->table('category');
+        $query = $this->db->table('category')
+        ->orderBy('name', 'asc');
+
+        return $query->get()->getResult();
+    }
+
+    public function getProducts()
+    {
+        $query = $this->db->table('product')
+        ->orderBy('name', 'asc');
+
         return $query->get()->getResult();
     }
 

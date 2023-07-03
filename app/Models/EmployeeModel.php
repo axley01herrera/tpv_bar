@@ -8,13 +8,37 @@ use CodeIgniter\Database\MySQLi\Builder;
 
 class EmployeeModel extends Model
 {
-
     protected $db;
 
     function  __construct()
     {
         parent::__construct();
         $this->db = \Config\Database::connect();
+    }
+
+    public function verifyCredentials($user, $password)
+    {
+        $return = array();
+
+        $query = $this->db->table('employee')
+        ->where('id', $user);
+
+        $result = $query->get()->getResult();
+
+        if($result[0]->status == 1) { // VALIDATE STATUS
+            if(password_verify($password, $result[0]->clave)) { // VERIFY PASSWORD
+                $return['error'] = 0;
+                $return['data'] = $result[0];
+            } else {
+                $return['error'] = 1;
+                $return['msg'] = 'Rectifique su contraseña';
+            }
+        } else {
+            $return['error'] = 1;
+            $return['msg'] = 'Usuario Desactivado';
+        }
+
+        return $return;
     }
 
     public function getUserData($id)
@@ -142,6 +166,15 @@ class EmployeeModel extends Model
             ->get()->getResult();
 
         return $query[0]->id;
+    }
+
+    public function getLoginEmployees()
+    {
+        $query = $this->db->table('employee')
+        ->select('id,user')
+        ->where('status', 1);
+
+        return $query->get()->getResult();
     }
 
 }

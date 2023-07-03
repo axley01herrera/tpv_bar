@@ -33,10 +33,25 @@
                         <div class="text-center py-5">
                             <div class="user-thumb mb-4 mb-md-5">
                                 <img src="<?php echo base_url('assets/images/users/user.png'); ?>" class="rounded-circle img-thumbnail avatar-lg" alt="thumbnail">
-                                <h5 class="font-size-16 mt-3">Bienvenido</h5>
+                                <h1>Bienvenido</h1>
+                                <h5>Inicia sessión para continuar</h5>
                             </div>
                             <div class="form-floating form-floating-custom mb-3">
-                                <input type="password" id="input-password" class="form-control required focus"  placeholder="Contraseña">
+                                <select id="input-email" class="form-select required focus">
+                                    <option hidden value="">Seleccione su usuario</option>
+                                    <?php
+                                    for ($i = 0; $i < $countUsers; $i++) {
+                                    ?>
+                                        <option value="<?php echo $users[$i]->id; ?>"><?php echo $users[$i]->user; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <label for="input-email">Email</label>
+                                <div class="form-floating-icon">
+                                    <i class="uil uil-envelope-alt"></i>
+                                </div>
+                            </div>
+                            <div class="form-floating form-floating-custom mb-3">
+                                <input type="password" id="input-password" class="form-control required focus" placeholder="Contraseña">
                                 <label for="input-password">Contraseña</label>
                                 <div class="form-floating-icon">
                                     <i class="uil uil-padlock"></i>
@@ -58,42 +73,40 @@
 <?php echo view('global/form_validation'); ?>
 
 <script>
-
     $(document).ready(function() {
 
+        let msg = '<?php echo @$msg; ?>';
+
+        if(msg != '')
+            showToast('error', msg);
+
         $('#btn-submit').on('click', function() {
-
             let resultCheckRequiredValues = checkRequiredValues('required');
-
-            if(resultCheckRequiredValues == 0) {
-
+            if (resultCheckRequiredValues == 0) {
                 $.ajax({
-    
                     type: "post",
-                    url: "<?php echo base_url('Admin/login') ?>",
+                    url: "<?php echo base_url('Home/login'); ?>",
                     data: {
-                        'password': $('#input-password').val()
+                        'user': $('#input-email').val(),
+                        'pass': $('#input-password').val()
                     },
                     dataType: "json",
-    
                     success: function(jsonResponse) {
-
-                        if(jsonResponse.error == 0) 
-                            window.location.href = '<?php echo base_url('Dashboard'); ?>';
-                        
-
-                        if(jsonResponse.error == 1) {
-                            showToast('error', 'Contraseña Incorrecta');
-                            $('#input-password').addClass('is-invalid');
+                        if (jsonResponse.error == 0) {
+                            window.location.href = "<?php echo base_url('TPV'); ?>"
+                        } else if (jsonResponse.error == 1) {
+                            showToast('error', jsonResponse.msg);
+                            if (jsonResponse.msg == 'Rectifique su contraseña')
+                                $('#input-password').addClass('is-invalid');
                         }
                     },
-    
+                    error: function(error) {
+                        showToast('error', 'Ha ocurrido un error');
+                    }
                 });
-
             } else {
-                showToast('error', 'Debe escribir su contraseña');
+                showToast('error', 'Introduzca sus credenciales');
             }
-
         });
     });
 </script>
