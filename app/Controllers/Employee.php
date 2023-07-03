@@ -104,8 +104,13 @@ class Employee extends BaseController
             $row[$i] =  $col;
         }
 
-        if ($totalRows > 0)
-            $totalRecords = $objModel->getTotalUser();
+        if ($totalRows > 0) {
+
+            if(empty($params['search']))
+                $totalRecords = $objModel->getTotalUser();
+            else
+                $totalRecords = $totalRows;
+        }
 
         $data = array();
         $data['draw'] = $dataTableRequest['draw'];
