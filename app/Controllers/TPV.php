@@ -17,7 +17,7 @@ class TPV extends BaseController
     public function index()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')))
+        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
         $obTpvModel = new TpvModel;
@@ -26,6 +26,7 @@ class TPV extends BaseController
         $data = array();
         $data['table'] = $table;
         $data['countTable'] = sizeof($table);
+        $data['user'] = $this->objSession->get('user');
 
         return view('tpv/main', $data);
     }
@@ -56,7 +57,19 @@ class TPV extends BaseController
 
     public function tpv()
     {
+        $objProductModel = new ProductModel;
+        $tableID = $this->request->uri->getSegment(3);
+        $category = $objProductModel->getCategories();
+        $products = $objProductModel->getProducts();
 
+        $data = array();
+        $data['tableID'] = $tableID;
+        $data['category'] = $category;
+        $data['countCategory'] = sizeof($category);
+        $data['products'] = $products;
+        $data['countProducts'] = sizeof($products);
+
+        return view('tpv/tpv', $data);
     }
 
 }

@@ -24,14 +24,22 @@
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 col-lg-4 mt-5">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="text-purple">Mesas</h5>
                         <div class="row">
+                            <div class="col-12 text-end">
+                                <img src="<?php echo base_url('assets/images/users/user.png'); ?>" alt="" width="50px">
+                                <a title="Salir" href="<?php echo base_url('Home'); ?>">
+                                    <p class="text-danger"><?php echo $user['name'] . ' ' . $user['lastName']; ?> <i class="text-danger mdi mdi-logout"></i></p>
+                                </a>
+
+                            </div>
+                        </div>
+                        <h5 class="text-purple">Sala</h5>
+                        <div class="row mb-5">
                             <div class="col-12">
                                 <?php for ($i = 1; $i <= 20; $i++) { ?>
                                     <button <?php
@@ -40,7 +48,9 @@
                                 <?php } ?>
                             </div>
                         </div>
-                        <hr>
+
+                        <h5 class="text-purple">Terraza</h5>
+
                         <div class="row mt-2">
                             <div class="col-12">
                                 <?php for ($i = 1; $i <= 20; $i++) { ?>
@@ -76,7 +86,6 @@
         </div>
     </div>
 </body>
-
 <script>
     $('.btn-table').on('click', function() {
 
