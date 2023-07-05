@@ -24,44 +24,22 @@
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 col-lg-2 mt-1">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="text-purple">Mesas</h5>
-                        <div class="row">
-                            <div class="col-12">
-                                <?php for($i = 1; $i <= 20; $i++) {?>
-                                    <button class="btn btn-soft-purple mt-2 ml-2 ms-2 btn-table" value="<?php echo 'S'.$i; ?>"><?php echo 'S'.$i; ?></button>
-                                <?php } ?>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <?php for($i = 1; $i <= 20; $i++) {?>
-                                    <button class="btn btn-soft-purple mt-2 ml-2 ms-2 btn-table" value="<?php echo 'T'.$i; ?>"><?php echo 'T'.$i; ?></button>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="text-purple">Mesas Abiertas</h5>
-                    </div>
-                </div>
+            <div class="col-12 text-end">
+                <h1 class="mt-1 text-purple">Mesa: <?php echo $tableInfo[0]->tableID; ?></h1>
             </div>
-            <div class="col-12 col-lg-6">
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-8">
                 <div class="card mt-1">
                     <div class="card-body">
                         <h5 class="text-purple">Categorías</h5>
                         <div class="row">
                             <div class="col-12">
-                                <?php for($i = 0; $i < $countCategory; $i++) {?>
-                                <button id="<?php echo $category[$i]->id; ?>" class="btn btn-lg btn-soft-purple mt-2 ml-2 ms-2"><?php echo $category[$i]->name; ?></button>
+                                <button id="0" class="btn active btn-lg btn-purple mt-2 ml-2 ms-2 cat">Todo</button>
+                                <?php for ($i = 0; $i < $countCategory; $i++) { ?>
+                                    <button id="<?php echo $category[$i]->id; ?>" class="btn btn-lg btn-soft-purple mt-2 ml-2 ms-2 cat"><?php echo $category[$i]->name; ?></button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -70,12 +48,8 @@
                 <div class="card mt-1">
                     <div class="card-body">
                         <h5 class="text-purple">Productos</h5>
-                        <div class="row">
-                            <div class="col-12">
-                                <?php for($i = 0; $i < $countProducts; $i++) {?>
-                                    <button type="button" class="btn btn-outline-purple mt-2 ml-2 ms-2"><?php echo $products[$i]->name; ?> <br> <?php echo '€ '.number_format($products[$i]->price, 2,".",','); ?></button>                                
-                                <?php } ?>
-                            </div>
+                        <div id="main-product">
+                            <?php include('tpvProducts.php'); ?>
                         </div>
                     </div>
                 </div>
@@ -84,9 +58,46 @@
                 <div class="card mt-1">
                     <div class="card-body">
                         <h5 class="text-purple">Ticket</h5>
+                        <div class="row">
+                            <div class="col-12 text-end">
+                                <button class="btn btn-success">Cobrar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script>
+    var tableID = '<?php echo $tableID; ?>';
+    $('.cat').on('click', function() { // FILTER BY CATEGORY
+
+        let catgoryID = $(this).attr('id');
+
+        if (catgoryID == 0)
+            window.location.reload();
+        else {
+
+            $('#0').removeClass('btn-purple');
+            $('#0').addClass('btn-soft-purple');
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo base_url('TPV/getProductsbyCat'); ?>",
+                data: {
+                    'catgoryID': catgoryID
+                },
+                dataType: "html",
+
+                success: function(htmlResponse) {
+                    $('#main-product').html(htmlResponse);
+                },
+                error: function(error) {
+                    showToast('error', 'Ha ocurrido un error');
+                }
+            });
+        }
+    });
+</script>

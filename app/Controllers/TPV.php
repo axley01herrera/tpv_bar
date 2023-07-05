@@ -34,7 +34,7 @@ class TPV extends BaseController
     public function openTable()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')))
+        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
         {
             $response = array();
             $response['error'] = 2;
@@ -57,19 +57,43 @@ class TPV extends BaseController
 
     public function tpv()
     {
+        # VERIFY SESSION
+        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
         $objProductModel = new ProductModel;
+        $objTpvModel = new TpvModel;
         $tableID = $this->request->uri->getSegment(3);
         $category = $objProductModel->getCategories();
         $products = $objProductModel->getProducts();
+        $tableInfo = $objTpvModel->getTables($tableID);
 
         $data = array();
         $data['tableID'] = $tableID;
+        $data['tableInfo'] = $tableInfo;
         $data['category'] = $category;
         $data['countCategory'] = sizeof($category);
         $data['products'] = $products;
         $data['countProducts'] = sizeof($products);
 
         return view('tpv/tpv', $data);
+    }
+
+    public function getProductsbyCat()
+    {
+        # VERIFY SESSION
+        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $objProductModel = new ProductModel;
+        $catgoryID = $this->request->getPost('catgoryID');
+        $result = $objProductModel->getProductData(null, $catgoryID);
+
+        $data = array();
+        $data['products'] = $result;
+        $data['countProducts'] = sizeof($result);
+
+        return view('tpv/tpvProducts', $data);
     }
 
 }

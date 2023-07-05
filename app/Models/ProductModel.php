@@ -30,10 +30,15 @@ class ProductModel extends Model
         return $return;
     }
 
-    public function getProductData($id)
+    public function getProductData($id = null, $fk_category = null)
     {
-        $query = $this->db->table('product')
-            ->where('id', $id);
+        $query = $this->db->table('product');
+
+        if(!empty($id))
+            $query->where('id', $id);
+
+        if(!empty($fk_category))
+            $query->where('fk_category', $fk_category);
 
         return $query->get()->getResult();
     }

@@ -35,4 +35,12 @@ class TpvModel extends Model
 
         return $query->get()->getResult();
     }
+
+    public function getTables($id)
+    {
+        $query = $this->db->table('tables')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
 }
