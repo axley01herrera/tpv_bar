@@ -28,6 +28,15 @@ class TpvModel extends Model
         return $return;
     }
 
+    public function objDelete($table, $id)
+    {
+        $query = $this->db->table($table)
+        ->where('id', $id)
+        ->delete();
+
+        return $query->resultID;
+    }
+
     public function getOpenTables()
     {
         $query = $this->db->table('tables')
@@ -42,5 +51,20 @@ class TpvModel extends Model
         ->where('id', $id);
 
         return $query->get()->getResult();
+    }
+
+    public function getTicketByTable($fkTable)
+    {
+        $query = $this->db->table('ticket t')
+        ->select('t.id ticketID, 
+        p.name,
+        p.id productID, 
+        p.price price')
+        ->join('product p', 'p.id = t.fkProduct') 
+        ->where('t.fkTable', $fkTable)
+        ->orderBy('t.id', 'desc');
+
+    
+        return $query->get()->getResult();  
     }
 }

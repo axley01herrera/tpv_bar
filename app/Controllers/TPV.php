@@ -17,7 +17,7 @@ class TPV extends BaseController
     public function index()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
         $obTpvModel = new TpvModel;
@@ -34,19 +34,18 @@ class TPV extends BaseController
     public function openTable()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
-        {
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
             $response = array();
             $response['error'] = 2;
-            
+
             return json_encode($response);
         }
 
-        $tableID = $this->request->getPost('table');
+        $table = $this->request->getPost('table');
 
         $data = array();
         $data['fkEmployee'] = $this->objSession->get('user')['id'];
-        $data['tableID'] = $tableID;
+        $data['tableID'] = $table;
         $data['dateOpen'] = date('Y-m-d');
 
         $obTpvModel = new TpvModel;
@@ -58,7 +57,7 @@ class TPV extends BaseController
     public function tpv()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
         $objProductModel = new ProductModel;
@@ -67,6 +66,7 @@ class TPV extends BaseController
         $category = $objProductModel->getCategories();
         $products = $objProductModel->getProducts();
         $tableInfo = $objTpvModel->getTables($tableID);
+        $ticket = $objTpvModel->getTicketByTable($tableID);
 
         $data = array();
         $data['tableID'] = $tableID;
@@ -75,6 +75,8 @@ class TPV extends BaseController
         $data['countCategory'] = sizeof($category);
         $data['products'] = $products;
         $data['countProducts'] = sizeof($products);
+        $data['ticket'] = $ticket;
+        $data['countTicket'] = sizeof($ticket);
 
         return view('tpv/tpv', $data);
     }
@@ -82,7 +84,7 @@ class TPV extends BaseController
     public function getProductsbyCat()
     {
         # VERIFY SESSION
-        if(empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
         $objProductModel = new ProductModel;
@@ -96,4 +98,45 @@ class TPV extends BaseController
         return view('tpv/tpvProducts', $data);
     }
 
+    public function createTicket()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['fkEmployee'] = $this->objSession->get('user')['id'];
+        $data['fkTable'] = $this->request->getPost('tableID');
+        $data['fkProduct'] = $this->request->getPost('productID');
+
+        $objTpvModel = new TpvModel;
+        $result = $objTpvModel->objCreate('ticket', $data);
+
+        if ($result['error'] == 0) {
+
+            $ticket = $objTpvModel->getTicketByTable($data['fkTable']);
+            $data['ticket'] = $ticket;
+            $data['countTicket'] = sizeof($ticket);
+
+            return view('tpv/tpvTicket', $data);
+        }
+    }
+
+    public function deleteTicket()
+    {
+        $ticketID = $this->request->getPost('ticketID');
+
+        $objTpvModel = new TpvModel;
+        $result = $objTpvModel->objDelete('ticket', $ticketID);
+
+        if ($result === true) {
+            
+            $tableID = $this->request->getPost('tableID');
+            $ticket = $objTpvModel->getTicketByTable($tableID);
+            $data['ticket'] = $ticket;
+            $data['countTicket'] = sizeof($ticket);
+
+            return view('tpv/tpvTicket', $data);
+        }
+    }
 }

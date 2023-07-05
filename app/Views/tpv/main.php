@@ -87,10 +87,9 @@
     </div>
 </body>
 <script>
-    $('.btn-table').on('click', function() {
+    $('.btn-table').on('click', function() { // OPEN TABLE
 
         let value = $(this).val();
-        console.log(value);
 
         $.ajax({
             type: "post",
@@ -100,7 +99,6 @@
             },
             dataType: "json",
             success: function(jsonResponse) {
-                console.log(jsonResponse);
 
                 if (jsonResponse.error == 0) { // SUCCESS
                     window.location.href = "<?php echo base_url('TPV/tpv') ?>" + '/' + jsonResponse.id;
