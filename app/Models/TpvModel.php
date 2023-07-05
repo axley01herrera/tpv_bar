@@ -39,8 +39,20 @@ class TpvModel extends Model
 
     public function getOpenTables()
     {
-        $query = $this->db->table('tables')
-        ->where('status', 1);
+        $query = $this->db->table('tables ta')
+        ->select('ta.id tableID,
+        ta.dateOpen dateOpen,
+        ta.tableID tableName,
+        COUNT(p.id) AS products,
+        SUM(p.price) AS price
+        ')
+        ->where('ta.status', 1)
+        ->join('ticket ti', 'ti.fkTable = ta.id')
+        ->join('product p', 'p.id = ti.fkProduct')
+        ->groupBy('ti.fkTable')
+        ->orderBy('ta.id', 'desc');
+
+        // var_dump($query->get()->getResult()); exit();
 
         return $query->get()->getResult();
     }

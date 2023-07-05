@@ -10,7 +10,7 @@
         <div class="col-12">
             <div class="row mt-1">
                 <div class="col-6 text-purple"><?php echo $ticket[$i]->name; ?></div>
-                <div class="col-4"><?php echo '€ ' . number_format($ticket[$i]->price, 2, ".", ','); ?></div>
+                <div class="col-4 text-success"><?php echo '€ ' . number_format($ticket[$i]->price, 2, ".", ','); ?></div>
                 <div class="col-2"><button data-id="<?php echo $ticket[$i]->ticketID; ?>" class="btn btn-sm btn-clean del-ticket"><i class="text-danger mdi mdi-trash-can-outline"></i></button></div>
             </div>
         </div>

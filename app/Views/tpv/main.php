@@ -26,7 +26,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 col-lg-4 mt-5">
+            <div class="col-12 col-lg-6 mt-5">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -43,7 +43,7 @@
                             <div class="col-12">
                                 <?php for ($i = 1; $i <= 20; $i++) { ?>
                                     <button <?php
-                                            if (in_array('S' . $i, array_column($table, 'tableID'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'S' . $i; ?>"><?php echo 'S' . $i; ?>
+                                            if (in_array('S' . $i, array_column($table, 'tableName'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'S' . $i; ?>"><?php echo 'S' . $i; ?>
                                     </button>
                                 <?php } ?>
                             </div>
@@ -55,28 +55,33 @@
                             <div class="col-12">
                                 <?php for ($i = 1; $i <= 20; $i++) { ?>
                                     <button <?php
-                                            if (in_array('T' . $i, array_column($table, 'tableID'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'T' . $i; ?>"><?php echo 'T' . $i; ?>
+                                            if (in_array('T' . $i, array_column($table, 'tableName'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'T' . $i; ?>"><?php echo 'T' . $i; ?>
                                     </button> <?php } ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-8 mt-5">
+            <div class="col-12 col-lg-6 mt-5">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="text-purple">Mesas Abiertas</h5>
-                        <table class="table">
+                        <table class="table table-hover table-borderless">
                             <thead>
-                                <th class="text-purple"><strong>Mesa</strong></th>
-                                <th class="text-purple"><strong>Fecha de Apertura</strong></th>
+                                
+                                <th class="text-purple text-center"></th>
+                                <th class="text-purple text-center"></th>
+                                <th class="text-purple text-center"></th>
                             </thead>
                             <tbody>
                                 <?php for ($i = 0; $i < $countTable; $i++) { ?>
+                                    
                                     <tr>
-                                        <td><?php echo $table[$i]->tableID; ?></td>
-                                        <td><?php echo $table[$i]->dateOpen; ?></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5><span class="badge badge-soft-purple"><?php echo $table[$i]->tableName; ?></span></h5></a></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5 class="text-purple"><?php echo date('d-m-Y h:i:s A', strtotime($table[$i]->dateOpen)); ?></h5></a></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5 class="text-success"><?php echo '€ ' . number_format($table[$i]->price, 2, ".", ','); ?></h5></a></td>
                                     </tr>
+                                    
                                 <?php } ?>
                             </tbody>
                         </table>
