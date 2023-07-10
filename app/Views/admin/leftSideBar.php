@@ -22,7 +22,7 @@
                 <li class="<?php if ($menu_ative == "dashboard") {
                                 echo "mm-active";
                             } ?>">
-                    <a href="<?php echo base_url('Dashboard'); ?>">
+                    <a href="<?php echo base_url('Administrator/dashboard'); ?>">
                         <i class="icon nav-icon <?php if ($menu_ative == "dashboard") {
                                                     echo "active";
                                                 } ?>" data-feather="home"></i>
@@ -36,7 +36,7 @@
                 <li class="<?php if ($menu_ative == "employee") {
                                 echo "mm-active";
                             } ?>">
-                    <a href="<?php echo base_url('Employee'); ?>">
+                    <a href="<?php echo base_url('Administrator/employees'); ?>">
                         <i class="icon nav-icon <?php if ($menu_ative == "employee") {
                                                     echo "active";
                                                 } ?>" data-feather="users"></i>

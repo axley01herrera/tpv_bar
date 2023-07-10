@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-sm btn-secondary closeModal" data-bs-dismiss="modal">Cerrar</button>
 </div>
 
-<?php echo view('global/form_validation');?>
+<?php echo view('global/formValidation');?>
 
 <script>
 

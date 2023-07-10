@@ -11,17 +11,17 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <label for="txt-name">Nombre</label>
-                        <input id="txt-name" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->name; ?>" />
+                        <input id="txt-name" type="text" class="form-control modal-required focus" value="<?php echo @$userData[0]->name; ?>" />
                         <p id="msg-txt-name" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <label for="txt-lastName">Apellido</label>
-                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$user_data[0]->lastName; ?>" />
+                        <input id="txt-lastName" type="text" class="form-control modal-required focus" value="<?php echo @$userData[0]->lastName; ?>" />
                         <p id="msg-txt-lastName" class="text-danger text-end"></p>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12">
                         <label for="txt-user">Usuario</label>
-                        <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$user_data[0]->user; ?>" />
+                        <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$userData[0]->user; ?>" />
                         <p id="msg-txt-user" class="text-danger text-end"></p>
                     </div>
 
@@ -34,15 +34,21 @@
 
 <script>
     $('#btn-modal-submit').on('click', function() { // SUBMIT
+
         let action = "<?php echo $action; ?>";
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
+
         if (resultCheckRequiredValues == 0) {
+
             $('btn-modal-submit').attr('disabled', true);
+
             let url = '';
+
             if (action == 'create')
-                url = '<?php echo base_url('Employee/createEmployee'); ?>'
+                url = '<?php echo base_url('Administrator/createEmployee'); ?>';
             else if (action == 'update')
-                url = '<?php echo base_url('Employee/updateEmployee'); ?>'
+                url = '<?php echo base_url('Administrator/updateEmployee'); ?>';
+
             $.ajax({
                 type: "post",
                 url: url,
@@ -50,22 +56,24 @@
                     'name': $('#txt-name').val(),
                     'lastName': $('#txt-lastName').val(),
                     'user': $('#txt-user').val(),
-                    'userID': '<?php echo @$user_data[0]->id; ?>',
+                    'userID': '<?php echo @$userData[0]->id; ?>',
                 },
                 dataType: "json",
                 success: function(jsonResponse) {
-                    if (jsonResponse.error == 0) // SUCCESS
-                    {
+
+                    if (jsonResponse.error == 0) { // SUCCESS
+
                         showToast('success', jsonResponse.msg);
-                        dataTable.draw();
+                        dtEmployee.draw();
                         closeModal();
+
                     } else // ERROR
                         showToast('error', jsonResponse.msg);
 
-                    if (jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
+                    if (jsonResponse.code == 103) // SESSION EXPIRED
+                        window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
 
-                    if (jsonResponse.error == 3) // ERRROR USER EXIST
+                    if (jsonResponse.code == 104) // ERRROR USER EXIST
                         $("#txt-user").addClass('is-invalid');
                 },
                 error: function(error) {

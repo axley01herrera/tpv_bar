@@ -1,20 +1,20 @@
-<!-- CSS-->
+<!-- DATA TABLE CSS -->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
 <div class="row">
     <div class="col-12">
-        <h1 class="text-primary">Empleados</h1>
+        <h1 class="text-dark">Empleados</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-end">
+        <button id="btn-create-employee" class="btn btn-primary">Crear Empleado</button>
     </div>
 </div>
 <div class="card mt-3">
     <div class="card-body">
-        <div class="row">
-            <div class="col-12">
-                <button id="btn-create" class="btn btn-primary">Crear Empleado</button>
-            </div>
-        </div>
-        <div class="table-responsive mt-5">
-            <table id="dataTable" class="table" style="width: 100%;">
+        <div class="table-responsive">
+            <table id="dt-employee" class="table" style="width: 100%;">
                 <thead>
                     <tr>
                         <th><strong>Nombre</strong></th>
@@ -30,29 +30,36 @@
     </div>
 </div>
 
-<!-- JS -->
+<!-- DATA TABLE JS -->
 <script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/datatable/dataTables.bootstrap5.min.js'); ?>"></script>
 
 <script>
-    $('#btn-create').on('click', function() { // CREATE EMPLOYEE
+
+    $('#btn-create-employee').on('click', function() { // CREATE EMPLOYEE
+
+        $('#btn-create-employee').attr('disabled', true);
+
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Employee/showModalEmployee'); ?>",
+            url: "<?php echo base_url('Administrator/showModalEmployee'); ?>",
             data: {
                 'action': 'create'
             },
             dataType: "html",
             success: function(htmlResponse) {
+
+                $('#btn-create-employee').removeAttr('disabled');
                 $('#main-modal').html(htmlResponse);
+
             },
             error: function(error) {
                 showToast('error', 'Ha ocurrido un error');
             }
         });
-    }); // OK
+    });
 
-    var dataTable = $('#dataTable').DataTable({
+    var dtEmployee = $('#dt-employee').DataTable({
         destroy: true,
         processing: true,
         serverSide: true,
@@ -67,7 +74,7 @@
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
         },
         ajax: {
-            url: "<?php echo base_url('Employee/processingEmployee'); ?>",
+            url: "<?php echo base_url('Administrator/dtProcessingEmployees'); ?>",
             type: "POST"
         },
         order: [
@@ -99,11 +106,11 @@
                 searchable: false
             }
         ],
-    }); // OK
+    });
 
-    dataTable.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE
+    dtEmployee.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE EMPLOYEE
 
-        let userID = $(this).attr('data-id');
+        let id = $(this).attr('data-id');
         let status = $(this).attr('data-status');
         let newStatus = '';
 
@@ -115,31 +122,31 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Employee/changeUserStatus'); ?>",
+            url: "<?php echo base_url('Administrator/changeEmployeeStatus'); ?>",
             data: {
-                'userID': userID,
+                'id': id,
                 'status': newStatus
             },
             dataType: "json",
 
         }).done(function(jsonResponse) {
 
-            if (jsonResponse.error == 0) // SUCCESS
-            {
+            if (jsonResponse.error == 0) { // SUCCESS
                 showToast('success', jsonResponse.msg);
-                dataTable.draw();
-            } else // ERROR
+                dtEmployee.draw();
+            } else { // ERROR
+
                 showToast('success', jsonResponse.msg);
 
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
-
+                if (jsonResponse.code == 103) // SESSION EXPIRED
+                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+            }
         }).fail(function(error) {
             showToast('error', 'Ha ocurrido un error');
         });
-    }); // OK
+    });
 
-    dataTable.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE
+    dtEmployee.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE
         event.preventDefault();
         $.ajax({
             type: "post",
@@ -156,11 +163,13 @@
         });
     }); // OK
 
-    dataTable.on('click', '.btn-edit-employee', function(event) { // UPDATE
+    dtEmployee.on('click', '.btn-edit-employee', function(event) { // UPDATE EMPLOYEE
+
         event.preventDefault();
+
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Employee/showModalEmployee'); ?>",
+            url: "<?php echo base_url('Administrator/showModalEmployee'); ?>",
             data: {
                 'userID': $(this).attr('data-id'),
                 'action': 'update',
@@ -171,5 +180,5 @@
         }).fail(function(error) {
             showToast('error', 'Ha ocurrido un error');
         });
-    }); // OK
+    });
 </script>
