@@ -50,7 +50,7 @@
                 <li class="<?php if ($menu_ative == "product") {
                                 echo "mm-active";
                             } ?>">
-                    <a href="<?php echo base_url('Product'); ?>">
+                    <a href="<?php echo base_url('Administrator/products'); ?>">
                         <i class="icon nav-icon <?php if ($menu_ative == "home") {
                                                     echo "active";
                                                 } ?>" data-feather="archive"></i>

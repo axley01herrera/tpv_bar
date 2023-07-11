@@ -3,17 +3,17 @@
 
 <div class="row">
     <div class="col-12">
-        <h1 class="text-primary">Productos</h1>
+        <h1 class="text-dark">Productos y Categorías</h1>
     </div>
 </div>
-<div class="card">
+<div class="row">
+    <div class="col-12 text-end">
+        <button id="btn-newProduct" class="btn btn-primary">Nuevo Producto</button>
+        <button id="btn-newCat" class="btn btn-primary">Nueva Categoría</button>
+    </div>
+</div>
+<div class="card mt-3">
     <div class="card-body">
-        <div class="row mb-2">
-            <div class="col-12">
-                <button id="btn-newProduct" class="btn btn-primary">Nuevo Producto</button>
-                <button id="btn-newCat" class="btn btn-success">Nueva Categoría</button>
-            </div>
-        </div>
         <table id="dataTable" class="table" style="width: 100%;">
             <thead>
                 <tr>
@@ -101,7 +101,7 @@
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
         },
         ajax: {
-            url: "<?php echo base_url('Product/processingProduct'); ?>",
+            url: "<?php echo base_url('Administrator/dtProcessingProducts'); ?>",
             type: "POST"
         },
         order: [

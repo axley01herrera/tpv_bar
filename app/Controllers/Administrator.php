@@ -33,6 +33,8 @@ class Administrator extends BaseController
         return view('admin/header', $data);
     }
 
+    # EMPLOYEES
+
     public function employees()
     {
         # VERIFY SESSION
@@ -331,5 +333,85 @@ class Administrator extends BaseController
         }
 
         return json_encode($response);
+    }
+
+    # PRODUCTS
+
+    public function products()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['menu_ative'] = 'product';
+        $data['page'] = 'admin/product/listProduct';
+
+        return view('admin/header', $data);
+    }
+
+    public function dtProcessingProducts()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $result = $this->objAdminModel->getProductsProcessingData($params);
+
+        $totalRows = sizeof($result);
+
+        for ($i = 0; $i < $totalRows; $i++) {
+            $switch = '';
+            $status = '';
+            if ($result[$i]->statusID == 1) {
+                $status = '<span class="badge bg-success">' . $result[$i]->productStatus . '</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar" >
+                                                <input data-id="' . $result[$i]->productID . '" data-status="' . $result[$i]->statusID . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" checked />
+                                            </div>';
+            } else {
+                $status = '<span class="badge bg-danger">' . $result[$i]->productStatus . '</span>';
+                $switch = '<div style="margin-left: 44px;" class="form-check form-switch form-switch-md mb-2" title="desactivar/activar" >
+                                                <input data-id="' . $result[$i]->productID . '" data-status="' . $result[$i]->statusID . '" class="form-check-input switch" type="checkbox" id="flexSwitchCheckChecked" />
+                                            </div>';
+            }
+
+            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-product" data-id="' . $result[$i]->productID . '" cat-id=""><span class="mdi mdi-square-edit-outline" title="Editar Producto"></span></button>';
+
+            $col = array();
+            $col['productName'] = $result[$i]->productName;
+            $col['category'] = $result[$i]->categoryName;
+            $col['price'] = '€ ' . number_format($result[$i]->productPrice, 2, ".", ',');
+            $col['description'] = $result[$i]->productDescription;
+            $col['status'] = $status;
+            $col['switch'] = $switch;
+            $col['action'] = $btn_edit;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0) {
+
+            if(empty($params['search']))
+                $totalRecords = $this->objAdminModel->getTotalProducts();
+            else
+                $totalRecords = $totalRows;
+        }
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
     }
 }

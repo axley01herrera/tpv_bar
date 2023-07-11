@@ -16,20 +16,6 @@ class ProductModel extends Model
         $this->db = \Config\Database::connect();
     }
 
-    public function objCreate($table, $data)
-    {
-        $query = $this->db->table($table)
-        ->insert($data);
-
-        if ($query->resultID == true) {
-            $return['error'] = 0;
-            $return['id'] = $query->connID->insert_id;
-        } else
-            $return['error'] = 1;
-
-        return $return;
-    }
-
     public function getProductData($id = null, $fk_category = null)
     {
         $query = $this->db->table('product');
@@ -43,77 +29,11 @@ class ProductModel extends Model
         return $query->get()->getResult();
     }
 
-    public function getProductProcessingData($params)
-    {
-        $query = $this->db->table('product_view');
+    
 
-        if (!empty($params['search'])) {
-            $query->like('productName', $params['search']);
-            $query->orLike('categoryName', $params['search']);
-            $query->orLike('productPrice', $params['search']);
-            $query->orLike('productStatus', $params['search']);
-        }
+   
 
-        $query->offset($params['start']);
-        $query->limit($params['length']);
-        $query->orderBy($this->getProductProcessingSort($params['sortColumn'], $params['sortDir']));
-
-        return $query->get()->getResult();
-    }
-
-    public function getProductProcessingSort($column, $dir)
-    {
-        $sort = '';
-
-        if ($column == 0) {
-            if ($dir == 'asc')
-                $sort = 'productName ASC';
-            else
-                $sort = 'productName DESC';
-        }
-
-        if ($column == 1) {
-            if ($dir == 'asc')
-                $sort = 'categoryName ASC';
-            else
-                $sort = 'categoryName DESC';
-        }
-
-        if ($column == 2) {
-            if ($dir == 'asc')
-                $sort = 'productPrice ASC';
-            else
-                $sort = 'productPrice DESC';
-        }
-
-        if ($column == 3) {
-            if ($dir == 'asc')
-                $sort = 'productStatus ASC';
-            else
-                $sort = 'productStatus DESC';
-        }
-
-        return $sort;
-    }
-
-    public function objUpdate($table, $data, $id)
-    {
-        $return = array();
-
-        $query = $this->db->table($table)
-            ->where('id', $id)
-            ->update($data);
-
-        if ($query == true) {
-            $return['error'] = 0;
-            $return['id'] = $id;
-        } else {
-            $return['error'] = 1;
-            $return['id'] = $id;
-        }
-
-        return $return;
-    }
+    
 
     public function checkProductExist($name, $id = '')
     {

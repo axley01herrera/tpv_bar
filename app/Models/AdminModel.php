@@ -55,6 +55,7 @@ class AdminModel extends Model
         return $return;
     }
 
+    # AUTHENTICATION 
     public function verifyCredentials($password)
     {
         $query = $this->db->table('tpv_bar_administrator');
@@ -66,6 +67,7 @@ class AdminModel extends Model
             return false;
     }
 
+    # EMPLOYEE
     public function getEmployeesProcessingData($params)
     {
         $query = $this->db->table('tpv_bar_employees');
@@ -147,5 +149,68 @@ class AdminModel extends Model
         }
 
         return $query->get()->getResult();
+    }
+
+    # PRODUCTS
+    public function getProductsProcessingData($params)
+    {
+        $query = $this->db->table('tpv_bar_product_view');
+
+        if (!empty($params['search'])) {
+            $query->like('productName', $params['search']);
+            $query->orLike('categoryName', $params['search']);
+            $query->orLike('productPrice', $params['search']);
+            $query->orLike('productStatus', $params['search']);
+        }
+
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getProductsProcessingSort($params['sortColumn'], $params['sortDir']));
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductsProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'productName ASC';
+            else
+                $sort = 'productName DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'categoryName ASC';
+            else
+                $sort = 'categoryName DESC';
+        }
+
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'productPrice ASC';
+            else
+                $sort = 'productPrice DESC';
+        }
+
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'productStatus ASC';
+            else
+                $sort = 'productStatus DESC';
+        }
+
+        return $sort;
+    }
+
+    public function getTotalProducts()
+    {
+        $query = $this->db->table('tpv_bar_product_view')
+            ->selectCount('productID')
+            ->get()->getResult();
+
+        return $query[0]->productID;
     }
 }
