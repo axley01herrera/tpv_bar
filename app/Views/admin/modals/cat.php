@@ -7,9 +7,11 @@
                 <!-- CLOSE -->
                 <button type="button" class="btn-close closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <!-- MODAL CONTENT -->
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12 mt-2">
+                        <!-- TXT CATEGORY -->
                         <label for="txt-cat">Categoría</label>
                         <input id="txt-cat" type="text" class="form-control modal-required focus" value="<?php echo @$category[0]->name; ?>" />
                         <p id="msg-txt-cat" class="text-danger text-end"></p>
@@ -22,21 +24,21 @@
 </div>
 
 <script>
-    $('#btn-modal-submit').on('click', function () {
+    $('#btn-modal-submit').on('click', function() { // SUBMIT
 
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
 
-        if(resultCheckRequiredValues == 0) {
+        if (resultCheckRequiredValues == 0) {
 
-            $('#btn-modal-submit').removeAttr('disabled');
+            $('#btn-modal-submit').attr('disabled', true);
 
             let url = '';
             let action = '<?php echo $action; ?>';
 
-            if(action == 'create')
-                url = '<?php echo base_url('Product/createCat'); ?>';
-            else if(action == 'update')
-                url = '<?php echo base_url('Product/updateCat'); ?>';
+            if (action == 'create')
+                url = '<?php echo base_url('Administrator/createCat'); ?>';
+            else if (action == 'update')
+                url = '<?php echo base_url('Administrator/updateCat'); ?>';
 
             $.ajax({
 
@@ -48,21 +50,27 @@
                 },
                 dataType: "json",
 
-                success: function (jsonResponse) {
+                success: function(jsonResponse) {
 
-                    if(jsonResponse.error == 0) { // SUCCESS
-                        closeModal();
-                        window.location.reload();
+                    if (jsonResponse.error == 0) { // SUCCESS
+
                         showToast('success', jsonResponse.msg);
-                    } else if (jsonResponse.error == 1) { // ERROR
+                        window.location.reload();
+                        closeModal();
+
+                    } else { // ERROR
+
                         showToast('error', jsonResponse.msg);
-                        $('#txt-cat').addClass('is-invalid');
-                        $('#msg-txt-cat').html(jsonResponse.msg);
+
+                        if (jsonResponse.code == 103) // ERROR SESSION EXPIRED
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                        else if (jsonResponse.code == 104) // ERRROR DUPLICATE RECORD
+                            $("#txt-cat").addClass('is-invalid');
+
                         $('#btn-modal-submit').removeAttr('disabled');
-                    } else if (jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Admin');?>?msg="sessionExpired"';
+                    }
                 },
-                error: function (error) {
+                error: function(error) {
                     showToast('error', 'Ha ocurrido un error');
                 }
             });

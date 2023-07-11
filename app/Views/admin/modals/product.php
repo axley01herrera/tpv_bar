@@ -54,9 +54,9 @@
             let url = '';
 
             if (action == 'create')
-                url = '<?php echo base_url('Product/createProduct'); ?>';
+                url = '<?php echo base_url('Administrator/createProduct'); ?>';
             else if (action == 'update')
-                url = '<?php echo base_url('Product/updateProduct'); ?>';
+                url = '<?php echo base_url('Administrator/updateProduct'); ?>';
 
             $.ajax({
 
@@ -71,23 +71,27 @@
                 },
                 dataType: "json",
                 success: function(jsonResponse) {
-                    if (jsonResponse.error == 0) // SUCCESS
-                    {
+
+                    if (jsonResponse.error == 0) { // SUCCESS
+                     
                         showToast('success', jsonResponse.msg);
-                        dataTable.draw();
+                        dtPrducts.draw();
                         closeModal();
+
                     } else { // ERROR
+
                         showToast('error', jsonResponse.msg);
-                        $('#txt-name').addClass('is-invalid');
-                        $('#msg-txt-name').html(jsonResponse.msg);
+
+                        if(jsonResponse.code == 104) { // ERROR DUPLICATE RECORD
+                            $('#txt-name').addClass('is-invalid');
+                            $('#msg-txt-name').html(jsonResponse.msg);
+                        }
+
+                        if (jsonResponse.code == 103) // SESSION EXPIRED
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+
                         $('#btn-modal-submit').removeAttr('disabled');
                     }
-
-                    if (jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
-
-                    if (jsonResponse.error == 3) // ERRROR USER EXIST
-                        $("#txt-user").addClass('is-invalid');
                 },
                 error: function(error) {
                     showToast('error', 'Ha ocurrido un error');

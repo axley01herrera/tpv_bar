@@ -1,4 +1,4 @@
-<!-- CSS-->
+<!-- DATA TABLE CSS-->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
 <div class="row">
@@ -14,7 +14,7 @@
 </div>
 <div class="card mt-3">
     <div class="card-body">
-        <table id="dataTable" class="table" style="width: 100%;">
+        <table id="dt-products" class="table" style="width: 100%;">
             <thead>
                 <tr>
                     <th><strong>Producto</strong></th>
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<!-- JS -->
+<!-- DATA TABLE JS -->
 <script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/datatable/dataTables.bootstrap5.min.js'); ?>"></script>
 
@@ -51,7 +51,7 @@
 
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Product/showModalProduct'); ?>",
+            url: "<?php echo base_url('Administrator/showModalProduct'); ?>",
             data: {
                 action: 'create',
             },
@@ -71,7 +71,7 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Product/showModalCat') ?>",
+            url: "<?php echo base_url('Administrator/showModalCat') ?>",
             data: {
                 action: 'create',
             },
@@ -85,7 +85,7 @@
         });
     });
 
-    var dataTable = $('#dataTable').DataTable({
+    var dtPrducts = $('#dt-products').DataTable({
 
         destroy: true,
         processing: true,
@@ -139,7 +139,7 @@
         ],
     });
 
-    dataTable.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE
+    dtPrducts.on('click', '.switch', function(event) { // ACTIVE OR INACTIVE PRODUCTS
 
         let status = $(this).attr('data-status');
         let newStatus = '';
@@ -154,7 +154,7 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Product/changeProductStatus'); ?>",
+            url: "<?php echo base_url('Administrator/changeProductStatus'); ?>",
             data: {
                 'productID': id,
                 'status': newStatus
@@ -163,29 +163,29 @@
 
         }).done(function(jsonResponse) {
 
-            if (jsonResponse.error == 0) // SUCCESS
-            {
+            if (jsonResponse.error == 0) { // SUCCESS
+
                 showToast('success', jsonResponse.msg);
-                dataTable.draw();
-            } else // ERROR
+                dtPrducts.draw();
+            } else { // ERROR
+
                 showToast('error', jsonResponse.msg);
-
-            if (jsonResponse.error == 2) // SESSION EXPIRED
-                window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
-
+                if (jsonResponse.code == 103) // SESSION EXPIRED
+                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+            }
         }).fail(function(error) {
             showToast('error', 'Ha ocurrido un error');
         });
     });
 
-    dataTable.on('click', '.btn-edit-product', function(event) { // UPDATE
+    dtPrducts.on('click', '.btn-edit-product', function(event) { // UPDATE PRODUCT
 
         event.preventDefault();
 
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Product/showModalProduct'); ?>",
+            url: "<?php echo base_url('Administrator/showModalProduct'); ?>",
             data: {
                 'productID': $(this).attr('data-id'),
                 'action': 'update',
@@ -219,7 +219,7 @@
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
         },
         ajax: {
-            url: "<?php echo base_url('Product/catDataTable'); ?>",
+            url: "<?php echo base_url('Administrator/catDataTable'); ?>",
             type: "POST"
         },
         order: [
@@ -242,7 +242,7 @@
         $.ajax({
 
             type: "post",
-            url: "<?php echo base_url('Product/showModalCat'); ?>",
+            url: "<?php echo base_url('Administrator/showModalCat'); ?>",
             data: {
                 'categoryID': $(this).attr('data-id'),
                 'action': 'update',

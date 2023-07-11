@@ -14,6 +14,7 @@ class AdminModel extends Model
         $this->db = \Config\Database::connect();
     }
 
+    # OBJ CREATE | UPDATE
     public function objCreate($table, $data)
     {
         $return = array();
@@ -56,6 +57,7 @@ class AdminModel extends Model
     }
 
     # AUTHENTICATION 
+
     public function verifyCredentials($password)
     {
         $query = $this->db->table('tpv_bar_administrator');
@@ -68,6 +70,7 @@ class AdminModel extends Model
     }
 
     # EMPLOYEE
+
     public function getEmployeesProcessingData($params)
     {
         $query = $this->db->table('tpv_bar_employees');
@@ -152,6 +155,7 @@ class AdminModel extends Model
     }
 
     # PRODUCTS
+
     public function getProductsProcessingData($params)
     {
         $query = $this->db->table('tpv_bar_product_view');
@@ -212,5 +216,64 @@ class AdminModel extends Model
             ->get()->getResult();
 
         return $query[0]->productID;
+    }
+
+    public function getProductData($id = null, $fk_category = null)
+    {
+        $query = $this->db->table('tpv_bar_product');
+
+        if(!empty($id))
+            $query->where('id', $id);
+
+        if(!empty($fk_category))
+            $query->where('fk_category', $fk_category);
+
+        return $query->get()->getResult();
+    }
+
+    public function checkProductExist($name, $id = '')
+    {
+        $query = $this->db->table('tpv_bar_product')
+            ->where('name', $name);
+
+        if (!empty($id)) {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
+
+        return $query->get()->getResult();
+    }
+
+    # CATEGORY
+
+    public function getCategories()
+    {
+        $query = $this->db->table('tpv_bar_category')
+        ->orderBy('name', 'asc');
+
+        return $query->get()->getResult();
+    }
+
+    public function checkCattExist($name, $id = '')
+    {
+        $query = $this->db->table('tpv_bar_category')
+            ->where('name', $name);
+
+        if (!empty($id)) {
+            $IDs = array();
+            $IDs[0] = $id;
+            $query->whereNotIn('id', $IDs);
+        }
+
+        return $query->get()->getResult();
+    }
+
+    public function getCatData($id)
+    {
+        $query = $this->db->table('tpv_bar_category')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
     }
 }

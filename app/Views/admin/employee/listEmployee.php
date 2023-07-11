@@ -132,6 +132,7 @@
         }).done(function(jsonResponse) {
 
             if (jsonResponse.error == 0) { // SUCCESS
+                
                 showToast('success', jsonResponse.msg);
                 dtEmployee.draw();
             } else { // ERROR

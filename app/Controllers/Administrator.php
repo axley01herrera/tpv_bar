@@ -133,6 +133,7 @@ class Administrator extends BaseController
         if ($data['action'] == 'create')
             $data['title'] = 'Nuevo Empleado';
         elseif ($data['action'] == 'update') {
+
             $result = $this->objAdminModel->getEmployeeData($this->request->getPost('userID'));
             $data['title'] = 'Actualizando ' . $result[0]->name . ' ' . $result[0]->lastName;
             $data['userData'] = $result;
@@ -257,7 +258,7 @@ class Administrator extends BaseController
 
         $result = $this->objAdminModel->objUpdate('tpv_bar_employees', $data, $id);
 
-        if ($result['error'] == 0) {
+        if ($result['error'] == 0) { // SUCCESS
 
             $msg = '';
 
@@ -268,7 +269,7 @@ class Administrator extends BaseController
 
             $response['error'] = 0;
             $response['msg'] = $msg;
-        } else {
+        } else { // ERROR UPDATE RECORD
 
             $response['error'] = 1;
             $response['code'] = 100;
@@ -324,7 +325,6 @@ class Administrator extends BaseController
             $response['error'] = 0;
             $response['id'] = $id;
             $response['msg'] = 'Empleado Actualizado';
-            
         } else { // ERROR UPDATE RECORD
 
             $response['error'] = 1;
@@ -400,7 +400,7 @@ class Administrator extends BaseController
 
         if ($totalRows > 0) {
 
-            if(empty($params['search']))
+            if (empty($params['search']))
                 $totalRecords = $this->objAdminModel->getTotalProducts();
             else
                 $totalRecords = $totalRows;
@@ -413,5 +413,305 @@ class Administrator extends BaseController
         $data['data'] = $row;
 
         return json_encode($data);
+    }
+
+    public function showModalProduct()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
+        $data['categories'] = $this->objAdminModel->getCategories();
+        $data['countCategories'] = sizeof($data['categories']);
+
+        if ($data['action'] == 'create')
+            $data['title'] = 'Nuevo Producto';
+        elseif ($data['action'] == 'update') {
+            $data['product'] = $this->objAdminModel->getProductData($this->request->getPost('productID'));
+            $data['title'] = 'Actualizando ' . $data['product'][0]->name;
+        }
+
+        return view('admin/modals/product', $data);
+    }
+
+    public function createProduct()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $data = array();
+        $data['name'] = htmlspecialchars(trim($this->request->getPost('productName')));
+        $data['price'] = htmlspecialchars(trim($this->request->getPost('productPrice')));
+        $data['description'] = htmlspecialchars(trim($this->request->getPost('productDescription')));
+        $data['fk_category'] = $this->request->getPost('categoryID');
+
+        $resultCheckProductExist = $this->objAdminModel->checkProductExist($data['name']);
+
+        if (empty($resultCheckProductExist)) {
+
+            $result = $this->objAdminModel->objCreate('tpv_bar_product', $data);
+
+            if ($result['error'] == 0) { // SUCCESS
+
+                $response['error'] = 0;
+                $response['id'] = $result['id'];
+                $response['msg'] = 'Producto Creado';
+            } else { // ERROR CREATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 100;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
+        } else { // ERROR DUPLICATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 104;
+            $response['msg'] = 'Ya existe el producto';
+        }
+
+        return json_encode($response);
+    }
+
+    public function updateProduct()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $name = htmlspecialchars(trim($this->request->getPost('productName')));
+        $id = $this->request->getPost('productID');
+
+        $resultCheckProductExist = $this->objAdminModel->checkProductExist($name, $id);
+
+        if (empty($resultCheckProductExist)) {
+
+            $data = array();
+            $data['name'] = $name;
+            $data['price'] = trim($this->request->getPost('productPrice'));
+            $data['description'] = trim($this->request->getPost('productDescription'));
+            $data['fk_category'] = $this->request->getPost('categoryID');
+
+            $result = $this->objAdminModel->objUpdate('tpv_bar_product', $data, $id);
+
+            if ($result['error'] == 0) {
+
+                $response['error'] = 0;
+                $response['id'] = $id;
+                $response['msg'] = 'Producto Actualizado';
+            } else { // ERROR UPDATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 100;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+        } else { // ERROR DUPLICATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 104;
+            $response['msg'] = 'Ya existe el producto';
+        }
+
+        return json_encode($response);
+    }
+
+    public function changeProductStatus()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $id = $this->request->getPost('productID');
+
+        $data = array();
+        $data['status'] = $this->request->getPost('status');
+
+        $result = $this->objAdminModel->objUpdate('tpv_bar_product', $data, $id);
+
+        if ($result['error'] == 0) { // SUCCESS
+
+            $msg = '';
+
+            if ($data['status'] == 0)
+                $msg = 'Producto Desactivado';
+            elseif ($data['status'] == 1)
+                $msg = 'Producto Activado';
+
+            $response['error'] = 0;
+            $response['msg'] = $msg;
+        } else { // ERROR UPDATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 100;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
+    }
+
+    # CATEGORIES
+
+    public function catDataTable()
+    {
+        $result = $this->objAdminModel->getCategories();
+        $totalRows = sizeof($result);
+        $row = array();
+        $totalRecords = 0;
+
+        for ($i = 0; $i < $totalRows; $i++) {
+
+            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-cat" data-id="' . $result[$i]->id . '"><span class="mdi mdi-square-edit-outline" title="Editar Producto"></span></button>';
+
+            $col = array();
+            $col['category'] = $result[$i]->name;
+            $col['action'] = $btn_edit;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0)
+            $totalRecords = $totalRows;
+
+        $data = array();
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    }
+
+    public function showModalCat()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
+
+        if ($data['action'] == 'create') // CREATE
+            $data['title'] = 'Nueva Categoría de Producto';
+        elseif ($data['action'] == 'update') {
+            $data['category'] = $this->objAdminModel->getCatData($this->request->getPost('categoryID'));
+            $data['title'] = 'Editando Categoría ' . $data['category'][0]->name;
+        }
+
+        return view('admin/modals/cat', $data);
+    }
+
+    public function createCat()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $categoryName = htmlspecialchars(trim($this->request->getPost('categoryName')));
+        $resultCheckCatExist = $this->objAdminModel->checkCattExist($categoryName);
+
+        if (empty($resultCheckCatExist)) {
+
+            $data = array();
+            $data['name'] = $categoryName;
+
+            $result = $this->objAdminModel->objCreate('tpv_bar_category', $data);
+
+            if ($result['error'] == 0) { // SUCCESS
+
+                $response['error'] = 0;
+                $response['id'] = $result['id'];
+                $response['msg'] = 'Categoría Creada';
+            } else { // ERROR CREATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 100;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
+        } else { // ERROR DUPLICATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 104;
+            $response['msg'] = 'Ya existe la categoría';
+        }
+
+        return json_encode($response);
+    }
+
+    public function updateCat()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $id = $this->request->getPost('categoryID');
+        $categoryName = htmlspecialchars(trim($this->request->getPost('categoryName')));
+        $resultCheckCatExist = $this->objAdminModel->checkCattExist($categoryName, $id);
+
+        if (empty($resultCheckCatExist)) {
+
+            $data = array();
+            $data['name'] = $categoryName;
+
+            $result = $this->objAdminModel->objUpdate('tpv_bar_category', $data, $id);
+
+            if ($result['error'] == 0) { // SUCCESS
+
+                $response['error'] = 0;
+                $response['id'] = $id;
+                $response['msg'] = 'Categoría Actualizada';
+            } else { // ERROR UPDATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 103;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
+        } else { // ERROR DUPLICATE RECORD
+            $response['error'] = 1;
+            $response['code'] = 104;
+            $response['msg'] = 'Ya existe la categoría';
+        }
+
+        return json_encode($response);
     }
 }
