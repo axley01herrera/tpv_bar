@@ -146,13 +146,15 @@
         });
     });
 
-    dtEmployee.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE
+    dtEmployee.on('click', '.btn-actions-clave', function(event) { // SET OR UPDATE CLAVE TO EMPLOYEE
+
         event.preventDefault();
+
         $.ajax({
             type: "post",
-            url: "<?php echo base_url('Employee/showModalSetClave'); ?>",
+            url: "<?php echo base_url('Administrator/showModalSetClave'); ?>",
             data: {
-                'userID': $(this).attr('data-id'),
+                'id': $(this).attr('data-id'),
                 'action': $(this).attr('data-action'),
             },
             dataType: "html",
@@ -161,7 +163,7 @@
         }).fail(function(error) {
             showToast('error', 'Ha ocurrido un error');
         });
-    }); // OK
+    });
 
     dtEmployee.on('click', '.btn-edit-employee', function(event) { // UPDATE EMPLOYEE
 

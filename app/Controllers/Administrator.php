@@ -104,7 +104,7 @@ class Administrator extends BaseController
 
         if ($totalRows > 0) {
 
-            if(empty($params['search']))
+            if (empty($params['search']))
                 $totalRecords = $this->objAdminModel->getTotalEmployees();
             else
                 $totalRecords = $totalRows;
@@ -117,7 +117,7 @@ class Administrator extends BaseController
         $data['data'] = $row;
 
         return json_encode($data);
-    } 
+    }
 
     public function showModalEmployee()
     {
@@ -137,7 +137,7 @@ class Administrator extends BaseController
         }
 
         return view('admin/modals/employee', $data);
-    } 
+    }
 
     public function createEmployee()
     {
@@ -152,11 +152,11 @@ class Administrator extends BaseController
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
-        
+
         $data = array();
         $data['name'] = htmlspecialchars(trim($this->request->getPost('name')));
         $data['lastName'] = htmlspecialchars(trim($this->request->getPost('lastName')));
-        $data['user'] = htmlspecialchars(trim($this->request->getPost('user'))) ;
+        $data['user'] = htmlspecialchars(trim($this->request->getPost('user')));
 
         $resultCheckUserExist = $this->objAdminModel->checkUserExist($data['user']);
 
@@ -169,7 +169,6 @@ class Administrator extends BaseController
                 $response['error'] = 0;
                 $response['id'] = $result['id'];
                 $response['msg'] = 'Empleado Creado';
-
             } else { // ERROR CREATE RECORD
 
                 $response['error'] = 1;
@@ -181,7 +180,6 @@ class Administrator extends BaseController
             $response['error'] = 1;
             $response['code'] = 104;
             $response['msg'] = 'Ya existe un empleado con el usuario introducido';
-
         }
 
         return json_encode($response);
@@ -220,7 +218,6 @@ class Administrator extends BaseController
                 $response['error'] = 0;
                 $response['id'] = $id;
                 $response['msg'] = 'Empleado Actualizado';
-
             } else { // ERROR UPDATE RECORD
 
                 $response['error'] = 1;
@@ -269,8 +266,64 @@ class Administrator extends BaseController
 
             $response['error'] = 0;
             $response['msg'] = $msg;
-
         } else {
+
+            $response['error'] = 1;
+            $response['code'] = 100;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
+        }
+
+        return json_encode($response);
+    }
+
+    public function showModalSetClave()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['id'] = $this->request->getPost('id');
+        $data['action'] = $this->request->getPost('action');
+
+        $userData = $this->objAdminModel->getEmployeeData($this->request->getPost('id'));
+
+        if ($data['action'] == 'set_clave')
+            $data['title'] = 'Creando Contraseña para ' . $userData[0]->name . ' ' . $userData[0]->lastName;
+        else
+            $data['title'] = 'Actualizando Contraseña de ' . $userData[0]->name . ' ' . $userData[0]->lastName;
+
+        return view('admin/modals/setClave', $data);
+    }
+
+    public function setClave()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $id = $this->request->getPost('id');
+
+        $data = array();
+        $data['clave'] = password_hash($this->request->getPost('clave'), PASSWORD_DEFAULT); // ENCRYPT PASSWORD
+
+        $result = $this->objAdminModel->objUpdate('tpv_bar_employees', $data, $id);
+
+        if ($result['error'] == 0) { // SUCCESS
+
+            $response['error'] = 0;
+            $response['id'] = $id;
+            $response['msg'] = 'Empleado Actualizado';
+            
+        } else { // ERROR UPDATE RECORD
 
             $response['error'] = 1;
             $response['code'] = 100;

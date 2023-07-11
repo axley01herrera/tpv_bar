@@ -28,31 +28,39 @@
 
 <script>
     $('#btn-modal-submit').on('click', function() {
+
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
+
         if (resultCheckRequiredValues == 0) {
+
             let clave = $('#txt-clave').val();
             let clave2 = $('#txt-clave2').val();
+
             if (clave == clave2) {
+
                 $('btn-modal-submit').attr('disabled', true);
+
                 $.ajax({
                     type: "post",
-                    url: "<?php echo base_url('Employee/setClave'); ?>",
+                    url: "<?php echo base_url('Administrator/setClave'); ?>",
                     data: {
                         'clave': clave,
-                        'userID': '<?php echo $userID; ?>'
+                        'id': '<?php echo $id; ?>'
                     },
                     dataType: "json",
                 }).done(function(jsonResponse) {
-                    if (jsonResponse.error == 0) // SUCCESS
-                    {
+
+                    if (jsonResponse.error == 0) { // SUCCESS
+
                         showToast('success', jsonResponse.msg);
-                        dataTable.draw();
+                        dtEmployee.draw();
                         closeModal();
+
                     } else // ERROR
                         showToast('error', jsonResponse.msg);
 
-                    if (jsonResponse.error == 2) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Admin'); ?>?msg="sessionExpired"';
+                    if (jsonResponse.code == 103) // SESSION EXPIRED
+                        window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
 
                 }).fail(function(error) {
                     showToast('error', 'Ha ocurrido un error');
