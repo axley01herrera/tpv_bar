@@ -225,8 +225,10 @@ class AdminModel extends Model
         if(!empty($id))
             $query->where('id', $id);
 
-        if(!empty($fk_category))
+        if(!empty($fk_category)) {
             $query->where('fk_category', $fk_category);
+            $query->where('status', 1);
+        }
 
         return $query->get()->getResult();
     }
@@ -241,6 +243,14 @@ class AdminModel extends Model
             $IDs[0] = $id;
             $query->whereNotIn('id', $IDs);
         }
+
+        return $query->get()->getResult();
+    }
+
+    public function getActiveProducts()
+    {
+        $query = $this->db->table('tpv_bar_product')
+        ->where('status', 1);
 
         return $query->get()->getResult();
     }

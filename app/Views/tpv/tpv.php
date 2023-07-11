@@ -1,40 +1,15 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <title>TPV</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="TPV" name="description" />
-    <meta content="Axley Herrera" name="author" />
-
-    <link rel="shortcut icon" href="<?php echo base_url('assets/images/app-icon.ico'); ?>">
-    <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/css/icons.min.css'); ?>" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/css/app.min.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
-
-    <script src="<?php echo base_url('assets/libs/jquery/jquery.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/metismenujs/metismenujs.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/simplebar/simplebar.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/feather-icons/feather.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/js/customApp.js'); ?>"></script>
-</head>
-
-<body>
+<?php include('header.php'); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 text-end">
-                <h1 class="mt-1 text-purple">Mesa: <?php echo $tableInfo[0]->tableID; ?> | <a class="text-danger" href="<?php echo base_url('TPV'); ?>">Salir</a></h1>
+                <h1 class="mt-1 text-dark">Mesa: <?php echo $tableInfo[0]->tableID; ?> | <a class="text-danger" href="<?php echo base_url('TPV'); ?>">Salir</a></h1>
             </div>
         </div>
         <div class="row">
             <div class="col-12 col-lg-8">
                 <div class="card mt-1">
                     <div class="card-body">
-                        <h5 class="text-purple">Categorías</h5>
+                        <h5 class="text-dark">Categorías</h5>
                         <div class="row">
                             <div class="col-12">
                                 <button data-id="0" id="btn-all-products" class="btn active btn-lg btn-purple mt-2 ml-2 ms-2 cat">Todo</button>
@@ -47,7 +22,7 @@
                 </div>
                 <div class="card mt-1">
                     <div class="card-body">
-                        <h5 class="text-purple">Productos</h5>
+                        <h5 class="text-dark">Productos</h5>
                         <!-- MAIN PRODUCT -->
                         <div id="main-product">
                             <?php include('tpvProducts.php'); ?>
@@ -58,7 +33,7 @@
             <div class="col-12 col-lg-4">
                 <div class="card mt-1">
                     <div class="card-body">
-                        <h5 class="text-purple">Ticket</h5>
+                        <h5 class="text-dark">Ticket</h5>
                         <!-- MAIN TICKET-->
                         <div id="main-ticket" class="col-12">
                             <?php include('tpvTicket.php'); ?>
@@ -69,6 +44,7 @@
         </div>
     </div>
 </body>
+</html>
 
 <script>
     var tableID = '<?php echo $tableID; ?>';

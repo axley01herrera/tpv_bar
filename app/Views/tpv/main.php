@@ -1,47 +1,40 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <title>TPV</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="TPV" name="description" />
-    <meta content="Axley Herrera" name="author" />
-
-    <link rel="shortcut icon" href="<?php echo base_url('assets/images/app-icon.ico'); ?>">
-    <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/css/icons.min.css'); ?>" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/css/app.min.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
-    <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
-
-    <script src="<?php echo base_url('assets/libs/jquery/jquery.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/metismenujs/metismenujs.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/simplebar/simplebar.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/feather-icons/feather.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/js/customApp.js'); ?>"></script>
-</head>
-
-<body>
+<?php include('header.php'); ?>
     <div class="container-fluid">
+
+        <!-- TOP BAR -->
+        
+        <nav class="navbar navbar-expand-lg" style="position: top; background-color: #dce9f1;">
+            <div class="container-fluid">
+                <ul class="navbar-nav  me-5 mb-2 mb-lg-0 ">
+    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-success" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="<?php echo base_url('assets/images/users/user.png'); ?>" alt="user" class="img-fluid" width="50px">
+                            <h5 class="text-dark text-center"><?php echo $user['name'] . ' ' . $user['lastName']; ?></h5>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="<?php echo base_url('Home'); ?>"> Salir </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <!-- END TOP BAR -->
+
         <div class="row">
-            <div class="col-12 col-lg-6 mt-5">
+
+            <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 text-end">
-                                <img src="<?php echo base_url('assets/images/users/user.png'); ?>" alt="" width="50px">
-                                <a title="Salir" href="<?php echo base_url('Home'); ?>">
-                                    <p class="text-danger"><?php echo $user['name'] . ' ' . $user['lastName']; ?> <i class="text-danger mdi mdi-logout"></i></p>
-                                </a>
 
-                            </div>
-                        </div>
-                        <h5 class="text-purple">Sala</h5>
+                        <h5 class="text-dark">Sala</h5>
+
                         <div class="row mb-5">
                             <div class="col-12">
-                                <?php for ($i = 1; $i <= 20; $i++) { ?>
+                                <?php for ($i = 1; $i <= 50; $i++) { ?>
                                     <button <?php
                                             if (in_array('S' . $i, array_column($table, 'tableName'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'S' . $i; ?>"><?php echo 'S' . $i; ?>
                                     </button>
@@ -49,11 +42,11 @@
                             </div>
                         </div>
 
-                        <h5 class="text-purple">Terraza</h5>
+                        <h5 class="text-dark">Terraza</h5>
 
                         <div class="row mt-2">
                             <div class="col-12">
-                                <?php for ($i = 1; $i <= 20; $i++) { ?>
+                                <?php for ($i = 1; $i <= 50; $i++) { ?>
                                     <button <?php
                                             if (in_array('T' . $i, array_column($table, 'tableName'))) { ?> class="btn btn-lg mt-3 ml-3 ms-3 btn-purple" disabled <?php } else { ?> class="btn btn-lg btn-soft-purple mt-3 ml-3 ms-3 btn-table" <?php } ?> value="<?php echo 'T' . $i; ?>"><?php echo 'T' . $i; ?>
                                     </button> <?php } ?>
@@ -62,26 +55,35 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6 mt-5">
+
+            <div class="col-12 col-lg-6 ">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="text-purple">Mesas Abiertas</h5>
+
+                        <h5 class="text-darj">Mesas Abiertas</h5>
+
                         <table class="table table-hover table-borderless">
                             <thead>
-                                
+
                                 <th class="text-purple text-center"></th>
                                 <th class="text-purple text-center"></th>
                                 <th class="text-purple text-center"></th>
                             </thead>
                             <tbody>
                                 <?php for ($i = 0; $i < $countTable; $i++) { ?>
-                                    
+
                                     <tr>
-                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5><span class="badge badge-soft-purple"><?php echo $table[$i]->tableName; ?></span></h5></a></td>
-                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5 class="text-purple"><?php echo date('d-m-Y h:i:s A', strtotime($table[$i]->dateOpen)); ?></h5></a></td>
-                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv').'/'.$table[$i]->tableID; ?>"><h5 class="text-success"><?php echo '€ ' . number_format($table[$i]->price, 2, ".", ','); ?></h5></a></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv') . '/' . $table[$i]->tableID; ?>">
+                                                <h5><span class="badge badge-soft-purple"><?php echo $table[$i]->tableName; ?></span></h5>
+                                            </a></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv') . '/' . $table[$i]->tableID; ?>">
+                                                <h5 class="text-purple"><?php echo date('d-m-Y h:i:s A', strtotime($table[$i]->dateOpen)); ?></h5>
+                                            </a></td>
+                                        <td class="text-center"><a href="<?php echo base_url('TPV/tpv') . '/' . $table[$i]->tableID; ?>">
+                                                <h5 class="text-success"><?php echo '€ ' . number_format($table[$i]->price, 2, ".", ','); ?></h5>
+                                            </a></td>
                                     </tr>
-                                    
+
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -91,6 +93,7 @@
         </div>
     </div>
 </body>
+</html>
 <script>
     $('.btn-table').on('click', function() { // OPEN TABLE
 
@@ -105,14 +108,13 @@
             dataType: "json",
             success: function(jsonResponse) {
 
-                if (jsonResponse.error == 0) { // SUCCESS
+                if (jsonResponse.error == 0)  // SUCCESS
                     window.location.href = "<?php echo base_url('TPV/tpv') ?>" + '/' + jsonResponse.id;
-                } else if (jsonResponse.error == 1) { // ERROR
+                else if (jsonResponse.error == 1)  // ERROR
                     showToast('error', 'Ha ocurrido un error');
-                } else if (jsonResponse.error == 2) { // SESSION EXPIRED
-                    window.location.href = '<?php echo base_url('Home'); ?>?msg=sessionExpired';
-                }
-
+                else if (jsonResponse.error == 2)  // SESSION EXPIRED
+                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesión Expireda';
+                
             },
             error: function(error) {
                 showToast('error', 'Ha ocurrido un error');

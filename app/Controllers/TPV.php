@@ -2,16 +2,20 @@
 
 namespace App\Controllers;
 
-use App\Models\ProductModel;
+use App\Models\AdminModel;
 use App\Models\TpvModel;
 
 class TPV extends BaseController
 {
     protected $objSession;
+    public $objAdminModel;
+    public $objTpvModel;
 
     function  __construct()
     {
         $this->objSession = session();
+        $this->objAdminModel = new AdminModel;
+        $this->objTpvModel = new TpvModel;
     }
 
     public function index()
@@ -49,7 +53,7 @@ class TPV extends BaseController
         $data['dateOpen'] = date('Y-m-d');
 
         $obTpvModel = new TpvModel;
-        $result = $obTpvModel->objCreate('tables', $data);
+        $result = $obTpvModel->objCreate('tpv_bar_tables', $data);
 
         return json_encode($result);
     }
@@ -60,13 +64,11 @@ class TPV extends BaseController
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
-        $objProductModel = new ProductModel;
-        $objTpvModel = new TpvModel;
         $tableID = $this->request->uri->getSegment(3);
-        $category = $objProductModel->getCategories();
-        $products = $objProductModel->getProducts();
-        $tableInfo = $objTpvModel->getTables($tableID);
-        $ticket = $objTpvModel->getTicketByTable($tableID);
+        $category = $this->objAdminModel->getCategories();
+        $products = $this->objAdminModel->getActiveProducts();
+        $tableInfo = $this->objTpvModel->getTables($tableID);
+        $ticket = $this->objTpvModel->getTicketByTable($tableID);
 
         $data = array();
         $data['tableID'] = $tableID;
@@ -87,9 +89,8 @@ class TPV extends BaseController
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
-        $objProductModel = new ProductModel;
         $catgoryID = $this->request->getPost('catgoryID');
-        $result = $objProductModel->getProductData(null, $catgoryID);
+        $result = $this->objAdminModel->getProductData(null, $catgoryID);
 
         $data = array();
         $data['products'] = $result;
@@ -110,7 +111,7 @@ class TPV extends BaseController
         $data['fkProduct'] = $this->request->getPost('productID');
 
         $objTpvModel = new TpvModel;
-        $result = $objTpvModel->objCreate('ticket', $data);
+        $result = $objTpvModel->objCreate('tpv_bar_ticket', $data);
 
         if ($result['error'] == 0) {
 
@@ -127,7 +128,7 @@ class TPV extends BaseController
         $ticketID = $this->request->getPost('ticketID');
 
         $objTpvModel = new TpvModel;
-        $result = $objTpvModel->objDelete('ticket', $ticketID);
+        $result = $objTpvModel->objDelete('tpv_bar_ticket', $ticketID);
 
         if ($result === true) {
             

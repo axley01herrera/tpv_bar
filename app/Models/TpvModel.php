@@ -39,7 +39,7 @@ class TpvModel extends Model
 
     public function getOpenTables()
     {
-        $query = $this->db->table('tables ta')
+        $query = $this->db->table('tpv_bar_tables ta')
         ->select('ta.id tableID,
         ta.dateOpen dateOpen,
         ta.tableID tableName,
@@ -47,19 +47,17 @@ class TpvModel extends Model
         SUM(p.price) AS price
         ')
         ->where('ta.status', 1)
-        ->join('ticket ti', 'ti.fkTable = ta.id')
-        ->join('product p', 'p.id = ti.fkProduct')
+        ->join('tpv_bar_ticket ti', 'ti.fkTable = ta.id')
+        ->join('tpv_bar_product p', 'p.id = ti.fkProduct')
         ->groupBy('ti.fkTable')
         ->orderBy('ta.id', 'desc');
-
-        // var_dump($query->get()->getResult()); exit();
 
         return $query->get()->getResult();
     }
 
     public function getTables($id)
     {
-        $query = $this->db->table('tables')
+        $query = $this->db->table('tpv_bar_tables')
         ->where('id', $id);
 
         return $query->get()->getResult();
@@ -67,16 +65,15 @@ class TpvModel extends Model
 
     public function getTicketByTable($fkTable)
     {
-        $query = $this->db->table('ticket t')
+        $query = $this->db->table('tpv_bar_ticket t')
         ->select('t.id ticketID, 
         p.name,
         p.id productID, 
         p.price price')
-        ->join('product p', 'p.id = t.fkProduct') 
+        ->join('tpv_bar_product p', 'p.id = t.fkProduct') 
         ->where('t.fkTable', $fkTable)
         ->orderBy('t.id', 'desc');
 
-    
         return $query->get()->getResult();  
     }
 }
