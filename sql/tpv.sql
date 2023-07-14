@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 20-06-2023 a las 17:53:28
+-- Tiempo de generación: 14-07-2023 a las 19:18:11
 -- Versión del servidor: 5.7.36
 -- Versión de PHP: 7.4.26
 
@@ -26,47 +26,57 @@ USE `tpv`;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `category`
+-- Estructura de tabla para la tabla `tpv_bar_administrator`
 --
 
-DROP TABLE IF EXISTS `category`;
-CREATE TABLE IF NOT EXISTS `category` (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+DROP TABLE IF EXISTS `tpv_bar_administrator`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_administrator` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `password` varchar(999) COLLATE utf8_spanish_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `category`
+-- Volcado de datos para la tabla `tpv_bar_administrator`
 --
 
-INSERT INTO `category` (`id`, `name`) VALUES
-(1, 'Cervezas'),
-(2, 'Refrescos'),
-(3, 'Bocadillos'),
-(4, 'Desayunos'),
-(5, 'Vinos Tintos'),
-(6, 'Sopas'),
-(7, 'Vinos Blancos'),
-(8, 'Cavas'),
-(9, 'Pastas'),
-(10, 'Pizzas'),
-(11, 'Ensaladas'),
-(12, 'Entrantes'),
-(13, 'Tapas'),
-(14, 'Postres'),
-(15, 'Guarniciones'),
-(16, 'Hamburguesas');
+INSERT INTO `tpv_bar_administrator` (`id`, `password`) VALUES
+(1, '$2y$10$8QMJLv8/8OcaDqtUQviXweYESHxbky3igXBCjyUThAcKpZvkeBdvG');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `employee`
+-- Estructura de tabla para la tabla `tpv_bar_category`
 --
 
-DROP TABLE IF EXISTS `employee`;
-CREATE TABLE IF NOT EXISTS `employee` (
+DROP TABLE IF EXISTS `tpv_bar_category`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_category` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tpv_bar_category`
+--
+
+INSERT INTO `tpv_bar_category` (`id`, `name`) VALUES
+(1, 'Refrescos'),
+(2, 'Tapas'),
+(3, 'Cervezas'),
+(4, 'Bocadillos'),
+(5, 'Vinos Tintos'),
+(6, 'Cafés');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tpv_bar_employees`
+--
+
+DROP TABLE IF EXISTS `tpv_bar_employees`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_employees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `lastName` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
@@ -75,26 +85,23 @@ CREATE TABLE IF NOT EXISTS `employee` (
   `status` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`user`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `employee`
+-- Volcado de datos para la tabla `tpv_bar_employees`
 --
 
-INSERT INTO `employee` (`id`, `name`, `lastName`, `user`, `clave`, `status`) VALUES
-(1, 'Axley', 'Herrera', 'axley01herrera', '$2y$10$4MNy.8jmsWIpV9KQtwhau.26qEQgQCGWT1nupYsR.HVIz4JeW4hdy', 1),
-(2, 'Miguel', 'Alfonso', 'migue01alfonso', '', 1),
-(3, 'Carlos', 'Gil', 'carlos01gil', '', 1),
-(4, 'Roberto', 'Ramose', 'robe01ram', '', 1);
+INSERT INTO `tpv_bar_employees` (`id`, `name`, `lastName`, `user`, `clave`, `status`) VALUES
+(1, 'Nicole', 'Herrera', 'nicole', '$2y$10$DWv3CSGPkRTE.dl1UH7qye2KvFGAyzmqBb.9YvXo1XWCLGe95wXfS', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `product`
+-- Estructura de tabla para la tabla `tpv_bar_product`
 --
 
-DROP TABLE IF EXISTS `product`;
-CREATE TABLE IF NOT EXISTS `product` (
+DROP TABLE IF EXISTS `tpv_bar_product`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `price` float NOT NULL,
@@ -102,43 +109,32 @@ CREATE TABLE IF NOT EXISTS `product` (
   `status` int(11) NOT NULL DEFAULT '1' COMMENT '1= activo 0=inactivo',
   `fk_category` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `product`
+-- Volcado de datos para la tabla `tpv_bar_product`
 --
 
-INSERT INTO `product` (`id`, `name`, `price`, `description`, `status`, `fk_category`) VALUES
-(1, 'Tropical Botella', 2, 'Cerveza Canaria', 1, 1),
-(2, 'Tropical Jarra', 3, 'Cerveza Canaria', 1, 1),
-(3, 'Tropical Caña', 1.25, 'Cerveza Canaria', 1, 1),
-(4, 'Tropical Botellín', 1, 'Cerveza Canaria', 1, 1),
-(5, 'Cocacola Grande', 2, '', 1, 2),
-(6, 'Cocacola Pequeña', 1.5, '', 1, 2),
-(7, 'Sprite Pequeño', 1.5, '', 1, 2),
-(8, 'Sprite Grande', 2, '', 1, 2),
-(9, 'Cocacola Botella', 1.5, '', 1, 2),
-(10, 'Cocacola Botellín', 1, '', 1, 2),
-(11, 'Fanta Naranja Botella', 1.5, '', 1, 2),
-(12, 'Cocacola litro 1/2', 2.5, '', 1, 2),
-(13, 'Papas Arrugadas', 5, '', 1, 13),
-(14, 'Carne Mechada', 6, 'Carne de Ternera mechada con salsa de tomate.', 1, 13),
-(15, 'Puntillas de Calamar', 7.5, 'Puntillas de calamar rebosadas', 1, 12),
-(16, 'Gambas al Ajillo', 12.5, 'Gambas en aceite oliva con ajo y champiñones salteados', 1, 12),
-(17, 'Duque de Medina Tinto Joven', 9.9, '', 1, 5),
-(18, 'Duque de Medina Blanco Joven', 12.9, '', 1, 7),
-(19, 'Wopper', 7, '', 1, 16),
-(20, 'Arroz Blanco', 5, 'Arroz blanco cocido con sal al punto.', 1, 15),
-(21, 'Tarta de Manzana', 4.5, 'Base de nata, con manzana confitada', 1, 14);
+INSERT INTO `tpv_bar_product` (`id`, `name`, `price`, `description`, `status`, `fk_category`) VALUES
+(1, 'Cocacola', 1.5, '', 1, 1),
+(2, 'Fanta de Naranja', 1.5, '', 1, 1),
+(3, 'Sprite', 1.5, '', 1, 1),
+(4, 'Tropical Caña', 1, '', 1, 3),
+(5, 'Tropical Botella', 1.5, '', 1, 3),
+(6, 'Papas Arrugadas', 5, 'Papa canaria arrugada con mojo verde y mojo picón.', 1, 2),
+(7, 'Pepito de Ternera', 4.5, 'Pan baguet, ternera, queso, jamón, huevo y salsa a elegir.', 1, 4),
+(8, 'Duque de Medina Joven', 9.9, '', 1, 5),
+(9, 'Expresso', 1, '', 1, 6),
+(10, 'Americano', 1.5, '', 1, 6);
 
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `product_view`
+-- Estructura Stand-in para la vista `tpv_bar_product_view`
 -- (Véase abajo para la vista actual)
 --
-DROP VIEW IF EXISTS `product_view`;
-CREATE TABLE IF NOT EXISTS `product_view` (
+DROP VIEW IF EXISTS `tpv_bar_product_view`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_product_view` (
 `productID` int(11)
 ,`productName` varchar(100)
 ,`productPrice` float
@@ -152,32 +148,88 @@ CREATE TABLE IF NOT EXISTS `product_view` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `user_admin`
+-- Estructura de tabla para la tabla `tpv_bar_tables`
 --
 
-DROP TABLE IF EXISTS `user_admin`;
-CREATE TABLE IF NOT EXISTS `user_admin` (
+DROP TABLE IF EXISTS `tpv_bar_tables`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_tables` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `password` varchar(999) COLLATE utf8_spanish_ci NOT NULL,
+  `tableID` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
+  `dateOpen` timestamp NOT NULL,
+  `dateClose` date DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '0=closed\r\n1=open',
+  `fkEmployee` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `user_admin`
+-- Volcado de datos para la tabla `tpv_bar_tables`
 --
 
-INSERT INTO `user_admin` (`id`, `password`) VALUES
-(1, '$2y$10$8QMJLv8/8OcaDqtUQviXweYESHxbky3igXBCjyUThAcKpZvkeBdvG');
+INSERT INTO `tpv_bar_tables` (`id`, `tableID`, `dateOpen`, `dateClose`, `status`, `fkEmployee`) VALUES
+(1, 'S1', '2023-07-11 19:39:59', NULL, 1, 1),
+(2, 'T5', '2023-07-11 19:42:19', NULL, 1, 1),
+(3, 'T50', '2023-07-11 19:47:17', NULL, 1, 1);
+
+--
+-- Disparadores `tpv_bar_tables`
+--
+DROP TRIGGER IF EXISTS `tables_on_insert`;
+DELIMITER $$
+CREATE TRIGGER `tables_on_insert` BEFORE INSERT ON `tpv_bar_tables` FOR EACH ROW BEGIN
+    SET NEW.dateOpen = CURRENT_TIMESTAMP();
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `tables_on_update`;
+DELIMITER $$
+CREATE TRIGGER `tables_on_update` BEFORE UPDATE ON `tpv_bar_tables` FOR EACH ROW BEGIN
+    SET NEW.dateClose = CURRENT_TIMESTAMP();
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `product_view`
+-- Estructura de tabla para la tabla `tpv_bar_ticket`
 --
-DROP TABLE IF EXISTS `product_view`;
 
-DROP VIEW IF EXISTS `product_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_view`  AS SELECT `product`.`id` AS `productID`, `product`.`name` AS `productName`, `product`.`price` AS `productPrice`, `product`.`description` AS `productDescription`, `product`.`status` AS `statusID`, (case when (`product`.`status` = 0) then 'Inactivo' when (`product`.`status` = 1) then 'Activo' end) AS `productStatus`, `product`.`fk_category` AS `categoryID`, `category`.`name` AS `categoryName` FROM (`product` join `category` on((`category`.`id` = `product`.`fk_category`))) ;
+DROP TABLE IF EXISTS `tpv_bar_ticket`;
+CREATE TABLE IF NOT EXISTS `tpv_bar_ticket` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fkTable` int(11) NOT NULL,
+  `fkProduct` int(11) NOT NULL,
+  `fkEmployee` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tpv_bar_ticket`
+--
+
+INSERT INTO `tpv_bar_ticket` (`id`, `fkTable`, `fkProduct`, `fkEmployee`) VALUES
+(1, 1, 8, 1),
+(2, 1, 3, 1),
+(3, 1, 1, 1),
+(4, 2, 4, 1),
+(5, 2, 7, 1),
+(6, 3, 9, 1),
+(7, 3, 10, 1),
+(8, 3, 4, 1),
+(9, 3, 4, 1),
+(10, 3, 6, 1),
+(11, 3, 6, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `tpv_bar_product_view`
+--
+DROP TABLE IF EXISTS `tpv_bar_product_view`;
+
+DROP VIEW IF EXISTS `tpv_bar_product_view`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tpv_bar_product_view`  AS SELECT `tpv_bar_product`.`id` AS `productID`, `tpv_bar_product`.`name` AS `productName`, `tpv_bar_product`.`price` AS `productPrice`, `tpv_bar_product`.`description` AS `productDescription`, `tpv_bar_product`.`status` AS `statusID`, (case when (`tpv_bar_product`.`status` = 0) then 'Inactivo' when (`tpv_bar_product`.`status` = 1) then 'Activo' end) AS `productStatus`, `tpv_bar_product`.`fk_category` AS `categoryID`, `tpv_bar_category`.`name` AS `categoryName` FROM (`tpv_bar_product` join `tpv_bar_category` on((`tpv_bar_category`.`id` = `tpv_bar_product`.`fk_category`))) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
