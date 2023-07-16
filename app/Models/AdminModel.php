@@ -140,6 +140,22 @@ class AdminModel extends Model
         return $query->get()->getResult();
     }
 
+    public function getAdminData($id)
+    {
+        $query = $this->db->table('tpv_bar_administrator')
+            ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
+    public function objData($table)
+    {
+        $query = $this->db->table($table)
+        ->select('*');
+
+        return $query->get()->getResult();
+    }
+
     public function checkUserExist($user, $id = '')
     {
         $query = $this->db->table('tpv_bar_employees')
@@ -283,6 +299,16 @@ class AdminModel extends Model
     {
         $query = $this->db->table('tpv_bar_category')
         ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
+
+    //CHANGE KEY ADMINISTRATOR
+    public function checkPasswordExist($password, $id = '')
+    {
+        $query = $this->db->table('tpv_bar_administrator')
+            ->where('password', $password);
 
         return $query->get()->getResult();
     }

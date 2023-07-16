@@ -5,10 +5,10 @@
             <div class="navbar-brand-box">
                 <a href="" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="<?php echo base_url("assets/images/logo-sm.png");?>" alt="tpv" height="22">
+                        <img src="<?php echo base_url("assets/images/logo-sm.png"); ?>" alt="tpv" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="<?php echo base_url("assets/images/logo.png");?>" alt="tpv" height="22">
+                        <img src="<?php echo base_url("assets/images/logo.png"); ?>" alt="tpv" height="22">
                     </span>
                 </a>
             </div>
@@ -25,9 +25,34 @@
                     <div class="p-3 bg-primary border-bottom">
                         <h6 class="mb-0 text-white">Administrador</h6>
                     </div>
-                    <a class="dropdown-item" href="<?php echo base_url('Home');?>"><i class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Salir</span></a>
+                    <a class="dropdown-item" href="" id="btn-changeKey"><i class="mdi mdi-account-key text-muted font-size-16 align-middle me-1"></i><span class="align-middle">Cambiar Contraseña</span></a>
+                    <a class="dropdown-item" href="<?php echo base_url('Home'); ?>"><i class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i> <span class="align-middle">Salir</span></a>
                 </div>
             </div>
         </div>
     </div>
 </header>
+
+<?php echo view('global/formValidation'); ?>
+
+<script>
+    $(document).ready(function() {
+
+        $('#btn-changeKey').click(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo base_url('Administrator/showModalChangeKey') ?>",
+                data: {
+                    action : 'update'        
+                },
+                dataType: "html",
+                success: function(htmlResponse) {
+                    $('#main-modal').html(htmlResponse);
+                }
+            });
+
+        });
+    });
+</script>

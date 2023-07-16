@@ -113,7 +113,7 @@
                 else if (jsonResponse.error == 1)  // ERROR
                     showToast('error', 'Ha ocurrido un error');
                 else if (jsonResponse.error == 2)  // SESSION EXPIRED
-                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesión Expireda';
+                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesión Expirada';
                 
             },
             error: function(error) {

@@ -17,6 +17,8 @@ class Administrator extends BaseController
 
     public function index()
     {
+        $objAdminModel = new AdminModel;
+        $data['admin'] = $objAdminModel->objData('tpv_bar_administrator');
         return view('logout');
     }
 
@@ -29,7 +31,6 @@ class Administrator extends BaseController
         $data = array();
         $data['menu_ative'] = 'dashboard';
         $data['page'] = 'admin/dashboard/index';
-
         return view('admin/header', $data);
     }
 
@@ -710,6 +711,78 @@ class Administrator extends BaseController
             $response['error'] = 1;
             $response['code'] = 104;
             $response['msg'] = 'Ya existe la categoría';
+        }
+
+        return json_encode($response);
+    }
+
+
+    // FUNCTION CAMBIAR CLAVE DE ADMINISTRADOR
+
+    public function showModalChangeKey()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $data = array();
+        $data['action'] = $this->request->getPost('action');
+
+        if ($data['action'] == 'create')
+            $data['title'] = 'Cree una Contraseña';
+        elseif ($data['action'] == 'update') {
+
+            $result = $this->objAdminModel->getAdminData($this->request->getPost('adminID'));
+            $data['title'] = 'Cambie su clave';
+            $data['admin'] = $result;
+        }
+
+        return view('admin/modals/changeKey', $data);
+    }
+
+    public function updateKey()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $passwordD = $this->request->getPost('password');
+        $password = password_hash($passwordD, PASSWORD_DEFAULT);
+        $id = $this->request->getPost('adminID');
+
+        $resultCheckPasswordExist = $this->objAdminModel->checkPasswordExist($password, $id);
+
+        if (empty($resultCheckPasswordExist)) {
+
+            $data = array();
+            $data['password'] = $password;
+
+            $result = $this->objAdminModel->objUpdate('tpv_bar_administrator', $data, $id);
+
+            if ($result['error'] == 0) { // SUCCESS
+
+                $response['error'] = 0;
+                $response['id'] = $id;
+                $response['msg'] = 'Contraseña Actualizada';
+            } else { // ERROR UPDATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 100;
+                $response['msg'] = 'Ha ocurrido un error en el proceso';
+            }
+        } else { // ERRROR DUPLICATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 104;
+            $response['msg'] = 'No puede introducir la contraseña actual';
         }
 
         return json_encode($response);
