@@ -24,3 +24,4 @@
 </head>
 
 <body style="background-color: #dce9f1">
+    <div id="main-modal"></div>

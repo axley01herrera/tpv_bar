@@ -28,6 +28,27 @@ class TpvModel extends Model
         return $return;
     }
 
+    public function objUpdate($table, $data, $id)
+    {
+        $return = array();
+
+        $query = $this->db->table($table)
+            ->where('id', $id)
+            ->update($data);
+
+        if ($query == true) {
+
+            $return['error'] = 0;
+            $return['id'] = $id;
+        } else {
+
+            $return['error'] = 1;
+            $return['id'] = $id;
+        }
+
+        return $return;
+    }
+
     public function objDelete($table, $id)
     {
         $query = $this->db->table($table)
@@ -43,14 +64,16 @@ class TpvModel extends Model
         ->select('ta.id tableID,
         ta.dateOpen dateOpen,
         ta.tableID tableName,
-        COUNT(p.id) AS products,
+        e.name,
+        e.lastName,
         SUM(p.price) AS price
         ')
         ->where('ta.status', 1)
         ->join('tpv_bar_ticket ti', 'ti.fkTable = ta.id')
         ->join('tpv_bar_product p', 'p.id = ti.fkProduct')
+        ->join('tpv_bar_employees e', 'e.id = ta.fkEmployee')
         ->groupBy('ti.fkTable')
-        ->orderBy('ta.id', 'desc');
+        ->orderBy('ta.id', 'desc'); 
 
         return $query->get()->getResult();
     }
