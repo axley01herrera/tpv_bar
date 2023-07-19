@@ -704,13 +704,93 @@ class Administrator extends BaseController
             } else { // ERROR UPDATE RECORD
 
                 $response['error'] = 1;
-                $response['code'] = 103;
+                $response['code'] = 100;
                 $response['msg'] = 'Ha ocurrido un error';
             }
         } else { // ERROR DUPLICATE RECORD
             $response['error'] = 1;
             $response['code'] = 104;
             $response['msg'] = 'Ya existe la categoría';
+        }
+
+        return json_encode($response);
+    }
+
+    # TOP BAR OPTIONS
+
+    public function showModalConfig()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $result = $this->objAdminModel->getConfigData();
+        $count = sizeof($result);
+
+        $hall = 0;
+        $terrace = 0;
+
+        for($i = 0; $i < $count; $i++) {
+
+            if($result[$i]->type == 'hall')
+                $hall = $result[$i]->valueNumber;
+            elseif($result[$i]->type == 'terrace')
+                $terrace = $result[$i]->valueNumber;
+        }
+
+        $data = array();
+        $data['hall'] = $hall;
+        $data['terrace'] = $terrace;
+        $data['title'] = 'Configuración';
+
+        return view('admin/modals/config', $data);
+    }
+
+    public function setConfig()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+
+            $response['error'] = 1;
+            $response['code'] = 103;
+            $response['msg'] = 'Sesión Expirada';
+
+            return json_encode($response); // ERROR SESSION EXPIRED
+        }
+
+        $hall = $this->request->getPost('hall');
+        $terrace = $this->request->getPost('terrace');
+
+        $data = array();
+        $data['valueNumber'] = $hall;
+
+        $resultUpdateHall = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 1);
+
+        if($resultUpdateHall['error'] == 0) { // SUCCESS
+
+            $data = array();
+            $data['valueNumber'] = $terrace;
+
+            $resultUpdateTerrace = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 2);
+
+            if($resultUpdateTerrace['error'] == 0) { // SUCCESS
+
+                $response['error'] = 0;
+                $response['msg'] = 'Configuracón Actualizada';
+
+            } else { // ERROR UPDATE RECORD
+
+                $response['error'] = 1;
+                $response['code'] = 100;
+                $response['msg'] = 'Ha ocurrido un error';
+            }
+        } else { // ERROR UPDATE RECORD
+
+            $response['error'] = 1;
+            $response['code'] = 100;
+            $response['msg'] = 'Ha ocurrido un error';
         }
 
         return json_encode($response);
@@ -723,8 +803,7 @@ class Administrator extends BaseController
             return view('logout');
 
         $data = array();
-        $data['action'] = $this->request->getPost('action');
-        $data['title'] = 'Cambie su contraseña de Administrador';
+        $data['title'] = 'Contraseña de Administrador';
 
         return view('admin/modals/changeKey', $data);
     }

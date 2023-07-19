@@ -299,4 +299,11 @@ class AdminModel extends Model
 
         return $query->get()->getResult();
     }
+
+    public function getConfigData()
+    {
+        return $this->db->table('tpv_bar_configuration')
+        ->get()
+        ->getResult();
+    }
 }
