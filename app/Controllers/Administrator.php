@@ -716,9 +716,6 @@ class Administrator extends BaseController
         return json_encode($response);
     }
 
-
-    // FUNCTION CAMBIAR CLAVE DE ADMINISTRADOR
-
     public function showModalChangeKey()
     {
         # VERIFY SESSION
@@ -727,15 +724,7 @@ class Administrator extends BaseController
 
         $data = array();
         $data['action'] = $this->request->getPost('action');
-
-        if ($data['action'] == 'create')
-            $data['title'] = 'Cree una Contraseña';
-        elseif ($data['action'] == 'update') {
-
-            $result = $this->objAdminModel->getAdminData($this->request->getPost('adminID'));
-            $data['title'] = 'Cambie su clave';
-            $data['admin'] = $result;
-        }
+        $data['title'] = 'Cambie su contraseña de Administrador';
 
         return view('admin/modals/changeKey', $data);
     }
@@ -754,35 +743,23 @@ class Administrator extends BaseController
             return json_encode($response); // ERROR SESSION EXPIRED
         }
 
-        $passwordD = $this->request->getPost('password');
-        $password = password_hash($passwordD, PASSWORD_DEFAULT);
-        $id = $this->request->getPost('adminID');
+        $password = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
 
-        $resultCheckPasswordExist = $this->objAdminModel->checkPasswordExist($password, $id);
+        $data = array();
+        $data['password'] = $password;
 
-        if (empty($resultCheckPasswordExist)) {
+        $result = $this->objAdminModel->objUpdate('tpv_bar_administrator', $data, 1);
 
-            $data = array();
-            $data['password'] = $password;
+        if ($result['error'] == 0) { // SUCCESS
 
-            $result = $this->objAdminModel->objUpdate('tpv_bar_administrator', $data, $id);
-
-            if ($result['error'] == 0) { // SUCCESS
-
-                $response['error'] = 0;
-                $response['id'] = $id;
-                $response['msg'] = 'Contraseña Actualizada';
-            } else { // ERROR UPDATE RECORD
-
-                $response['error'] = 1;
-                $response['code'] = 100;
-                $response['msg'] = 'Ha ocurrido un error en el proceso';
-            }
-        } else { // ERRROR DUPLICATE RECORD
+            $response['error'] = 0;
+            $response['id'] = 1;
+            $response['msg'] = 'Contraseña Actualizada';
+        } else { // ERROR UPDATE RECORD
 
             $response['error'] = 1;
-            $response['code'] = 104;
-            $response['msg'] = 'No puede introducir la contraseña actual';
+            $response['code'] = 100;
+            $response['msg'] = 'Ha ocurrido un error en el proceso';
         }
 
         return json_encode($response);

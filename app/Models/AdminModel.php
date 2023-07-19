@@ -26,7 +26,6 @@ class AdminModel extends Model
 
             $return['error'] = 0;
             $return['id'] = $query->connID->insert_id;
-
         } else
             $return['error'] = 1;
 
@@ -45,12 +44,10 @@ class AdminModel extends Model
 
             $return['error'] = 0;
             $return['id'] = $id;
-
         } else {
 
             $return['error'] = 1;
             $return['id'] = $id;
-            
         }
 
         return $return;
@@ -63,7 +60,7 @@ class AdminModel extends Model
         $query = $this->db->table('tpv_bar_administrator');
         $data = $query->get()->getResult();
 
-        if (password_verify($password, $data[0]->password))
+        if (password_verify($password, $data[0]->password)) 
             return true;
         else
             return false;
@@ -151,7 +148,7 @@ class AdminModel extends Model
     public function objData($table)
     {
         $query = $this->db->table($table)
-        ->select('*');
+            ->select('*');
 
         return $query->get()->getResult();
     }
@@ -238,10 +235,10 @@ class AdminModel extends Model
     {
         $query = $this->db->table('tpv_bar_product');
 
-        if(!empty($id))
+        if (!empty($id))
             $query->where('id', $id);
 
-        if(!empty($fk_category)) {
+        if (!empty($fk_category)) {
             $query->where('fk_category', $fk_category);
             $query->where('status', 1);
         }
@@ -266,7 +263,7 @@ class AdminModel extends Model
     public function getActiveProducts()
     {
         $query = $this->db->table('tpv_bar_product')
-        ->where('status', 1);
+            ->where('status', 1);
 
         return $query->get()->getResult();
     }
@@ -276,7 +273,7 @@ class AdminModel extends Model
     public function getCategories()
     {
         $query = $this->db->table('tpv_bar_category')
-        ->orderBy('name', 'asc');
+            ->orderBy('name', 'asc');
 
         return $query->get()->getResult();
     }
@@ -298,17 +295,7 @@ class AdminModel extends Model
     public function getCatData($id)
     {
         $query = $this->db->table('tpv_bar_category')
-        ->where('id', $id);
-
-        return $query->get()->getResult();
-    }
-
-
-    //CHANGE KEY ADMINISTRATOR
-    public function checkPasswordExist($password, $id = '')
-    {
-        $query = $this->db->table('tpv_bar_administrator')
-            ->where('password', $password);
+            ->where('id', $id);
 
         return $query->get()->getResult();
     }

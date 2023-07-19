@@ -29,51 +29,44 @@
 <script>
     $('#btn-modal-submit').on('click', function() { // SUBMIT
 
-        let action = "<?php echo $action; ?>";
         let resultCheckRequiredValues = checkRequiredValues('modal-required');
         let password = $('#txt-newPassword').val();
         let repeatPassword = $('#txt-repeatNewPassword').val();
 
-        if (resultCheckRequiredValues == 0 && password === repeatPassword) {
+        if (resultCheckRequiredValues == 0) {
 
-            $('btn-modal-submit').attr('disabled', true);
+            if(password == repeatPassword) {
 
-            let url = '';
-
-            if (action == 'create')
-                url = '<?php echo base_url('Administrator/createKey'); ?>';
-            else if (action == 'update')
-                url = '<?php echo base_url('Administrator/updateKey'); ?>';
-
-            $.ajax({
-                type: "post",
-                url: url,
-                data: {
-                    password: password,
-                    adminID: '1'
-                },
-                dataType: "json",
-                success: function(jsonResponse) {
-
-                    if (jsonResponse.error == 0) { // SUCCESS
-
-                        showToast('success', jsonResponse.msg);
-                        closeModal();
-
-                    } else // ERROR
-                        showToast('error', jsonResponse.msg);
-
-                    if (jsonResponse.code == 103) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
-                },
-                error: function(error) {
-                    showToast('error', 'Ha ocurrido un error');
-                }
-            });
-        } else {
-            document.getElementById("msg-txt-repeatNewPassword").innerHTML = "Las contraseñas no coinciden";
-            document.getElementById("msg-txt-newPassword").innerHTML = "Las contraseñas no coinciden";
-            return false;
+                $('btn-modal-submit').attr('disabled', true);
+    
+                $.ajax({
+                    type: "post",
+                    url: '<?php echo base_url('Administrator/updateKey'); ?>',
+                    data: {
+                        password: password,
+                    },
+                    dataType: "json",
+                    success: function(jsonResponse) {
+    
+                        if (jsonResponse.error == 0) { // SUCCESS
+    
+                            showToast('success', jsonResponse.msg);
+                            closeModal();
+    
+                        } else // ERROR
+                            showToast('error', jsonResponse.msg);
+    
+                        if (jsonResponse.code == 103) // SESSION EXPIRED
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                    },
+                    error: function(error) {
+                        showToast('error', 'Ha ocurrido un error');
+                    }
+                });
+            } else { // ERROR PASSWORD NO MATCH
+                $('#txt-repeatNewPassword').addClass('is-invalid');
+                $('#msg-txt-repeatNewPassword').html('La contraseña no coincide');
+            }
         }
     });
 </script>
