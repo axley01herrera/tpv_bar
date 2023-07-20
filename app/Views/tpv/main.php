@@ -61,7 +61,7 @@
             <div class="card">
                 <div class="card-body">
 
-                    <h5 class="text-dark">Historial</h5>
+                    <h5 class="text-dark">Historial de Mesas Cerradas</h5>
                     <div id="main-table-history"></div>
                 </div>
 

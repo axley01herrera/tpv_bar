@@ -8,6 +8,15 @@
         <div id="main-chartWeek"></div>
     </div>
 
+    <div class="col-12 col-lg-8">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title mb-4">Historial de mesas cerradas</h4>
+                <?php echo view('tpv/tableHistory'); ?>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
