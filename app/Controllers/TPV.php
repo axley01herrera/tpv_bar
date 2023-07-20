@@ -103,7 +103,7 @@ class TPV extends BaseController
         return view('tpv/tpv', $data);
     }
 
-    public function getProductsbyCat()
+    public function getProductsByCat()
     {
         # VERIFY SESSION
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))

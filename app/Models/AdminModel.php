@@ -377,4 +377,83 @@ class AdminModel extends Model
 
         return $serie;
     }
+
+    public function getHistoryProcessingData($params)
+    {
+        $query = $this->db->table('tpv_bar_table_history');
+
+        if (!empty($params['search'])) {
+            $query->like('tableName', $params['search']);
+            $query->orLike('dateOpen', $params['search']);
+            $query->orLike('dateClose', $params['search']);
+            $query->orLike('employeeName', $params['search']);
+            $query->orLike('employeeLastName', $params['search']);
+            $query->orLike('payTypeLabel', $params['search']);
+            $query->orLike('amount', $params['search']);
+        }
+
+        $query->offset($params['start']);
+        $query->limit($params['length']);
+        $query->orderBy($this->getHistoryProcessingSort($params['sortColumn'], $params['sortDir']));
+
+        return $query->get()->getResult();
+    }
+
+    public function getHistoryProcessingSort($column, $dir)
+    {
+        $sort = '';
+
+        if ($column == 0) {
+            if ($dir == 'asc')
+                $sort = 'tableName ASC';
+            else
+                $sort = 'tableName DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
+                $sort = 'dateOpen ASC';
+            else
+                $sort = 'dateOpen DESC';
+        }
+
+        if ($column == 2) {
+            if ($dir == 'asc')
+                $sort = 'dateClose ASC';
+            else
+                $sort = 'dateClose DESC';
+        }
+
+        if ($column == 3) {
+            if ($dir == 'asc')
+                $sort = 'employeeName ASC';
+            else
+                $sort = 'employeeName DESC';
+        }
+
+        if ($column == 4) {
+            if ($dir == 'asc')
+                $sort = 'payTypeLabel ASC';
+            else
+                $sort = 'payTypeLabel DESC';
+        }
+
+        if ($column == 5) {
+            if ($dir == 'asc')
+                $sort = 'amount ASC';
+            else
+                $sort = 'amount DESC';
+        }
+
+        return $sort;
+    }
+
+    public function getTotalHistory()
+    {
+        $query = $this->db->table('tpv_bar_table_history')
+            ->selectCount('tableID')
+            ->get()->getResult();
+
+        return $query[0]->tableID;
+    }
 }

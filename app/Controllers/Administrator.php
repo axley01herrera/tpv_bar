@@ -123,6 +123,54 @@ class Administrator extends BaseController
         return json_encode($data);
     }
 
+    public function dtProcessingHistory()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $result = $this->objAdminModel->getHistoryProcessingData($params);
+        $totalRows = sizeof($result);
+
+        for ($i = 0; $i < $totalRows; $i++) {
+
+            $col = array();
+            $col['tableName'] = $result[$i]->tableName;
+            $col['dateOpen'] = $result[$i]->dateOpen;
+            $col['dateClose'] = $result[$i]->dateClose;
+            $col['employee'] = $result[$i]->employeeName .' '. $result[$i]->employeeLastName;
+            $col['payType'] = $result[$i]->payTypeLabel;
+            $col['amount'] = $result[$i]->amount;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0) {
+
+            if (empty($params['search']))
+                $totalRecords = $this->objAdminModel->getTotalHistory();
+            else
+                $totalRecords = $totalRows;
+        }
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    }
+
     public function showModalEmployee()
     {
         # VERIFY SESSION

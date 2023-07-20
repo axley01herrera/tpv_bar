@@ -61,7 +61,7 @@
 
             $.ajax({
                 type: "post",
-                url: "<?php echo base_url('TPV/getProductsbyCat'); ?>",
+                url: "<?php echo base_url('TPV/getProductsByCat'); ?>",
                 data: {
                     'catgoryID': catgoryID
                 },
