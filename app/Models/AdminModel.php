@@ -378,6 +378,41 @@ class AdminModel extends Model
         return $serie;
     }
 
+    public function getChartMont($year)
+    {
+        $firstDay = date('Y-m-d', strtotime("$year-01-01"));
+        $lastDay = date('Y-m-d', strtotime("$year-12-31"));
+
+        $query = $this->db->table('tpv_bar_tables')
+            ->where('status', 0)
+            ->where('date >=', $firstDay)
+            ->where('date <=', $lastDay);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+        $total = 0;
+
+        for ($month = 1; $month <= 12; $month++) {
+
+            $serie[$month] = 0;
+            $mont = date("F", mktime(0, 0, 0, $month, 1, $year));
+            $daysInMonth = date("t", mktime(0, 0, 0, $month, 1, $year));
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+
+                for ($i = 0; $i < $countData; $i++) {
+                    if (date('Y-m-d', strtotime($day . '-' . $mont . '-' . $year)) == $data[$i]->date)
+                        $serie[$month] = $serie[$month] + $data[$i]->amount;
+                }
+            }
+            $total = $total + $serie[$month];
+        }
+
+        $serie['total'] = $total;
+
+        return $serie;
+    }
+
     public function getHistoryProcessingData($params)
     {
         $query = $this->db->table('tpv_bar_table_history');

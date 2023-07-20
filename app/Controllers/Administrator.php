@@ -731,11 +731,11 @@ class Administrator extends BaseController
         $hall = 0;
         $terrace = 0;
 
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
 
-            if($result[$i]->type == 'hall')
+            if ($result[$i]->type == 'hall')
                 $hall = $result[$i]->valueNumber;
-            elseif($result[$i]->type == 'terrace')
+            elseif ($result[$i]->type == 'terrace')
                 $terrace = $result[$i]->valueNumber;
         }
 
@@ -769,18 +769,17 @@ class Administrator extends BaseController
 
         $resultUpdateHall = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 1);
 
-        if($resultUpdateHall['error'] == 0) { // SUCCESS
+        if ($resultUpdateHall['error'] == 0) { // SUCCESS
 
             $data = array();
             $data['valueNumber'] = $terrace;
 
             $resultUpdateTerrace = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 2);
 
-            if($resultUpdateTerrace['error'] == 0) { // SUCCESS
+            if ($resultUpdateTerrace['error'] == 0) { // SUCCESS
 
                 $response['error'] = 0;
                 $response['msg'] = 'Configuracón Actualizada';
-
             } else { // ERROR UPDATE RECORD
 
                 $response['error'] = 1;
@@ -875,6 +874,27 @@ class Administrator extends BaseController
         return view('admin/dashboard/chartWeek', $data);
     }
 
+    public function getChartMont()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        if (!empty($this->request->getPostGet('year')))
+            $year = $this->request->getPostGet('year');
+        else
+            $year = date('Y');
+
+        $result = $this->objAdminModel->getChartMont($year);
+
+        $data = array();
+        $data['chartMont'] = $result;
+        $data['year'] = $year;
+        $data['currentYear'] = date('Y');
+
+        return view('admin/dashboard/chartMont', $data);
+    }
+
     public function dtProcessingHistory()
     {
         $dataTableRequest = $_REQUEST;
@@ -899,9 +919,9 @@ class Administrator extends BaseController
             $col['tableName'] = $result[$i]->tableName;
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
-            $col['employee'] = $result[$i]->employeeName .' '. $result[$i]->employeeLastName;
+            $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;
             $col['payType'] = $result[$i]->payTypeLabel;
-            $col['amount'] = '€ '.number_format((float) $result[$i]->amount, 2, ".", ',');
+            $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
 
             $row[$i] =  $col;
         }

@@ -9,9 +9,10 @@
     </div>
 
     <div class="col-12 col-lg-8">
+        <div id="main-chartMont"></div>
         <div class="card">
             <div class="card-body">
-            <h4 class="card-title mb-4">Historial de mesas cerradas</h4>
+                <h4 class="card-title mb-4">Historial de Mesas Cerradas</h4>
                 <?php echo view('tpv/tableHistory'); ?>
             </div>
         </div>
@@ -22,6 +23,7 @@
 <script>
     getCollectionDay();
     getChartWeek();
+    getChartMont();
 
     function getCollectionDay() {
 
@@ -46,6 +48,24 @@
             dataType: "html",
             success: function(htmlResponse) {
                 $('#main-chartWeek').html(htmlResponse);
+            },
+            error: function(error) {
+                showToast('error', 'Ha ocurrido un error');
+            }
+        });
+    }
+
+    function getChartMont(year = '') {
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo base_url('Administrator/getChartMont'); ?>",
+            data: {
+                'year': year
+            },
+            dataType: "html",
+            success: function(htmlResponse) {
+                $('#main-chartMont').html(htmlResponse);
             },
             error: function(error) {
                 showToast('error', 'Ha ocurrido un error');
