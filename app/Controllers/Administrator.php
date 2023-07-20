@@ -31,6 +31,7 @@ class Administrator extends BaseController
         $data = array();
         $data['menu_ative'] = 'dashboard';
         $data['page'] = 'admin/dashboard/index';
+
         return view('admin/header', $data);
     }
 
@@ -842,5 +843,21 @@ class Administrator extends BaseController
         }
 
         return json_encode($response);
+    }
+
+    # DASHBOARD
+
+    public function getCollectionDay()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $result = $this->objAdminModel->getCollectionDay();
+
+        $data = array();
+        $data['collectionDay'] = $result;
+
+        return view('admin/dashboard/collectionDay', $data);
     }
 }

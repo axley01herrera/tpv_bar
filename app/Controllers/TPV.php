@@ -71,6 +71,7 @@ class TPV extends BaseController
         $data['fkEmployee'] = $this->objSession->get('user')['id'];
         $data['tableID'] = $table;
         $data['dateOpen'] = date('Y-m-d H:i:s');
+        $data['date'] = date('Y-m-d');
 
         $result = $this->objTpvModel->objCreate('tpv_bar_tables', $data);
 

@@ -300,10 +300,41 @@ class AdminModel extends Model
         return $query->get()->getResult();
     }
 
+    # CONFIG
+
     public function getConfigData()
     {
         return $this->db->table('tpv_bar_configuration')
         ->get()
         ->getResult();
+    }
+
+    # DASHBOARD
+
+    public function getCollectionDay()
+    {
+        $query = $this->db->table('tpv_bar_tables')
+            ->where('status', 0)
+            ->where('date', date('Y-m-d'));
+        
+        $data = $query->get()->getResult();
+        $count = sizeof($data);
+
+        $cash = 0;
+        $card = 0;
+
+        for($i = 0; $i < $count; $i++) {
+
+            if($data[$i]->payType == 1) // CASH
+                $cash = $cash + $data[$i]->amount;
+            elseif($data[$i]->payType == 2) // CARD
+                $card = $card + $data[$i]->amount;
+        }
+
+        $return = array();
+        $return['cash'] = $cash;
+        $return['card'] = $card;
+
+        return $return;
     }
 }
