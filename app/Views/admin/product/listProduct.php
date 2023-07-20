@@ -1,46 +1,51 @@
 <!-- DATA TABLE CSS-->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
-<div class="row">
-    <div class="col-12">
-        <h1 class="text-dark">Productos y Categorías</h1>
+<h1 class="text-dark">Productos y Categorías</h1>
+
+<div class="row mt-3">
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <button id="btn-newCat" class="btn btn-primary">Nueva Categoría</button>
+            </div>
+            <div class="card-body">
+                <table id="dt-cat" class="table table-hover table-borderless" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th><strong>Categorías</strong></th>
+                            <th class="text-end"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <button id="btn-newProduct" class="btn btn-primary">Nuevo Producto</button>
+            </div>
+            <div class="card-body">
+                <table id="dt-products" class="table table-hover table-borderless" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th><strong>Producto</strong></th>
+                            <th><strong>Categoría</strong></th>
+                            <th><strong>Precio</strong></th>
+                            <th><strong>Descripción</strong></th>
+                            <th class="text"><strong>Estado</strong></th>
+                            <th class="text-center"></th>
+                            <th class="text-end"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-12 text-end">
-        <button id="btn-newProduct" class="btn btn-primary">Nuevo Producto</button>
-        <button id="btn-newCat" class="btn btn-primary">Nueva Categoría</button>
-    </div>
-</div>
-<div class="card mt-3">
-    <div class="card-body">
-        <table id="dt-products" class="table" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th><strong>Producto</strong></th>
-                    <th><strong>Categoría</strong></th>
-                    <th><strong>Precio</strong></th>
-                    <th><strong>Descripción</strong></th>
-                    <th class="text"><strong>Estado</strong></th>
-                    <th class="text-center"></th>
-                    <th class="text-end"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-<div class="card">
-    <div class="card-body">
-        <table id="dt-cat" class="table" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th><strong>Categorías</strong></th>
-                    <th class="text-end"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-</div>
+
+
 
 <!-- DATA TABLE JS -->
 <script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js'); ?>"></script>
@@ -92,10 +97,10 @@
         serverSide: true,
         responsive: true,
         bAutoWidth: true,
-        pageLength: 10,
+        pageLength: 5,
         lengthMenu: [
-            [10, 25, 50, 100],
-            [10, 25, 50, 100]
+            [5, 25, 50, 100],
+            [5, 25, 50, 100]
         ],
         language: {
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
@@ -210,10 +215,10 @@
         serverSide: false,
         responsive: true,
         bAutoWidth: true,
-        pageLength: 10,
+        pageLength: 5,
         lengthMenu: [
-            [10, 25, 50, 100],
-            [10, 25, 50, 100]
+            [5, 25, 50, 100],
+            [5, 25, 50, 100]
         ],
         language: {
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'

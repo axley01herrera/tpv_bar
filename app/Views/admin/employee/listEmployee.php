@@ -1,32 +1,25 @@
 <!-- DATA TABLE CSS -->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
-<div class="row">
-    <div class="col-12">
-        <h1 class="text-dark">Empleados</h1>
+<h1 class="text-dark">Empleados</h1>
+
+<div class="card">
+    <div class="card-header">
+        <button id="btn-create-employee" class="btn btn-primary">Nuevo Empleado</button>
     </div>
-</div>
-<div class="row">
-    <div class="col-12 text-end">
-        <button id="btn-create-employee" class="btn btn-primary">Crear Empleado</button>
-    </div>
-</div>
-<div class="card mt-3">
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="dt-employee" class="table" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th><strong>Nombre</strong></th>
-                        <th><strong>Apellidos</strong></th>
-                        <th><strong>Usuario</strong></th>
-                        <th class="text"><strong>Estado</strong></th>
-                        <th class=""></th>
-                        <th class="text-end"></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+        <table id="dt-employee" class="table table-hover table-borderless" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th><strong>Nombre</strong></th>
+                    <th><strong>Apellidos</strong></th>
+                    <th><strong>Usuario</strong></th>
+                    <th class="text"><strong>Estado</strong></th>
+                    <th class=""></th>
+                    <th class="text-end"></th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 
@@ -35,7 +28,6 @@
 <script src="<?php echo base_url('assets/js/datatable/dataTables.bootstrap5.min.js'); ?>"></script>
 
 <script>
-
     $('#btn-create-employee').on('click', function() { // CREATE EMPLOYEE
 
         $('#btn-create-employee').attr('disabled', true);
@@ -132,7 +124,7 @@
         }).done(function(jsonResponse) {
 
             if (jsonResponse.error == 0) { // SUCCESS
-                
+
                 showToast('success', jsonResponse.msg);
                 dtEmployee.draw();
             } else { // ERROR
