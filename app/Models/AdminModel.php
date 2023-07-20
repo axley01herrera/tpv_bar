@@ -60,7 +60,7 @@ class AdminModel extends Model
         $query = $this->db->table('tpv_bar_administrator');
         $data = $query->get()->getResult();
 
-        if (password_verify($password, $data[0]->password)) 
+        if (password_verify($password, $data[0]->password))
             return true;
         else
             return false;
@@ -305,8 +305,8 @@ class AdminModel extends Model
     public function getConfigData()
     {
         return $this->db->table('tpv_bar_configuration')
-        ->get()
-        ->getResult();
+            ->get()
+            ->getResult();
     }
 
     # DASHBOARD
@@ -316,18 +316,18 @@ class AdminModel extends Model
         $query = $this->db->table('tpv_bar_tables')
             ->where('status', 0)
             ->where('date', date('Y-m-d'));
-        
+
         $data = $query->get()->getResult();
         $count = sizeof($data);
 
         $cash = 0;
         $card = 0;
 
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
 
-            if($data[$i]->payType == 1) // CASH
+            if ($data[$i]->payType == 1) // CASH
                 $cash = $cash + $data[$i]->amount;
-            elseif($data[$i]->payType == 2) // CARD
+            elseif ($data[$i]->payType == 2) // CARD
                 $card = $card + $data[$i]->amount;
         }
 
@@ -336,5 +336,45 @@ class AdminModel extends Model
         $return['card'] = $card;
 
         return $return;
+    }
+
+    public function getChartWeek()
+    {
+        $firstDayOfWeek = date('Y-m-d', strtotime('monday this week')); // Get the first day of the week (Monday) v
+        $lastDayOfWeek = date('Y-m-d', strtotime('sunday this week')); // Get the last day of the week (Sunday) 
+
+        $query = $this->db->table('tpv_bar_tables')
+            ->where('status', 0)
+            ->where('date >=', $firstDayOfWeek)
+            ->where('date <=', $lastDayOfWeek);
+
+        $data = $query->get()->getResult();
+        $countData = sizeof($data);
+
+        $serie['mon'] = 0;
+        $serie['tue'] = 0;
+        $serie['wed'] = 0;
+        $serie['thu'] = 0;
+        $serie['fri'] = 0;
+        $serie['sat'] = 0;
+        $serie['sun'] = 0;
+        $serie['total'] = 0;
+
+        $firstDay = date('Y-m-d', strtotime($firstDayOfWeek));
+
+        for ($i = 0; $i < $countData; $i++) {
+
+            if ($firstDay == $data[$i]->date) $serie['mon'] = $serie['mon'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+1 day')) == $data[$i]->date) $serie['tue'] = $serie['tue'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+2 day')) == $data[$i]->date) $serie['wed'] = $serie['wed'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+3 day')) == $data[$i]->date) $serie['thu'] = $serie['thu'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+4 day')) == $data[$i]->date) $serie['fri'] = $serie['fri'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+5 day')) == $data[$i]->date) $serie['sat'] = $serie['sat'] + $data[$i]->amount;
+            elseif (date('Y-m-d', strtotime($firstDay . '+6 day')) == $data[$i]->date) $serie['sun'] = $serie['sun'] + $data[$i]->amount;
+        }
+
+        $serie['total'] = $serie['total'] + $serie['mon'] + $serie['tue'] + $serie['wed'] + $serie['thu'] + $serie['fri'] + $serie['sat'] + $serie['sun'];
+
+        return $serie;
     }
 }

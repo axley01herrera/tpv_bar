@@ -860,4 +860,18 @@ class Administrator extends BaseController
 
         return view('admin/dashboard/collectionDay', $data);
     }
+
+    public function getChartWeek()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+
+        $result = $this->objAdminModel->getChartWeek();
+
+        $data = array();
+        $data['chartWeek'] = $result;
+
+        return view('admin/dashboard/chartWeek', $data);
+    }
 }

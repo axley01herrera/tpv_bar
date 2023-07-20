@@ -19,6 +19,7 @@
     <link type="text/css" rel="stylesheet" id="app-style" href="<?php echo base_url('assets/libs/jquery-ui/jquery-ui.css'); ?>" />
     <link type="text/css" rel="stylesheet" id="app-style" href="<?php echo base_url('assets/libs/select2/css/select2.css'); ?>" />
     <link href="<?php echo base_url('assets/libs/sweetalert/sweetalert2.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url('assets/libs/apexcharts/dist/apexcharts.css'); ?>" id="app-style" rel="stylesheet" type="text/css" />
 
     <style>
         #page-topbar {
@@ -40,6 +41,7 @@
     <script src="<?php echo base_url('assets/libs/moment/moment.js'); ?>"></script>
     <script src="<?php echo base_url('assets/libs/sweetalert/sweetalert2.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/customApp.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/libs/apexcharts/dist/apexcharts.min.js'); ?>"></script>
 
 </head>
 
