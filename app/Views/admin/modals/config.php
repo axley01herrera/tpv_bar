@@ -10,15 +10,25 @@
             <!-- MODAL CONTENT -->
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-lg-6">
-                        <label for="txt-hall">Sala (mesas)</label>
-                        <input type="number" id="txt-hall" class="form-control modal-required number focus" min="0" value="<?php echo $hall; ?>" />
-                        <p id="msg-txt-hall" class="text-danger text-end"></p>
+                    <div class="col-12">
+                        <label for="txt-name">Nombre del Negocio</label>
+                        <input type="text" id="txt-name" class="form-control modal-required focus" min="0" value="<?php echo $config[0]->name; ?>" />
+                        <p id="msg-txt-name" class="text-danger text-end"></p>
+                    </div>
+                    <div class="col-12">
+                        <label for="txt-cif">CIF</label>
+                        <input type="text" id="txt-cif" class="form-control focus" min="0" value="<?php echo $config[0]->cif; ?>" />
+                        <p id="msg-txt-cif" class="text-danger text-end"></p>
                     </div>
                     <div class="col-12 col-lg-6">
-                        <label for="txt-terrace">Terraza (mesas)</label>
-                        <input type="number" id="txt-terrace" class="form-control modal-required number focus" min="0" value="<?php echo $terrace; ?>" />
-                        <p id="msg-txt-terrace" class="text-danger text-end"></p>
+                        <label for="txt-intTables">Sala (mesas)</label>
+                        <input type="number" id="txt-intTables" class="form-control modal-required number focus" min="0" value="<?php echo $config[0]->intTables; ?>" />
+                        <p id="msg-txt-intTables" class="text-danger text-end"></p>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <label for="txt-outTables">Terraza (mesas)</label>
+                        <input type="number" id="txt-outTables" class="form-control modal-required number focus" min="0" value="<?php echo $config[0]->outTables; ?>" />
+                        <p id="msg-txt-outTables" class="text-danger text-end"></p>
                     </div>
                 </div>
             </div>
@@ -40,8 +50,11 @@
                 type: "post",
                 url: "<?php echo base_url('Administrator/setConfig'); ?>",
                 data: {
-                    'hall': $('#txt-hall').val(),
-                    'terrace': $('#txt-terrace').val(),
+                    'name': $('#txt-name').val(),
+                    'cif': $('#txt-cif').val(),
+                    'intTables': $('#txt-intTables').val(),
+                    'outTables': $('#txt-outTables').val(),
+                    'id': '<?php echo $config[0]->id; ?>',
                 },
                 dataType: "json",
                 success: function(jsonResponse) {
@@ -56,7 +69,7 @@
                         showToast('error', jsonResponse.msg);
 
                         if (jsonResponse.code == 103) // ERROR SESSION EXPIRED
-                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
 
                         $('#btn-modal-submit').removeAttr('disabled');
                     }

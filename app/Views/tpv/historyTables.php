@@ -11,11 +11,8 @@
         </div>
     </div>
     <div class="card mt-2">
-        <div class="card-header">
-            <h5 class="text-dark">Historial de Mesas Cerradas</h5>
-        </div>
         <div class="card-body">
-            
+            <h5 class="text-dark">Historial de Mesas Cerradas</h5>
             <div id="main-table-history"></div>
         </div>
 

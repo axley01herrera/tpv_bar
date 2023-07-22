@@ -8,11 +8,14 @@ class Administrator extends BaseController
 {
     protected $objSession;
     public $objAdminModel;
+    public $config;
 
     function  __construct()
     {
         $this->objSession = session();
         $this->objAdminModel = new AdminModel;
+
+        $this->config = $this->objAdminModel->getConfigData();
     }
 
     public function index()
@@ -725,24 +728,8 @@ class Administrator extends BaseController
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
 
-        $result = $this->objAdminModel->getConfigData();
-        $count = sizeof($result);
-
-        $hall = 0;
-        $terrace = 0;
-
-        for ($i = 0; $i < $count; $i++) {
-
-            if ($result[$i]->type == 'hall')
-                $hall = $result[$i]->valueNumber;
-            elseif ($result[$i]->type == 'terrace')
-                $terrace = $result[$i]->valueNumber;
-        }
-
-        $data = array();
-        $data['hall'] = $hall;
-        $data['terrace'] = $terrace;
         $data['title'] = 'Configuración';
+        $data['config'] = $this->config;
 
         return view('admin/modals/config', $data);
     }
@@ -756,42 +743,22 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
 
-        $hall = $this->request->getPost('hall');
-        $terrace = $this->request->getPost('terrace');
+        $id = $this->request->getPost('id');
 
         $data = array();
-        $data['valueNumber'] = $hall;
+        $data['name'] = htmlspecialchars(trim(strtoupper($this->request->getPost('name'))));
+        $data['cif'] = htmlspecialchars(trim($this->request->getPost('cif')));
+        $data['intTables'] = $this->request->getPost('intTables');
+        $data['outTables'] = $this->request->getPost('outTables');
 
-        $resultUpdateHall = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 1);
+        $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, $id);
 
-        if ($resultUpdateHall['error'] == 0) { // SUCCESS
-
-            $data = array();
-            $data['valueNumber'] = $terrace;
-
-            $resultUpdateTerrace = $this->objAdminModel->objUpdate('tpv_bar_configuration', $data, 2);
-
-            if ($resultUpdateTerrace['error'] == 0) { // SUCCESS
-
-                $response['error'] = 0;
-                $response['msg'] = 'Configuracón Actualizada';
-            } else { // ERROR UPDATE RECORD
-
-                $response['error'] = 1;
-                $response['code'] = 100;
-                $response['msg'] = 'Ha ocurrido un error';
-            }
-        } else { // ERROR UPDATE RECORD
-
-            $response['error'] = 1;
-            $response['code'] = 100;
-            $response['msg'] = 'Ha ocurrido un error';
-        }
+        $response['error'] = 0;
+        $response['msg'] = 'Configuracón Actualizada';
 
         return json_encode($response);
     }
@@ -915,15 +882,80 @@ class Administrator extends BaseController
 
         for ($i = 0; $i < $totalRows; $i++) {
 
+            if ($result[$i]->payType == 1)
+                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcash.png" alt="cash" width="25px"></small>';
+            else
+                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcreditcard.png" alt="credit card" width="25px"></small>';
+
+            $btnOpen = '<button type="button" class="btn-open btn btn-sm btn-success" data-id="' . $result[$i]->tableID . '" title="Re-abrir"><i class="mdi mdi-lock-open-variant-outline"></i></button>';
+            $btnCancel = '<button type="button" class="btn-cancel btn btn-sm btn-danger" data-id="' . $result[$i]->tableID . '" title="Cancelar mesa"><i class="mdi mdi-block-helper"></i></button>';
+            $btnPrint = '<button type="button" class="btn-print btn btn-sm btn-secondary" data-id="' . $result[$i]->tableID . '" title="Imprimir Ticket"><i class="mdi mdi-printer"></i></button>';
+
             $col = array();
             $col['tableID'] = $result[$i]->tableID;
             $col['tableName'] = $result[$i]->tableName;
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
             $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;
-            $col['payType'] = $result[$i]->payTypeLabel;
+            $col['payType'] = @$spanPayType . $result[$i]->payTypeLabel;
             $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
-            $col['actions'] = 'actions';
+            $col['actions'] = $btnOpen . ' ' . $btnCancel . ' ' . $btnPrint;
+
+            $row[$i] =  $col;
+        }
+
+        if ($totalRows > 0) {
+
+            if (empty($params['search']))
+                $totalRecords = $this->objAdminModel->getTotalHistory();
+            else
+                $totalRecords = $totalRows;
+        }
+
+        $data = array();
+        $data['draw'] = $dataTableRequest['draw'];
+        $data['recordsTotal'] = intval($totalRecords);
+        $data['recordsFiltered'] = intval($totalRecords);
+        $data['data'] = $row;
+
+        return json_encode($data);
+    }
+
+    public function dtProcessingHistoryCancel()
+    {
+        $dataTableRequest = $_REQUEST;
+
+        $params = array();
+        $params['draw'] = $dataTableRequest['draw'];
+        $params['start'] = $dataTableRequest['start'];
+        $params['length'] = $dataTableRequest['length'];
+        $params['search'] = $dataTableRequest['search']['value'];
+        $params['sortColumn'] = $dataTableRequest['order'][0]['column'];
+        $params['sortDir'] = $dataTableRequest['order'][0]['dir'];
+
+        $row = array();
+        $totalRecords = 0;
+
+        $result = $this->objAdminModel->getHistoryCancelProcessingData($params);
+        $totalRows = sizeof($result);
+
+        for ($i = 0; $i < $totalRows; $i++) {
+
+            if ($result[$i]->payType == 1)
+                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcash.png" alt="cash" width="25px"></small>';
+            else
+                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcreditcard.png" alt="credit card" width="25px"></small>';
+
+
+            $col = array();
+            $col['tableID'] = $result[$i]->tableID;
+            $col['status'] = '<span class="badge badge-soft-danger">Cancelada</span>';
+            $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;
+            $col['tableName'] = $result[$i]->tableName;
+            $col['dateOpen'] = $result[$i]->dateOpen;
+            $col['dateClose'] = $result[$i]->dateClose;
+            $col['payType'] = @$spanPayType.$result[$i]->payTypeLabel;
+            $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
 
             $row[$i] =  $col;
         }

@@ -67,7 +67,7 @@
         let msg = '<?php echo @$msg; ?>';
 
         if (msg != '')
-            showToast('error', msg);
+            showToast('error', 'Su sessión ha expirado!');
 
         $('#btn-login').on('click', function() { // BTN-LOGIN
 

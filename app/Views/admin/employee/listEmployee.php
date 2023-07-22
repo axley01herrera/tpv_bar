@@ -1,25 +1,25 @@
 <!-- DATA TABLE CSS -->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
-<h1 class="text-dark">Empleados</h1>
+<h5 class="text-dark">Empleados</h5>
 
 <div class="card">
-    <div class="card-header">
-        <button id="btn-create-employee" class="btn btn-primary">Nuevo Empleado</button>
-    </div>
     <div class="card-body">
-        <table id="dt-employee" class="table table-hover table-borderless" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th><strong>Nombre</strong></th>
-                    <th><strong>Apellidos</strong></th>
-                    <th><strong>Usuario</strong></th>
-                    <th class="text"><strong>Estado</strong></th>
-                    <th class=""></th>
-                    <th class="text-end"></th>
-                </tr>
-            </thead>
-        </table>
+        <button id="btn-create-employee" class="btn btn-primary mb-3">Nuevo Empleado</button>
+        <div class="table-responsive">
+            <table id="dt-employee" class="table table-hover table-borderless" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th><strong>Nombre</strong></th>
+                        <th><strong>Apellidos</strong></th>
+                        <th><strong>Usuario</strong></th>
+                        <th class="text"><strong>Estado</strong></th>
+                        <th class=""></th>
+                        <th class="text-end"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -132,7 +132,7 @@
                 showToast('success', jsonResponse.msg);
 
                 if (jsonResponse.code == 103) // SESSION EXPIRED
-                    window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                    window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
             }
         }).fail(function(error) {
             showToast('error', 'Ha ocurrido un error');

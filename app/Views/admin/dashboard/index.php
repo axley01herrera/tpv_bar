@@ -1,4 +1,4 @@
-<h1 class="text-dark">Tablero</h1>
+<h5 class="text-dark">Tablero</h5>
 
 <!-- COLLECTION DAY -->
 <div class="row">
@@ -14,6 +14,12 @@
             <div class="card-body">
                 <h4 class="card-title mb-4">Historial de Mesas Cerradas</h4>
                 <?php echo view('tpv/tableHistory'); ?>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Historial de Mesas Canceladas</h4>
+                <?php echo view('tpv/historyCancelTable'); ?>
             </div>
         </div>
     </div>

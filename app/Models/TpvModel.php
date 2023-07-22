@@ -99,4 +99,13 @@ class TpvModel extends Model
 
         return $query->get()->getResult();  
     }
+
+    public function getTableInfo($id)
+    {
+        $query = $this->db->table('tpv_bar_tables')
+        ->where('id', $id);
+
+        return $query->get()->getResult();
+    }
+
 }

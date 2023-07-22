@@ -27,32 +27,23 @@ class TPV extends BaseController
         $obTpvModel = new TpvModel;
         $table = $obTpvModel->getOpenTables();
         $config = $this->objAdminModel->getConfigData();
-        $countConfig = sizeof($config);
-
-        $hall = 0;
-        $terrace = 0;
-
-        for ($i = 0; $i < $countConfig; $i++) {
-
-            if ($config[$i]->type == 'hall')
-                $hall = $config[$i]->valueNumber;
-            elseif ($config[$i]->type == 'terrace')
-                $terrace = $config[$i]->valueNumber;
-        }
-
+        
         $data = array();
         $data['table'] = $table;
         $data['countTable'] = sizeof($table);
         $data['user'] = $this->objSession->get('user');
-        $data['hall'] = (int) $hall;
-        $data['terrace'] = (int) $terrace;
+        $data['hall'] = (int) $config[0]->intTables;
+        $data['terrace'] = (int) $config[0]->outTables;
 
         return view('tpv/main', $data);
     }
 
     public function tableHistory()
     {
-        return view('tpv/tableHistory');
+        $data = array();
+        $data['visibleActions'] = true;
+
+        return view('tpv/tableHistory', $data);
     }
 
     public function openTable()
@@ -166,7 +157,7 @@ class TPV extends BaseController
         # VERIFY SESSION
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
-        
+
         $data = array();
         $data['title'] = 'Tipo de Pago';
         $data['tableID'] = $this->request->getPost('tableID');
@@ -213,5 +204,85 @@ class TPV extends BaseController
     public function historyTables()
     {
         return view('tpv/historyTables');
+    }
+
+    public function reopenTable()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Su sessión ha expirado';
+
+            return json_encode($response);
+        }
+
+        $id = $this->request->getPost('id');
+
+        $data = array();
+        $data['status'] = 1;
+        $data['fkEmployee'] = $this->objSession->get('user')['id'];
+
+        $result = $this->objTpvModel->objUpdate('tpv_bar_tables', $data, $id);
+
+        if ($result['error'] == 0) { // SUCCESS UPDATE RECORD
+
+            $response['error'] = 0;
+            $response['msg'] = 'Ahora la mesa esta abierta';
+        } else { // ERROR UPDATE RECORD
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error';
+        }
+
+        return json_encode($response);
+    }
+
+    public function cancelTable()
+    {
+        $response = array();
+
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id'])) {
+            $response['error'] = 2;
+            $response['msg'] = 'Su sessión ha expirado';
+
+            return json_encode($response);
+        }
+
+        $id = $this->request->getPost('id');
+
+        $data = array();
+        $data['status'] = 3;
+        $data['reopen'] = 0;
+        $data['reopenBy'] = NULL;
+        $data['cancelBy'] = $this->objSession->get('user')['id'];
+
+        $result = $this->objTpvModel->objUpdate('tpv_bar_tables', $data, $id);
+
+        if ($result['error'] == 0) { // SUCCESS UPDATE RECORD
+
+            $response['error'] = 0;
+            $response['msg'] = 'Ahora la mesa esta cancelada';
+        } else { // ERROR UPDATE RECORD
+            $response['error'] = 1;
+            $response['msg'] = 'Ha ocurrido un error';
+        }
+
+        return json_encode($response);
+    }
+
+    public function printTicket()
+    {
+        $id = $this->request->uri->getSegment('3'); 
+
+        $data = array();
+        $data['tableInfo'] = $this->objTpvModel->getTableInfo($id); 
+        $data['ticket'] = $this->objTpvModel->getTicketByTable($id);
+        $data['countTicket'] = sizeof($data['ticket']);
+        $data['config'] = $this->objAdminModel->getConfigData(); 
+        $data['employee'] = $this->objAdminModel->getEmployeeData($data['tableInfo'][0]->fkEmployee);
+
+        return view('tpv/printTicket', $data);
     }
 }
