@@ -88,7 +88,7 @@
                         }
 
                         if (jsonResponse.code == 103) // SESSION EXPIRED
-                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
 
                         $('#btn-modal-submit').removeAttr('disabled');
                     }

@@ -78,6 +78,7 @@ class Home extends BaseController
             # CREATE SESSION
             $sessionArray = array();
             $sessionArray['id'] = md5(uniqid());
+            $sessionArray['role'] = 'admin';
 
             $this->objSession->set('user', $sessionArray);
 

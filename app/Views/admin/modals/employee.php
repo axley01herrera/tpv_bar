@@ -71,7 +71,7 @@
                         showToast('error', jsonResponse.msg);
 
                     if (jsonResponse.code == 103) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                        window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
 
                     if (jsonResponse.code == 104) // ERRROR USER EXIST
                         $("#txt-user").addClass('is-invalid');

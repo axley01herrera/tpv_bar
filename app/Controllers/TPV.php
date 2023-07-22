@@ -136,6 +136,10 @@ class TPV extends BaseController
 
     public function deleteTicket()
     {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+            return view('logout');
+            
         $ticketID = $this->request->getPost('ticketID');
 
         $objTpvModel = new TpvModel;

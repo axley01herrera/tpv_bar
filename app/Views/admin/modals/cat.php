@@ -63,7 +63,8 @@
                         showToast('error', jsonResponse.msg);
 
                         if (jsonResponse.code == 103) // ERROR SESSION EXPIRED
-                            window.location.href = '<?php echo base_url('Home'); ?>?msg=Sesion Expirada';
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
+                            
                         else if (jsonResponse.code == 104) // ERRROR DUPLICATE RECORD
                             $("#txt-cat").addClass('is-invalid');
 

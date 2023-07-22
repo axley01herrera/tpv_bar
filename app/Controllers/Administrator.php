@@ -28,7 +28,9 @@ class Administrator extends BaseController
     public function dashboard()
     {
         # VERIFY SESSION
-        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
             return view('logout');
 
         $data = array();
@@ -43,7 +45,9 @@ class Administrator extends BaseController
     public function employees()
     {
         # VERIFY SESSION
-        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
             return view('logout');
 
         $data = array();
@@ -156,8 +160,7 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
-
+    
             return json_encode($response); // ERROR SESSION EXPIRED
         }
 
@@ -202,7 +205,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -251,7 +253,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -313,7 +314,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -345,7 +345,9 @@ class Administrator extends BaseController
     public function products()
     {
         # VERIFY SESSION
-        if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
             return view('logout');
 
         $data = array();
@@ -450,7 +452,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -497,7 +498,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -547,7 +547,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -639,7 +638,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -684,7 +682,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -784,7 +781,6 @@ class Administrator extends BaseController
 
             $response['error'] = 1;
             $response['code'] = 103;
-            $response['msg'] = 'Sesión Expirada';
 
             return json_encode($response); // ERROR SESSION EXPIRED
         }
@@ -954,7 +950,7 @@ class Administrator extends BaseController
             $col['tableName'] = $result[$i]->tableName;
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
-            $col['payType'] = @$spanPayType.$result[$i]->payTypeLabel;
+            $col['payType'] = @$spanPayType . $result[$i]->payTypeLabel;
             $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
 
             $row[$i] =  $col;

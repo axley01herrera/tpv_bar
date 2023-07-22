@@ -26,14 +26,14 @@
 
 <script>
     var payType = '<?php echo @$payType; ?>';
-    
+
     $('.radio-payType').on('click', function() {
         payType = $(this).val();
     });
 
-    $('#btn-modal-submit').on('click', function () {
+    $('#btn-modal-submit').on('click', function() {
 
-        if(payType != '') {
+        if (payType != '') {
 
             $('#btn-modal-submit').attr('disabled', true);
 
@@ -46,27 +46,30 @@
                     'payType': payType,
                 },
                 dataType: "json",
-                success: function (jsonResponse) {
+                success: function(jsonResponse) {
 
-                    if(jsonResponse.error == 0) { // SUCCESS
+                    if (jsonResponse.error == 0) { // SUCCESS
                         showToast('success', jsonResponse.msg);
                         closeModal();
                         window.location.href = '<?php echo base_url('TPV'); ?>'
+                        let id = <?php echo $tableID; ?>;
+                        let url = "<?php echo base_url('TPV/printTicket'); ?>" + '/' + id;
+                        window.open(url, '_blank');
                     } else { // ERROR
                         showToast('error', jsonResponse.msg);
 
-                        if(jsonResponse.error == 2) // ERROR SESSION EXPIRED
+                        if (jsonResponse.error == 2) // ERROR SESSION EXPIRED
                             window.location.href = '<?php echo base_url('Home'); ?>?msg=Su sesión ha expirado';
                     }
-                    
+
                 },
-                error: function (error) {
+                error: function(error) {
                     showToast('error', 'Debe seleccionar un método de pago');
                 }
             });
 
         } else // ERROR REQUIRED SELECT PAYMENT TYPE
             showToast('error', 'Debe seleccionar un método de pago');
-        
+
     });
 </script>
