@@ -209,4 +209,9 @@ class TPV extends BaseController
 
         return json_encode($response);
     }
+
+    public function historyTables()
+    {
+        return view('tpv/historyTables');
+    }
 }

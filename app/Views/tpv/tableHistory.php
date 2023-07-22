@@ -3,12 +3,14 @@
 
 <table id="dt-history" class="table table-hover table-borderless">
     <thead>
-        <th>Mesa</th>
-        <th>Apertura</th>
-        <th>Cierre</th>
-        <th>Empleado</th>
-        <th>Tipo de Pago</th>
-        <th>Cobro</th>
+        <th><strong>TableID</strong></th>
+        <th><strong>Mesa</strong></th>
+        <th><strong>Fecha de Apertura</strong></th>
+        <th><strong>Fecha de Cierre</strong></th>
+        <th><strong>Empleado</strong></th>
+        <th><strong>Tipo de Pago</strong></th>
+        <th><strong>Monto</strong></th>
+        <th class="text-center"><strong>Acciones</strong></th>
     </thead>
 </table>
 
@@ -23,10 +25,10 @@
         serverSide: true,
         responsive: true,
         bAutoWidth: true,
-        pageLength: 5,
+        pageLength: 10,
         lengthMenu: [
-            [5, 25, 50, 100],
-            [5, 25, 50, 100]
+            [10, 25, 50, 100],
+            [10, 25, 50, 100]
         ],
         language: {
             url: '<?php echo base_url('assets/libs/dataTable/es.json'); ?>'
@@ -36,9 +38,14 @@
             type: "POST"
         },
         order: [
-            [1, 'desc']
+            [0, 'desc']
         ],
-        columns: [{
+        columns: [
+            {
+                data: 'tableID',
+                visible: false
+            },
+            {
                 data: 'tableName'
             },
             {
@@ -55,6 +62,12 @@
             },
             {
                 data: 'amount',
+            },
+            {
+                data: 'actions',
+                class: 'text-center',
+                orderable: false,
+                searchable: false
             }
         ],
     });

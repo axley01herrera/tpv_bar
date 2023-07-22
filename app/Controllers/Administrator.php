@@ -916,12 +916,14 @@ class Administrator extends BaseController
         for ($i = 0; $i < $totalRows; $i++) {
 
             $col = array();
+            $col['tableID'] = $result[$i]->tableID;
             $col['tableName'] = $result[$i]->tableName;
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
             $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;
             $col['payType'] = $result[$i]->payTypeLabel;
             $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
+            $col['actions'] = 'actions';
 
             $row[$i] =  $col;
         }

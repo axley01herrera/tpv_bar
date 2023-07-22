@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-6 text-dark"><?php echo $ticket[$i]->name; ?></div>
                 <div class="col-4 text-dark"><?php echo '€ ' . number_format($ticket[$i]->price, 2, ".", ','); ?></div>
-                <div class="col-2"><button data-id="<?php echo $ticket[$i]->ticketID; ?>" class="btn btn-sm btn-outline-danger del-ticket"><i class="text-dark mdi mdi-trash-can-outline"></i></button></div>
+                <div class="col-2"><button data-id="<?php echo $ticket[$i]->ticketID; ?>" class="btn btn-sm btn-outline-light del-ticket"><i class="text-danger mdi mdi-trash-can-outline"></i></button></div>
             </div>
         </div>
         

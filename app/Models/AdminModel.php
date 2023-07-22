@@ -263,8 +263,9 @@ class AdminModel extends Model
     public function getActiveProducts()
     {
         $query = $this->db->table('tpv_bar_product')
-            ->where('status', 1);
-
+            ->where('status', 1)
+            ->orderBy('fk_category', 'ASC');
+            
         return $query->get()->getResult();
     }
 
@@ -440,40 +441,47 @@ class AdminModel extends Model
 
         if ($column == 0) {
             if ($dir == 'asc')
+                $sort = 'tableID ASC';
+            else
+                $sort = 'tableID DESC';
+        }
+
+        if ($column == 1) {
+            if ($dir == 'asc')
                 $sort = 'tableName ASC';
             else
                 $sort = 'tableName DESC';
         }
 
-        if ($column == 1) {
+        if ($column == 2) {
             if ($dir == 'asc')
                 $sort = 'dateOpen ASC';
             else
                 $sort = 'dateOpen DESC';
         }
 
-        if ($column == 2) {
+        if ($column == 3) {
             if ($dir == 'asc')
                 $sort = 'dateClose ASC';
             else
                 $sort = 'dateClose DESC';
         }
 
-        if ($column == 3) {
+        if ($column == 4) {
             if ($dir == 'asc')
                 $sort = 'employeeName ASC';
             else
                 $sort = 'employeeName DESC';
         }
 
-        if ($column == 4) {
+        if ($column == 5) {
             if ($dir == 'asc')
                 $sort = 'payTypeLabel ASC';
             else
                 $sort = 'payTypeLabel DESC';
         }
 
-        if ($column == 5) {
+        if ($column == 6) {
             if ($dir == 'asc')
                 $sort = 'amount ASC';
             else
