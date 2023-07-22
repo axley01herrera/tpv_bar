@@ -139,7 +139,7 @@ class TPV extends BaseController
         # VERIFY SESSION
         if (empty($this->objSession->get('user')) || empty($this->objSession->get('user')['id']))
             return view('logout');
-            
+
         $ticketID = $this->request->getPost('ticketID');
 
         $objTpvModel = new TpvModel;
@@ -258,8 +258,6 @@ class TPV extends BaseController
 
         $data = array();
         $data['status'] = 3;
-        $data['reopen'] = 0;
-        $data['reopenBy'] = NULL;
         $data['cancelBy'] = $this->objSession->get('user')['id'];
 
         $result = $this->objTpvModel->objUpdate('tpv_bar_tables', $data, $id);
