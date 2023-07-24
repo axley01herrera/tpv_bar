@@ -5,10 +5,10 @@
 
 <div class="card">
     <div class="card-body">
-        <button id="btn-create-employee" class="btn btn-primary mb-3">Nuevo Empleado</button>
+        <button id="btn-create-employee" class="btn btn-sm btn-primary mb-3">Crear</button>
         <div class="table-responsive">
             <table id="dt-employee" class="table table-hover table-borderless" style="width: 100%;">
-                <thead>
+                <thead style="background-color: #dce9f1;">
                     <tr>
                         <th><strong>Nombre</strong></th>
                         <th><strong>Apellidos</strong></th>

@@ -18,13 +18,6 @@ class Administrator extends BaseController
         $this->config = $this->objAdminModel->getConfigData();
     }
 
-    public function index()
-    {
-        $objAdminModel = new AdminModel;
-        $data['admin'] = $objAdminModel->objData('tpv_bar_administrator');
-        return view('logout');
-    }
-
     public function dashboard()
     {
         # VERIFY SESSION
@@ -36,6 +29,7 @@ class Administrator extends BaseController
         $data = array();
         $data['menu_ative'] = 'dashboard';
         $data['page'] = 'admin/dashboard/index';
+        $data['config'] = $this->config;;
 
         return view('admin/header', $data);
     }
@@ -95,12 +89,12 @@ class Administrator extends BaseController
             $clave = '';
 
             if (empty($result[$i]->clave)) {
-                $clave = '<button class="ms-1 me-1 btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="set_clave"><span class="mdi mdi-key" title="Crear Clave"></span></button>';
+                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="set_clave"><span class="mdi mdi-key" title="Crear Clave"></span></button>';
             } else {
-                $clave = '<button class="ms-1 me-1 btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave"><span class="mdi mdi-key-minus" title="Cambiar Clave"></span></button>';
+                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave"><span class="mdi mdi-key-minus" title="Cambiar Clave"></span></button>';
             }
 
-            $btn_edit = '<button class="ms-1 me-1 btn btn-sm btn-warning btn-edit-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Empleado"></span></button>';
+            $btn_edit = '<button class="btn btn-sm btn-warning btn-edit-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Empleado"></span></button>';
 
             $col = array();
             $col['name'] = $result[$i]->name;
@@ -108,7 +102,7 @@ class Administrator extends BaseController
             $col['user'] = $result[$i]->user;
             $col['status'] = $status;
             $col['switch'] = $switch;
-            $col['action'] = $clave . $btn_edit;
+            $col['action'] = $clave.' '.$btn_edit;
 
             $row[$i] =  $col;
         }

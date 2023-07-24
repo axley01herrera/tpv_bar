@@ -1,5 +1,4 @@
 <h5 class="text-dark">Tablero</h5>
-
 <!-- COLLECTION DAY -->
 <div class="row">
 
@@ -27,6 +26,10 @@
 </div>
 
 <script>
+    var config = '<?php echo $config[0]->name; ?>'; console.log(config);
+    if(config == '') 
+        $('#btn-config').trigger('click');
+    
     getCollectionDay();
     getChartWeek();
     getChartMont();

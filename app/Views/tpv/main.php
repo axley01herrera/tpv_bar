@@ -1,9 +1,5 @@
 <?php include('header.php'); ?>
-<style>
-    .card {
-        background-color: #dce9f1;
-    }
-</style>
+
 <div class="container-fluid">
 
     <!-- TOP BAR -->

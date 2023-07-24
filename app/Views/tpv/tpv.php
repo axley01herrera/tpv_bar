@@ -1,9 +1,4 @@
 <?php include('header.php'); ?>
-<style>
-    .card {
-        background-color: #dce9f1;
-    }
-</style>
 <div class="container-fluid">
     <div class="row mt-2">
         <div class="col-12 text-end">

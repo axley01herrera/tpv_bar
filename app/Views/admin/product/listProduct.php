@@ -7,10 +7,10 @@
     <div class="col-12 col-lg-4">
         <div class="card">
             <div class="card-body">
-                <button id="btn-newCat" class="btn btn-primary mb-3">Nueva Categoría</button>
+                <button id="btn-newCat" class="btn btn-primary mb-3">Crear</button>
                 <div class="table-responsive">
                     <table id="dt-cat" class="table table-hover table-borderless" style="width: 100%;">
-                        <thead>
+                        <thead style="background-color: #dce9f1;">
                             <tr>
                                 <th><strong>Categorías</strong></th>
                                 <th class="text-end"></th>
@@ -24,10 +24,10 @@
     <div class="col-12 col-lg-8">
         <div class="card">
             <div class="card-body">
-                <button id="btn-newProduct" class="btn btn-primary mb-3">Nuevo Producto</button>
+                <button id="btn-newProduct" class="btn btn-primary mb-3">Añadir</button>
                 <div class="table-responsive">
                     <table id="dt-products" class="table table-hover table-borderless" style="width: 100%;">
-                        <thead>
+                        <thead style="background-color: #dce9f1;">
                             <tr>
                                 <th><strong>Producto</strong></th>
                                 <th><strong>Categoría</strong></th>
