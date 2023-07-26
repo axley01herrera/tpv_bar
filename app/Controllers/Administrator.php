@@ -884,7 +884,7 @@ class Administrator extends BaseController
 
             $col = array();
             $col['tableID'] = $result[$i]->tableID;
-            $col['tableName'] = $result[$i]->tableName;
+            $col['tableName'] = '<a target="blank" href="'. base_url('TPV/ticketDetail') .'/'. $result[$i]->tableID .'">'. $result[$i]->tableName.'</a>';
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
             $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;

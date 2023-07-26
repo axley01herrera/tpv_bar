@@ -287,4 +287,18 @@ class TPV extends BaseController
 
         return view('tpv/printTicket', $data);
     }
+
+    public function ticketDetail()
+    {
+        $id = $this->request->uri->getSegment('3'); 
+
+        $data = array();
+        $data['tableInfo'] = $this->objTpvModel->getTableInfo($id); 
+        $data['ticket'] = $this->objTpvModel->getTicketByTableToPrint($id);
+        $data['countTicket'] = sizeof($data['ticket']);
+        $data['config'] = $this->objAdminModel->getConfigData(); 
+        $data['employee'] = $this->objAdminModel->getEmployeeData($data['tableInfo'][0]->fkEmployee);
+
+        return view('tpv/ticketDetail', $data);
+    }
 }
