@@ -89,9 +89,9 @@ class Administrator extends BaseController
             $clave = '';
 
             if (empty($result[$i]->clave)) {
-                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="set_clave"><span class="mdi mdi-key" title="Crear Clave"></span></button>';
+                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="set_clave"><span class="mdi mdi-account-key-outline" title="Crear Clave"></span></button>';
             } else {
-                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave"><span class="mdi mdi-key-minus" title="Cambiar Clave"></span></button>';
+                $clave = '<button class="btn btn-sm btn-primary btn-actions-clave" data-id="' . $result[$i]->id . '" data-action="update_clave"><span class="mdi mdi-account-key-outline" title="Cambiar Clave"></span></button>';
             }
 
             $btn_edit = '<button class="btn btn-sm btn-warning btn-edit-employee" data-id="' . $result[$i]->id . '"><span class="mdi mdi-account-edit-outline" title="Editar Empleado"></span></button>';
@@ -967,4 +967,72 @@ class Administrator extends BaseController
 
         return json_encode($data);
     }
+
+    # REPORT
+    public function report() 
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
+            return view('logout');
+
+        $data = array();
+        $data['menu_ative'] = 'report';
+        $data['page'] = 'admin/report/mainReport';
+
+        return view('admin/header', $data);
+    }
+
+    public function returnContentReport()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
+            return view('logout');
+
+        $data = array();
+        $data['dateStart'] = $this->request->getPost('dateStart');
+        $data['dateEnd'] = $this->request->getPost('dateEnd');
+
+        return view('admin/report/content', $data);
+    }
+
+    public function getCollectionReport()
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
+            return view('logout');
+
+        $dateStart = $this->request->getPost('dateStart');
+        $dateEnd = $this->request->getPost('dateEnd');
+
+        $result = $this->objAdminModel->getCollection($dateStart, $dateEnd);
+
+        $data = array();
+        $data['collectionDay'] = $result;
+        $data['dateStart'] = $dateStart;
+        $data['dateEnd'] = $dateEnd;
+
+        return view('admin/report/collection', $data);
+    }
+
+    public function printReport()
+    {
+        $dateStart = $this->request->getPostGet('dateStart');
+        $dateEnd = $this->request->getPostGet('dateEnd');
+
+        $result = $this->objAdminModel->getCollection($dateStart, $dateEnd);
+
+        $data = array();
+        $data['collectionDay'] = $result;
+        $data['dateStart'] = $dateStart;
+        $data['dateEnd'] = $dateEnd;
+
+        return view('admin/report/printReport', $data);
+    }
+    
 }

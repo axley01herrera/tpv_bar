@@ -265,7 +265,7 @@ class AdminModel extends Model
         $query = $this->db->table('tpv_bar_product')
             ->where('status', 1)
             ->orderBy('fk_category', 'ASC');
-            
+
         return $query->get()->getResult();
     }
 
@@ -560,7 +560,7 @@ class AdminModel extends Model
                 $sort = 'dateClose DESC';
         }
 
-        
+
         if ($column == 6) {
             if ($dir == 'asc')
                 $sort = 'payTypeLabel ASC';
@@ -576,5 +576,37 @@ class AdminModel extends Model
         }
 
         return $sort;
+    }
+
+    # REPORT
+
+    public function getCollection($dateStart, $dateEnd)
+    {
+        $query = $this->db->table('tpv_bar_tables')
+            ->where('status', 0)
+            ->where('date >=', date('Y-m-d', strtotime($dateStart)))
+            ->where('date <=', date('Y-m-d', strtotime($dateEnd)));
+
+        $data = $query->get()->getResult();
+        $count = sizeof($data);
+
+        $cash = 0;
+        $card = 0;
+
+        for ($i = 0; $i < $count; $i++) {
+
+            if ($data[$i]->payType == 1) // CASH
+                $cash = $cash + $data[$i]->amount;
+            elseif ($data[$i]->payType == 2) // CARD
+                $card = $card + $data[$i]->amount;
+        }
+
+        $return = array();
+        $return['cash'] = $cash;
+        $return['card'] = $card;
+        $return['total'] = $cash + $card;
+        $return['data'] = $data;
+
+        return $return;
     }
 }

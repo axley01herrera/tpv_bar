@@ -9,7 +9,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" href="<?php echo base_url('Home/adminAuthentication'); ?>"> Administrar </a>
+                        <a class="dropdown-item" href="<?php echo base_url('Home/adminAuthentication'); ?>"> Administrador </a>
                     </li>
                 </ul>
             </li>

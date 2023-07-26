@@ -15,10 +15,10 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item" href="<?php echo base_url('TPV/historyTables'); ?>"> Historial de Mesas Cerradas</a>
+                            <a class="dropdown-item" href="<?php echo base_url('TPV/historyTables'); ?>"><i class="mdi mdi-format-list-bulleted"></i> Historial de Mesas Cerradas</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo base_url('Home'); ?>"> Salir </a>
+                            <a class="dropdown-item" href="<?php echo base_url('Home'); ?>"><i class="mdi mdi-logout"></i> Salir </a>
                         </li>
                     </ul>
                 </li>
@@ -70,7 +70,7 @@
                     <h5 class="text-dark"><?php echo $countTable; ?> Mesas Abiertas</h5>
                     <div class="table-responsive">
                         <table class="table table-hover table-borderless">
-                            <thead>
+                            <thead style="background-color: #dce9f1;">
                                 <th class=""><strong>Mesa</strong></th>
                                 <th class=""><strong>Fecha de Apertura</strong></th>
                                 <th class=""><strong>Empleado</strong></th>

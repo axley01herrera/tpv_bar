@@ -2,7 +2,7 @@
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
 <table id="dt-history-cancel" class="table table-hover table-borderless">
-    <thead>
+    <thead style="background-color: #dce9f1;">
         <th><strong>TableID</strong></th>
         <th><strong>Estado</strong></th>
         <th><strong>Cancelada por</strong></th>

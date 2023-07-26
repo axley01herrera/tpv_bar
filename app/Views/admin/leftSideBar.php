@@ -59,6 +59,20 @@
                         </span>
                     </a>
                 </li>
+
+                <!-- REPORT -->
+                <li class="<?php if ($menu_ative == "report") {
+                                echo "mm-active";
+                            } ?>">
+                    <a href="<?php echo base_url('Administrator/report'); ?>">
+                        <i class="icon nav-icon <?php if ($menu_ative == "report") {
+                                                    echo "active";
+                                                } ?>" data-feather="bar-chart-2"></i>
+                        <span class="menu-item">
+                            Reportes
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
