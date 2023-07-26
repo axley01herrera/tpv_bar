@@ -280,7 +280,7 @@ class TPV extends BaseController
 
         $data = array();
         $data['tableInfo'] = $this->objTpvModel->getTableInfo($id); 
-        $data['ticket'] = $this->objTpvModel->getTicketByTable($id);
+        $data['ticket'] = $this->objTpvModel->getTicketByTableToPrint($id);
         $data['countTicket'] = sizeof($data['ticket']);
         $data['config'] = $this->objAdminModel->getConfigData(); 
         $data['employee'] = $this->objAdminModel->getEmployeeData($data['tableInfo'][0]->fkEmployee);

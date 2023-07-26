@@ -100,6 +100,22 @@ class TpvModel extends Model
         return $query->get()->getResult();  
     }
 
+    public function getTicketByTableToPrint($fkTable)
+    {
+        $query = $this->db->table('tpv_bar_ticket t')
+        ->select('t.id ticketID, 
+        p.name,
+        p.id productID, 
+        SUM(p.price) as totalPrice,
+        COUNT(p.id) as productCount')
+        ->join('tpv_bar_product p', 'p.id = t.fkProduct') 
+        ->where('t.fkTable', $fkTable)
+        ->groupBy('p.id')
+        ->orderBy('t.id', 'desc');
+        
+        return $query->get()->getResult();  
+    }
+
     public function getTableInfo($id)
     {
         $query = $this->db->table('tpv_bar_tables')

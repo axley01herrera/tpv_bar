@@ -162,6 +162,7 @@ class Administrator extends BaseController
         $data['name'] = htmlspecialchars(trim($this->request->getPost('name')));
         $data['lastName'] = htmlspecialchars(trim($this->request->getPost('lastName')));
         $data['user'] = htmlspecialchars(trim($this->request->getPost('user')));
+        $data['clave'] = password_hash($this->request->getPost('clave'), PASSWORD_DEFAULT); // ENCRYPT PASSWORD
 
         $resultCheckUserExist = $this->objAdminModel->checkUserExist($data['user']);
 
@@ -294,7 +295,7 @@ class Administrator extends BaseController
         if ($data['action'] == 'set_clave')
             $data['title'] = 'Creando Contraseña para ' . $userData[0]->name . ' ' . $userData[0]->lastName;
         else
-            $data['title'] = 'Actualizando Contraseña de ' . $userData[0]->name . ' ' . $userData[0]->lastName;
+            $data['title'] = 'Actualizando Clave de ' . $userData[0]->name . ' ' . $userData[0]->lastName;
 
         return view('admin/modals/setClave', $data);
     }

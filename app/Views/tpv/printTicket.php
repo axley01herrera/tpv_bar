@@ -36,8 +36,8 @@
                 <table class="table">
                     <?php for($i = 0; $i < $countTicket; $i++) { ?>
                         <tr>
-                            <td><?php echo $ticket[$i]->name; ?></td>
-                            <td><?php echo '€ ' . number_format($ticket[$i]->price, 2, ".", ','); ?></td>
+                            <td><?php echo $ticket[$i]->name.' x'.$ticket[$i]->productCount; ?></td>
+                            <td><?php echo '€ ' . number_format($ticket[$i]->totalPrice, 2, ".", ','); ?></td>
                         </tr>
                     <?php } ?>
                 </table>

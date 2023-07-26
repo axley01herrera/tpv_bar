@@ -74,7 +74,8 @@
                                 <th class=""><strong>Mesa</strong></th>
                                 <th class=""><strong>Fecha de Apertura</strong></th>
                                 <th class=""><strong>Empleado</strong></th>
-                                <th class="text-dark text-end"><strong>Monto</strong></th>
+                                <th class=""><strong>Monto</strong></th>
+                                <th class="text-end"></th>
                             </thead>
                             <tbody>
                                 <?php for ($i = 0; $i < $countTable; $i++) { ?>
@@ -95,9 +96,14 @@
                                                 <?php echo $table[$i]->name . ' ' . $table[$i]->lastName; ?>
                                             </a>
                                         </td>
-                                        <td class="text-end">
+                                        <td>
                                             <a class="text-dark" href="<?php echo base_url('TPV/tpv') . '/' . $table[$i]->tableID; ?>">
                                                 <?php echo '€ ' . number_format($table[$i]->price, 2, ".", ','); ?>
+                                            </a>
+                                        </td>
+                                        <td class="text-end">
+                                            <a class="btn btn-sm btn-secondary" href="<?php echo base_url('TPV/tpv') . '/' . $table[$i]->tableID; ?>">
+                                                <i class="mdi mdi-eye-settings-outline"></i>
                                             </a>
                                         </td>
                                     </tr>

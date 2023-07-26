@@ -24,8 +24,21 @@
                         <input id="txt-user" type="text" class="form-control modal-required focus modal-user" value="<?php echo @$userData[0]->user; ?>" />
                         <p id="msg-txt-user" class="text-danger text-end"></p>
                     </div>
-
                 </div>
+                <?php if ($action == 'create') { ?>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="txt-password">Clave de Acceso</label>
+                            <input id="txt-password" type="password" class="form-control modal-required focus" />
+                            <p id="msg-txt-password" class="text-danger text-end"></p>
+                        </div>
+                        <div class="col-12">
+                            <label for="txt-passwordr">Repita la Clave de Acceso</label>
+                            <input id="txt-passwordr" type="password" class="form-control modal-required focus" />
+                            <p id="msg-txt-passwordr" class="text-danger text-end"></p>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
             <?php echo view('admin/modals/modalFooter'); ?>
         </div>
@@ -40,46 +53,66 @@
 
         if (resultCheckRequiredValues == 0) {
 
-            $('btn-modal-submit').attr('disabled', true);
+            let url = '',
+                resultCheckPasswords = true,
+                password = '';
 
-            let url = '';
-
-            if (action == 'create')
+            if (action == 'create') {
                 url = '<?php echo base_url('Administrator/createEmployee'); ?>';
-            else if (action == 'update')
+                resultCheckPasswords = checkPasswords($('#txt-password').val(), $('#txt-passwordr').val())
+            } else if (action == 'update')
                 url = '<?php echo base_url('Administrator/updateEmployee'); ?>';
 
-            $.ajax({
-                type: "post",
-                url: url,
-                data: {
-                    'name': $('#txt-name').val(),
-                    'lastName': $('#txt-lastName').val(),
-                    'user': $('#txt-user').val(),
-                    'userID': '<?php echo @$userData[0]->id; ?>',
-                },
-                dataType: "json",
-                success: function(jsonResponse) {
+            if (resultCheckPasswords == true) {
 
-                    if (jsonResponse.error == 0) { // SUCCESS
+                $('#btn-modal-submit').attr('disabled', true);
 
-                        showToast('success', jsonResponse.msg);
-                        dtEmployee.draw();
-                        closeModal();
+                password = $('#txt-password').val();
 
-                    } else // ERROR
-                        showToast('error', jsonResponse.msg);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: {
+                        'name': $('#txt-name').val(),
+                        'lastName': $('#txt-lastName').val(),
+                        'user': $('#txt-user').val(),
+                        'clave': password,
+                        'userID': '<?php echo @$userData[0]->id; ?>',
+                    },
+                    dataType: "json",
+                    success: function(jsonResponse) {
 
-                    if (jsonResponse.code == 103) // SESSION EXPIRED
-                        window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
+                        if (jsonResponse.error == 0) { // SUCCESS
 
-                    if (jsonResponse.code == 104) // ERRROR USER EXIST
-                        $("#txt-user").addClass('is-invalid');
-                },
-                error: function(error) {
-                    showToast('error', 'Ha ocurrido un error');
-                }
-            });
+                            showToast('success', jsonResponse.msg);
+                            dtEmployee.draw();
+                            closeModal();
+
+                        } else // ERROR
+                            showToast('error', jsonResponse.msg);
+
+                        if (jsonResponse.code == 103) // SESSION EXPIRED
+                            window.location.href = '<?php echo base_url('Home'); ?>?msg=1';
+
+                        if (jsonResponse.code == 104) // ERRROR USER EXIST
+                            $("#txt-user").addClass('is-invalid');
+                    },
+                    error: function(error) {
+                        showToast('error', 'Ha ocurrido un error');
+                    }
+                });
+            }
         }
     });
+
+    function checkPasswords(a, b) {
+
+        if (a == b)
+            return true;
+        else {
+            $('#txt-passwordr').addClass('is-invalid');
+            $('#msg-txt-passwordr').html('Las Claves no coinciden');
+            return false;
+        }
+    }
 </script>
