@@ -76,14 +76,18 @@ class TPV extends BaseController
             return view('logout');
 
         $tableID = $this->request->uri->getSegment(3);
+        $tableInfo = $this->objTpvModel->getTables($tableID);  
+
+        if($tableInfo[0]->status != 1)
+            return redirect()->to(base_url('TPV'));
+
         $category = $this->objAdminModel->getCategories();
         $products = $this->objAdminModel->getActiveProducts();
-        $tableInfo = $this->objTpvModel->getTables($tableID);
         $ticket = $this->objTpvModel->getTicketByTable($tableID);
 
         $data = array();
         $data['tableID'] = $tableID;
-        $data['tableInfo'] = $tableInfo;
+        $data['tableInfo'] = $tableInfo; 
         $data['category'] = $category;
         $data['countCategory'] = sizeof($category);
         $data['products'] = $products;
