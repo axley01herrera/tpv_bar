@@ -578,6 +578,22 @@ class AdminModel extends Model
         return $sort;
     }
 
+    public function getEmployees()
+    {
+        $query = $this->db->table('tpv_bar_employees')
+        ->select('*');
+
+        return $query->get()->getResult();
+    }
+
+    public function getProductInfo()
+    {
+        $query = $this->db->table('tpv_bar_product')
+        ->select('*');
+
+        return $query->get()->getResult();
+    }
+
     # REPORT
 
     public function getCollection($dateStart, $dateEnd)

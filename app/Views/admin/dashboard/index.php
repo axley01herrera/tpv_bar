@@ -5,6 +5,8 @@
     <div class="col-12 col-lg-4">
         <div id="main-collectionDay"></div>
         <div id="main-chartWeek"></div>
+        <div id="main-employees"></div>
+        <div id="main-products"></div>
     </div>
 
     <div class="col-12 col-lg-8">
@@ -26,13 +28,16 @@
 </div>
 
 <script>
-    var config = '<?php echo $config[0]->name; ?>'; console.log(config);
-    if(config == '') 
+    var config = '<?php echo $config[0]->name; ?>';
+    console.log(config);
+    if (config == '')
         $('#btn-config').trigger('click');
-    
+
     getCollectionDay();
     getChartWeek();
     getChartMont();
+    getEmployeesInfo();
+    getProductInfo();
 
     function getCollectionDay() {
 
@@ -75,6 +80,36 @@
             dataType: "html",
             success: function(htmlResponse) {
                 $('#main-chartMont').html(htmlResponse);
+            },
+            error: function(error) {
+                showToast('error', 'Ha ocurrido un error');
+            }
+        });
+    }
+
+    function getEmployeesInfo() {
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo base_url('Administrator/getEmployeesInfo'); ?>",
+            dataType: "html",
+            success: function(htmlResponse) {
+                $('#main-employees').html(htmlResponse);
+            },
+            error: function(error) {
+                showToast('error', 'Ha ocurrido un error');
+            }
+        });
+    }
+
+    function getProductInfo() {
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo base_url('Administrator/getProductInfo'); ?>",
+            dataType: "html",
+            success: function(htmlResponse) {
+                $('#main-products').html(htmlResponse);
             },
             error: function(error) {
                 showToast('error', 'Ha ocurrido un error');

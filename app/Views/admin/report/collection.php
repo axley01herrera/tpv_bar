@@ -1,25 +1,27 @@
 <!-- DATA TABLE CSS -->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
 
-<div class="col-4">
+<div class="col-12 col-lg-4">
     <div class="card">
         <div class="card-body">
             <h4 class="card-title mb-4">Recaudación</h4>
             <div class="row align-items-center">
                 <div class="row mb-3">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-6 text-center">
                         <p class="text-muted mb-2">Efectivo</p>
                         <h5><small class="badge badge-soft-success font-13 ms-2"><img src="<?php echo base_url('assets/images/dcash.png'); ?>" alt="cash" width="25px"></small> € <?php echo number_format($collectionDay['cash'], 2, ".", ','); ?></h5>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-6 text-center">
                         <p class="text-muted mb-2">Tarjeta</p>
                         <h5><small class="badge badge-soft-success font-13 ms-2"><img src="<?php echo base_url('assets/images/dcreditcard.png'); ?>" alt="credit card" width="25px"></small> € <?php echo number_format($collectionDay['card'], 2, ".", ','); ?></h5>
                     </div>
+                    <div class="col-12 text-center">
+                        <h4 class="mt-4 font-weight-bold mb-2">
+                            Total: € <?php echo number_format($collectionDay['total'], 2, ".", ','); ?>
+                        </h4>
+                    </div>
                 </div>
             </div>
-            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center">
-                Total: € <?php echo number_format($collectionDay['total'], 2, ".", ','); ?>
-            </h4>
         </div>
     </div>
 </div>
@@ -44,9 +46,9 @@
                             <td class="text-center">
                                 <?php if ($collectionDay['data'][$i]->payType == 1) { ?>
                                     <img src="<?php echo base_url('assets/images/dcash.png'); ?>" alt="cash" width="25px">
-                                <?php } else if ($collectionDay['data'][$i]->payType == 2) { ?> 
+                                <?php } else if ($collectionDay['data'][$i]->payType == 2) { ?>
                                     <img src="<?php echo base_url('assets/images/dcreditcard.png'); ?>" alt="credit card" width="25px">
-                                <?php } ?>     
+                                <?php } ?>
                             </td>
                             <td class="text-end">€ <?php echo number_format($collectionDay['data'][$i]->amount, 2, ".", ','); ?></td>
                         </tr>
@@ -86,13 +88,13 @@
         },
     });
 
-    $('#btn-printReport').on('click', function () {
+    $('#btn-printReport').on('click', function() {
 
         let dateStart = encodeURIComponent('<?php echo $dateStart; ?>');
         let dateEnd = encodeURIComponent('<?php echo $dateEnd; ?>');
 
         let url = "<?php echo base_url('Administrator/printReport'); ?>" + '?dateStart=' + dateStart + '&dateEnd=' + dateEnd;
         window.open(url, '_blank');
-        
+
     });
 </script>

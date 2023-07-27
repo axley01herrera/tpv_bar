@@ -957,6 +957,52 @@ class Administrator extends BaseController
         return json_encode($data);
     }
 
+    public function getEmployeesInfo()
+    {
+        $result = $this->objAdminModel->getEmployees();
+        $count = sizeof($result);
+
+        $active = 0; 
+        $inactive = 0;
+
+        for($i = 0; $i < $count; $i++) {
+
+            if($result[$i]->status == 1)
+                $active = $active + 1;
+            else
+            $inactive = $inactive + 1;
+        }
+
+        $data = array();
+        $data['active'] = $active;
+        $data['inactive'] = $inactive;
+
+        return view('admin/dashboard/employees', $data);
+    }
+
+    public function getProductInfo()
+    {
+        $result = $this->objAdminModel->getProductInfo();
+        $count = sizeof($result);
+
+        $active = 0; 
+        $inactive = 0;
+
+        for($i = 0; $i < $count; $i++) {
+
+            if($result[$i]->status == 1)
+                $active = $active + 1;
+            else
+            $inactive = $inactive + 1;
+        }
+
+        $data = array();
+        $data['active'] = $active;
+        $data['inactive'] = $inactive;
+
+        return view('admin/dashboard/products', $data);
+    }
+
     # REPORT
     public function report() 
     {
