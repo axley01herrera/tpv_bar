@@ -51,10 +51,10 @@
                     if (jsonResponse.error == 0) { // SUCCESS
                         showToast('success', jsonResponse.msg);
                         closeModal();
-                        window.location.href = '<?php echo base_url('TPV'); ?>'
                         let id = <?php echo $tableID; ?>;
                         let url = "<?php echo base_url('TPV/printTicket'); ?>" + '/' + id;
                         window.open(url, '_blank');
+                        window.location.href = '<?php echo base_url('TPV'); ?>'
                     } else { // ERROR
                         showToast('error', jsonResponse.msg);
 

@@ -873,11 +873,6 @@ class Administrator extends BaseController
 
         for ($i = 0; $i < $totalRows; $i++) {
 
-            if ($result[$i]->payType == 1)
-                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcash.png" alt="cash" width="25px"></small>';
-            else
-                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcreditcard.png" alt="credit card" width="25px"></small>';
-
             $btnOpen = '<button type="button" class="btn-open btn btn-sm btn-success" data-id="' . $result[$i]->tableID . '" title="Re-abrir"><i class="mdi mdi-lock-open-variant-outline"></i></button>';
             $btnCancel = '<button type="button" class="btn-cancel btn btn-sm btn-danger" data-id="' . $result[$i]->tableID . '" title="Cancelar mesa"><i class="mdi mdi-block-helper"></i></button>';
             $btnPrint = '<button type="button" class="btn-print btn btn-sm btn-secondary" data-id="' . $result[$i]->tableID . '" title="Imprimir Ticket"><i class="mdi mdi-printer"></i></button>';
@@ -888,7 +883,7 @@ class Administrator extends BaseController
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
             $col['employee'] = $result[$i]->employeeName . ' ' . $result[$i]->employeeLastName;
-            $col['payType'] = @$spanPayType . $result[$i]->payTypeLabel;
+            $col['payType'] = $result[$i]->payTypeLabel;
             $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
             $col['actions'] = $btnOpen . ' ' . $btnCancel . ' ' . $btnPrint;
 
@@ -932,12 +927,6 @@ class Administrator extends BaseController
 
         for ($i = 0; $i < $totalRows; $i++) {
 
-            if ($result[$i]->payType == 1)
-                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcash.png" alt="cash" width="25px"></small>';
-            else
-                $spanPayType = '<small class="badge badge-soft-success font-13 ms-2"><img src="http://tpv/assets/images/dcreditcard.png" alt="credit card" width="25px"></small>';
-
-
             $col = array();
             $col['tableID'] = $result[$i]->tableID;
             $col['status'] = '<span class="badge badge-soft-danger">Cancelada</span>';
@@ -945,7 +934,7 @@ class Administrator extends BaseController
             $col['tableName'] = $result[$i]->tableName;
             $col['dateOpen'] = $result[$i]->dateOpen;
             $col['dateClose'] = $result[$i]->dateClose;
-            $col['payType'] = @$spanPayType . $result[$i]->payTypeLabel;
+            $col['payType'] = $result[$i]->payTypeLabel;
             $col['amount'] = '€ ' . number_format((float) $result[$i]->amount, 2, ".", ',');
 
             $row[$i] =  $col;

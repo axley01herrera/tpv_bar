@@ -48,7 +48,7 @@
 <body style="background-color: #dce9f1">
     <div id="layout-wrapper">
         <?php
-        echo view('admin/topbar'); // TOP BAR
+        echo view('admin/topBar'); // TOP BAR
         echo view('admin/leftSideBar'); // LEFT SIDE BAR
         ?>
         <div id="main-modal"></div>
