@@ -68,7 +68,7 @@ class TPV extends BaseController
 
         return json_encode($result);
     }
-
+  
     public function tpv()
     {
         # VERIFY SESSION
