@@ -1049,25 +1049,54 @@ class Administrator extends BaseController
 
         $data = array();
         $data['collectionDay'] = $result;
-        $data['dateStart'] = $dateStart;
-        $data['dateEnd'] = $dateEnd;
 
         return view('admin/report/collection', $data);
     }
 
     public function printReport()
     {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
+            return view('logout');
+
         $dateStart = $this->request->getPostGet('dateStart');
         $dateEnd = $this->request->getPostGet('dateEnd');
 
-        $result = $this->objAdminModel->getCollection($dateStart, $dateEnd);
+        $collectionDay = $this->objAdminModel->getCollection($dateStart, $dateEnd);
+        $dataTable = $this->objAdminModel->dtReport($dateStart, $dateEnd);
 
         $data = array();
-        $data['collectionDay'] = $result;
+        $data['dateStart'] = $dateStart;
+        $data['dateEnd'] = $dateEnd;
+        $data['collectionDay'] = $collectionDay;
+        $data['dataTable'] = $dataTable;
+        $data['totalRows'] = sizeof($dataTable);
+
+        return view('admin/report/printReport', $data);
+    }
+
+    public function dtReport() 
+    {
+        # VERIFY SESSION
+        if (empty($this->objSession->get('user')))
+            return view('logout');
+        elseif (empty($this->objSession->get('user')['role']))
+            return view('logout');
+
+        $dateStart = $this->request->getPost('dateStart');
+        $dateEnd = $this->request->getPost('dateEnd');
+
+        $result = $this->objAdminModel->dtReport($dateStart, $dateEnd);
+
+        $data = array();
+        $data['dataTable'] = $result;
+        $data['totalRows'] = sizeof($result);
         $data['dateStart'] = $dateStart;
         $data['dateEnd'] = $dateEnd;
 
-        return view('admin/report/printReport', $data);
+        return view('admin/report/dataTable', $data);
     }
     
 }

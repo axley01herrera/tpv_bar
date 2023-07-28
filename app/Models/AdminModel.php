@@ -581,7 +581,7 @@ class AdminModel extends Model
     public function getEmployees()
     {
         $query = $this->db->table('tpv_bar_employees')
-        ->select('*');
+            ->select('*');
 
         return $query->get()->getResult();
     }
@@ -589,7 +589,7 @@ class AdminModel extends Model
     public function getProductInfo()
     {
         $query = $this->db->table('tpv_bar_product')
-        ->select('*');
+            ->select('*');
 
         return $query->get()->getResult();
     }
@@ -621,8 +621,24 @@ class AdminModel extends Model
         $return['cash'] = $cash;
         $return['card'] = $card;
         $return['total'] = $cash + $card;
-        $return['data'] = $data;
 
         return $return;
+    }
+
+    public function dtReport($dateStart, $dateEnd)
+    {
+        $query = $this->db->table('tpv_bar_tables')
+            ->select('
+            `date`,
+            SUM(CASE WHEN `payType` = 1 THEN `amount` ELSE 0 END) AS `cash`,
+            SUM(CASE WHEN `payType` = 2 THEN `amount` ELSE 0 END) AS `creditCard`,
+            SUM(`amount`) AS `total`
+            ')
+            ->where('status', 0)
+            ->where('date >=', date('Y-m-d', strtotime($dateStart)))
+            ->where('date <=', date('Y-m-d', strtotime($dateEnd)))
+            ->groupBy('date');
+
+        return $query->get()->getResult();
     }
 }

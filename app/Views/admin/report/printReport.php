@@ -25,58 +25,56 @@
 
 <body>
     <div class="container mt-5">
-        <div class="col-4">
-            <h4 class="card-title mb-4">Recaudación</h4>
-            <div class="row align-items-center">
-                <div class="row mb-3">
-                    <div class="col-12 col-lg-6">
-                        <p class="text-muted mb-2">Efectivo</p>
-                        <h5><small class="badge badge-soft-success font-13 ms-2"><img src="<?php echo base_url('assets/images/dcash.png'); ?>" alt="cash" width="25px"></small> € <?php echo number_format($collectionDay['cash'], 2, ".", ','); ?></h5>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <p class="text-muted mb-2">Tarjeta</p>
-                        <h5><small class="badge badge-soft-success font-13 ms-2"><img src="<?php echo base_url('assets/images/dcreditcard.png'); ?>" alt="credit card" width="25px"></small> € <?php echo number_format($collectionDay['card'], 2, ".", ','); ?></h5>
+        <div class="row">
+            <div class="col-12">
+                <h4 class="card-title mb-4">Recaudación del <?php echo date('d/m/Y', strtotime($dateStart)); ?> al <?php echo date('d/m/Y', strtotime($dateEnd)); ?></h4>
+                <div class="row align-items-center">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <p class="text-muted mb-2">Total de Efectivo</p>
+                            <h5>€ <?php echo number_format($collectionDay['cash'], 2, ".", ','); ?></h5>
+                        </div>
+                        <div class="col-12 ">
+                            <p class="text-muted mb-2">Total de Tarjeta</p>
+                            <h5>€ <?php echo number_format($collectionDay['card'], 2, ".", ','); ?></h5>
+                        </div>
+                        <div class="col-12">
+                            <h4 class="mt-4 font-weight-bold mb-2">
+                                Total: € <?php echo number_format($collectionDay['total'], 2, ".", ','); ?>
+                            </h4>
+                        </div>
                     </div>
                 </div>
             </div>
-            <h4 class="mt-4 font-weight-bold mb-2 d-flex align-items-center">
-                Total: € <?php echo number_format($collectionDay['total'], 2, ".", ','); ?>
-            </h4>
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table id="dt-list-report" class="table table-hover table-borderless">
+                        <thead style="background-color: #dce9f1;">
+                            <th><strong>Fecha</strong></th>
+                            <th class="text-end"><strong>Efectivo</strong></th>
+                            <th class="text-end"><strong>Tarjeta</strong></th>
+                            <th class="text-end"><strong>Total</strong></th>
+                        </thead>
+                        <tbody>
+                            <?php for ($i = 0; $i < $totalRows; $i++) { ?>
+                                <tr>
+                                    <td><?php echo date('d/m/Y', strtotime($dataTable[$i]->date)); ?></td>
+                                    <td class="text-end">€ <?php echo number_format($dataTable[$i]->cash, 2, ".", ','); ?></td>
+                                    <td class="text-end">€ <?php echo number_format($dataTable[$i]->creditCard, 2, ".", ','); ?></td>
+                                    <td class="text-end">€ <?php echo number_format($dataTable[$i]->total, 2, ".", ','); ?></td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="col-12">
-            <table id="dt-list-report" class="table table-hover table-borderless">
-                <thead style="background-color: #dce9f1;">
-                    <th><strong>Fecha</strong></th>
-                    <th class="text-center"><strong>Tipo de Pago</strong></th>
-                    <th class="text-end"><strong>Monto</strong></th>
-                </thead>
-                <tbody>
-                    <?php
-                    $count = sizeof($collectionDay['data']);
-                    for ($i = 0; $i < $count; $i++) {
-                    ?>
-                        <tr>
-                            <td><?php echo date('d/m/Y', strtotime($collectionDay['data'][$i]->date)); ?></td>
-                            <td class="text-center">
-                                <?php if ($collectionDay['data'][$i]->payType == 1) { ?>
-                                    <img src="<?php echo base_url('assets/images/dcash.png'); ?>" alt="cash" width="25px">
-                                <?php } else if ($collectionDay['data'][$i]->payType == 2) { ?>
-                                    <img src="<?php echo base_url('assets/images/dcreditcard.png'); ?>" alt="credit card" width="25px">
-                                <?php } ?>
-                            </td>
-                            <td class="text-end">€ <?php echo number_format($collectionDay['data'][$i]->amount, 2, ".", ','); ?></td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </body>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         window.print();
     });
 </script>
