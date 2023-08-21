@@ -69,7 +69,7 @@
                 <div class="card-body">
                     <h5 class="text-dark"><?php echo $countTable; ?> Mesas Abiertas</h5>
                     <div class="table-responsive">
-                        <table class="table table-hover table-borderless">
+                        <table class="table table-hover table-borderless" style="width: 100%;">
                             <thead style="background-color: #dce9f1;">
                                 <th class=""><strong>Mesa</strong></th>
                                 <th class=""><strong>Fecha de Apertura</strong></th>

@@ -29,7 +29,6 @@
 
 <script>
     var config = '<?php echo $config[0]->name; ?>';
-    console.log(config);
     if (config == '')
         $('#btn-config').trigger('click');
 

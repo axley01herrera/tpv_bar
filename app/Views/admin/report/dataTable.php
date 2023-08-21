@@ -3,7 +3,7 @@
 
 <h4 class="card-title mb-4">Listado de Recaudación Desglozado</h4>
 <div class="table-responsive">
-    <table id="dt-list-report" class="table table-hover table-borderless">
+    <table id="dt-list-report" class="table table-hover table-borderless" style="width: 100%;">
         <thead style="background-color: #dce9f1;">
             <th><strong>Fecha</strong></th>
             <th class="text-end"><strong>Efectivo</strong></th>

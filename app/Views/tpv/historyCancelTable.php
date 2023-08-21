@@ -1,18 +1,19 @@
 <!-- DATA TABLE CSS -->
 <link href="<?php echo base_url('assets/css/datatable/dataTables.bootstrap5.min.css'); ?>" rel="stylesheet" type="text/css" />
-
-<table id="dt-history-cancel" class="table table-hover table-borderless">
-    <thead style="background-color: #dce9f1;">
-        <th><strong>TableID</strong></th>
-        <th><strong>Estado</strong></th>
-        <th><strong>Cancelada por</strong></th>
-        <th><strong>Mesa</strong></th>
-        <th><strong>Fecha de Apertura</strong></th>
-        <th><strong>Fecha de Cierre</strong></th>
-        <th><strong>Tipo de Pago</strong></th>
-        <th><strong>Monto</strong></th>
-    </thead>
-</table>
+<div class="table-responsive">
+    <table id="dt-history-cancel" class="table table-hover table-borderless" style="width: 100%;">
+        <thead style="background-color: #dce9f1;">
+            <th><strong>TableID</strong></th>
+            <th><strong>Estado</strong></th>
+            <th><strong>Cancelada por</strong></th>
+            <th><strong>Mesa</strong></th>
+            <th><strong>Fecha de Apertura</strong></th>
+            <th><strong>Fecha de Cierre</strong></th>
+            <th><strong>Tipo de Pago</strong></th>
+            <th><strong>Monto</strong></th>
+        </thead>
+    </table>
+</div>
 
 <!-- DATA TABLE JS -->
 <script src="<?php echo base_url('assets/js/datatable/jquery.dataTables.min.js'); ?>"></script>
