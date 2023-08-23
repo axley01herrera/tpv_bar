@@ -1004,6 +1004,7 @@ class Administrator extends BaseController
     }
 
     # REPORT
+    
     public function report() 
     {
         # VERIFY SESSION
