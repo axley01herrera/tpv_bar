@@ -341,7 +341,7 @@ class AdminModel extends Model
 
     public function getChartWeek()
     {
-        $firstDayOfWeek = date('Y-m-d', strtotime('monday this week')); // Get the first day of the week (Monday) v
+        $firstDayOfWeek = date('Y-m-d', strtotime('monday this week')); // Get the first day of the week (Monday)
         $lastDayOfWeek = date('Y-m-d', strtotime('sunday this week')); // Get the last day of the week (Sunday) 
 
         $query = $this->db->table('tpv_bar_tables')
